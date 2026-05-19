@@ -1,0 +1,271 @@
+
+<!DOCTYPE html>
+<html lang="mn">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Crypto Performance - MGL Signal</title>
+
+    <!-- SEO & Metadata -->
+    <meta name="description" content="MGL Signal - Top 100 Crypto Market Performance Analysis">
+    <meta name="robots" content="noindex, nofollow">
+    
+    <!-- Fonts & Icons -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="icon" type="image/png" href="/static/new/images/logogo1.png">
+
+    <!-- Libraries -->
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chartjs-plugin-datalabels@2"></script>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        brand: { 'dark': '#05070a', 'dark-blue': '#0f1217', 'gold': '#c5a059', 'border': '#1f242d' }
+                    },
+                    fontFamily: { 'inter': ['Inter', 'sans-serif'] }
+                }
+            }
+        }
+    </script>
+    <link rel="stylesheet" href="/static/main_style.css">
+</head>
+<body class="bg-brand-dark text-white font-inter flex flex-col min-h-screen">
+
+    <!-- Global Header -->
+    <script src="/static/js/main_translate.js"></script>
+    <script src="/static/js/header.js"></script>
+
+    <main class="flex-grow pt-32 pb-12 px-4 md:px-6">
+        <div class="max-w-7xl mx-auto flex flex-col gap-6">
+            
+            <!-- 1. Controls Component -->
+            <div class="controls-container flex flex-wrap items-center gap-4 p-4 bg-brand-dark-blue border border-brand-border rounded-xl shadow-lg">
+                <!-- Market -->
+                <div class="control-item flex items-center space-x-2">
+                    <label class="text-gray-500 font-bold uppercase text-[10px]">Market:</label>
+                    <select id="market" class="bg-brand-dark border border-brand-border text-white rounded px-3 py-1.5 text-xs shadow-inner">
+                        <option value="spot">Spot</option>
+                        <option value="futures">Futures</option>
+                    </select>
+                </div>
+
+                <!-- Range (Months) -->
+                <div class="control-item flex items-center space-x-2">
+                    <label data-i18n="perf-period" class="text-gray-500 font-bold uppercase text-[10px]">Range:</label>
+                    <select id="range-select" class="bg-brand-dark border border-brand-border text-white rounded px-3 py-1.5 text-xs shadow-inner">
+                        <option value="1">1 Day</option>
+                        <option value="3">3 Days</option>
+                        <option value="7">7 Days</option>
+                        <option value="15">15 Days</option>
+                        <option value="30" selected>30 Days</option>
+                        <option value="60">60 Days</option>
+                        <option value="90">90 Days</option>
+                    </select>
+                </div>
+            </div>
+
+            <div class="text-center mb-6">
+                <h1 id="page-title" data-i18n="perf-title" class="text-3xl md:text-5xl font-black uppercase tracking-tight text-white mb-4">
+                    Top 100 Crypto <span class="text-brand-gold italic">Performance</span>
+                </h1>
+                <p id="page-subtitle" data-i18n="perf-desc" class="text-gray-400 max-w-2xl mx-auto italic">Performance over the selected period (Altcoin Season Index)</p>
+                <div class="w-20 h-1 bg-brand-gold mx-auto mt-6"></div>
+            </div>
+
+            <!-- Loader -->
+            <div id="loader" class="flex flex-col items-center justify-center py-20 hidden">
+                <div class="w-12 h-12 border-4 border-brand-gold/20 border-t-brand-gold rounded-full animate-spin mb-4"></div>
+                <p id="loader-text" data-i18n="perf-loading" class="text-sm text-gray-500 font-bold uppercase tracking-widest animate-pulse">Fetching data... (This may take a moment)</p>
+            </div>
+
+            <!-- Charts Section -->
+            <div class="chart-container opacity-0 transition-opacity duration-500">
+                <div class="grid grid-cols-1 lg:grid-cols-2 gap-8">
+                    <!-- Gainers -->
+                    <div class="bg-brand-dark-blue border border-brand-border rounded-xl p-6 shadow-2xl">
+                        <h3 id="gainers-title" data-i18n="perf-gainers" class="text-green-400 font-black uppercase tracking-widest text-sm mb-6 flex items-center">
+                            <i class="fas fa-arrow-trend-up mr-2"></i> Top 25 Gainers
+                        </h3>
+                        <div class="chart-wrapper relative">
+                            <canvas id="performance-chart-gainers"></canvas>
+                        </div>
+                    </div>
+                    <!-- Losers -->
+                    <div class="bg-brand-dark-blue border border-brand-border rounded-xl p-6 shadow-2xl">
+                        <h3 id="losers-title" data-i18n="perf-losers" class="text-red-400 font-black uppercase tracking-widest text-sm mb-6 flex items-center">
+                            <i class="fas fa-arrow-trend-down mr-2"></i> Top 25 Losers
+                        </h3>
+                        <div class="chart-wrapper relative">
+                            <canvas id="performance-chart-losers"></canvas>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <p id="data-source-text" data-i18n="perf-source" class="text-center text-[10px] text-gray-600 uppercase font-bold tracking-widest mt-12">Data sourced from Binance Real-time API</p>
+        </div>
+    </main>
+
+    <script src="/static/js/footer.js"></script>
+    <script src="/static/lock.js"></script>
+
+    <script>
+    document.addEventListener('DOMContentLoaded', () => {
+        const marketEl = () => document.getElementById('market');
+        const rangeEl = () => document.getElementById('range-select');
+
+        const loader = document.getElementById('loader');
+        const chartContainer = document.querySelector('.chart-container');
+        
+        let gainerChart = null;
+        let loserChart = null;
+
+        async function fetchAllSymbols(marketType) {
+            const url = marketType === 'futures' 
+                ? 'https://fapi.binance.com/fapi/v1/ticker/24hr' 
+                : 'https://api.binance.com/api/v3/ticker/24hr';
+            const response = await fetch(url);
+            if (!response.ok) throw new Error('API Error');
+            const data = await response.json();
+            return data
+                .filter(d => d.symbol.endsWith('USDT') && !d.symbol.includes('_'))
+                .sort((a, b) => parseFloat(b.quoteVolume) - parseFloat(a.quoteVolume))
+                .slice(0, 150); // Limit to top symbols for performance
+        }
+
+        async function getPriceDaysAgo(symbol, days, marketType) {
+            const timeAgo = Date.now() - (days * 24 * 60 * 60 * 1000);
+            const baseUrl = marketType === 'futures' ? 'https://fapi.binance.com/fapi/v1/klines' : 'https://api.binance.com/api/v3/klines';
+            const url = `${baseUrl}?symbol=${symbol}&interval=1d&endTime=${timeAgo}&limit=1`;
+            
+            try {
+                const response = await fetch(url);
+                if (!response.ok) return null;
+                const data = await response.json();
+                return data.length > 0 ? parseFloat(data[0][4]) : null;
+            } catch (e) { return null; }
+        }
+
+        async function calculateAndRender() {
+            loader.classList.remove('hidden');
+            chartContainer.classList.add('opacity-0');
+            
+            const marketType = marketEl()?.value || 'spot';
+            const rangeVal = rangeEl()?.value || '1';
+            
+            // Сонгосон хугацааг өдөр лүү хөрвүүлэх (Months to Days)
+            let days = 30;
+            if (rangeVal === 'all') days = 365;
+            else days = parseInt(rangeVal) * 30;
+
+            try {
+                const allSymbols = await fetchAllSymbols(marketType);
+                const performanceData = [];
+
+                await Promise.all(allSymbols.map(async (coin) => {
+                    const priceAgo = await getPriceDaysAgo(coin.symbol, days, marketType);
+                    const currentPrice = parseFloat(coin.lastPrice);
+
+                    if (priceAgo && priceAgo > 0) {
+                        const performance = ((currentPrice - priceAgo) / priceAgo) * 100;
+                        performanceData.push({
+                            symbol: coin.symbol.replace('USDT', ''),
+                            performance: performance,
+                        });
+                    }
+                }));
+
+                performanceData.sort((a, b) => b.performance - a.performance);
+
+                renderChart('performance-chart-gainers', performanceData.slice(0, 25), '#0ecb81');
+                renderChart('performance-chart-losers', performanceData.slice(-25).reverse(), '#f6465d');
+
+                loader.classList.add('hidden');
+                chartContainer.classList.remove('opacity-0');
+            } catch (error) {
+                console.error(error);
+                loader.innerHTML = `<p class="text-red-500 font-bold">Failed to load data. Please try again.</p>`;
+            }
+        }
+
+        function renderChart(id, data, color) {
+            const ctx = document.getElementById(id).getContext('2d');
+            const labels = data.map(d => d.symbol);
+            const values = data.map(d => d.performance);
+            
+            if (id === 'performance-chart-gainers' && gainerChart) gainerChart.destroy();
+            if (id === 'performance-chart-losers' && loserChart) loserChart.destroy();
+
+            const config = {
+                type: 'bar',
+                data: {
+                    labels: labels,
+                    datasets: [{
+                        data: values,
+                        backgroundColor: color + '99',
+                        borderColor: color,
+                        borderWidth: 1,
+                        borderRadius: 4
+                    }]
+                },
+                plugins: [ChartDataLabels],
+                options: {
+                    indexAxis: 'y',
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    plugins: {
+                        legend: { display: false },
+                        datalabels: {
+                            color: '#fff',
+                            anchor: 'end',
+                            align: 'right',
+                            offset: 4,
+                            font: { size: 9, weight: 'bold' },
+                            formatter: (v) => v.toFixed(1) + '%'
+                        }
+                    },
+                    scales: {
+                        x: { display: false },
+                        y: { 
+                            ticks: { color: '#9ca3af', font: { size: 10, weight: 'bold' } },
+                            grid: { display: false }
+                        }
+                    }
+                }
+            };
+
+            const newChart = new Chart(ctx, config);
+            if (id === 'performance-chart-gainers') gainerChart = newChart;
+            else loserChart = newChart;
+            
+            // Auto-adjust container height
+            document.getElementById(id).parentElement.style.height = (data.length * 22) + 'px';
+        }
+
+        // Auto-update setup
+        const initAutoUpdate = () => {
+            const m = marketEl();
+            const r = rangeEl();
+            
+            if (m && r) {
+                const update = () => calculateAndRender();
+                m.addEventListener('change', update);
+                r.addEventListener('change', update);
+                
+                calculateAndRender(); // Initial Load
+            } else {
+                setTimeout(initAutoUpdate, 100);
+            }
+        };
+
+        initAutoUpdate();
+    });
+    </script>
+</body>
+</html>

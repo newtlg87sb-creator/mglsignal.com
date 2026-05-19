@@ -1,0 +1,111 @@
+<!DOCTYPE html>
+<html lang="mn">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Altcoin Tools - MGL Signal</title>
+
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        brand: { 'dark': '#05070a', 'dark-blue': '#0f1217', 'gold': '#c5a059', 'border': '#1f242d' }
+                    },
+                    fontFamily: { 'inter': ['Inter', 'sans-serif'] }
+                }
+            }
+        }
+    </script>
+    <link rel="stylesheet" href="/static/main_style.css">
+</head>
+<body class="bg-brand-dark text-white font-inter flex flex-col min-h-screen">
+
+    <script src="/static/js/main_translate.js"></script>
+    <script src="/static/js/header.js"></script>
+
+    <!-- Main Content -->
+    <main class="flex-grow pt-24 pb-12 px-6">
+        <div class="max-w-4xl mx-auto">
+            <!-- Header -->
+            <div class="text-center mb-12">
+                <h1 class="text-3xl md:text-5xl font-black uppercase tracking-tight text-white mb-4">
+                    Altcoin <span class="text-brand-gold italic">Tools</span>
+                </h1>
+                <p id="tools-subtitle" class="text-gray-400 max-w-2xl mx-auto">
+                    Professional analytical tools and signals for Altcoin trading.
+                </p>
+                <div class="w-20 h-1 bg-brand-gold mx-auto mt-6"></div>
+            </div>
+
+            <!-- Tools List (Single Column) -->
+            <div id="tools-container" class="space-y-4">
+                <!-- Content injected by JS -->
+            </div>
+        </div>
+    </main>
+
+    <script src="/static/js/footer.js"></script>
+    <script src="/static/lock.js"></script>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            const renderTools = () => {
+                const lang = localStorage.getItem('lang') || 'mn';
+                const container = document.getElementById('tools-container');
+                const subtitle = document.getElementById('tools-subtitle');
+                
+                if(!container || !translations[lang] || !translations[lang]['signal-list']) return;
+
+                // Update Subtitle
+                subtitle.textContent = lang === 'mn' 
+                    ? "Алткойн арилжаанд зориулсан мэргэжлийн шинжилгээний хэрэгсэл болон сигналууд."
+                    : "Professional analytical tools and signals for Altcoin trading.";
+
+                // Render List
+                container.innerHTML = translations[lang]['signal-list']
+                    .filter(item => 
+                        item.link !== 'future.html' && 
+                        item.link !== 'spot.html'
+                    )
+                    .map(item => `
+                    <a href="${item.link}" class="group block bg-brand-dark-blue border border-brand-border rounded-xl p-5 hover:border-brand-gold/50 transition duration-300 shadow-lg">
+                        <div class="flex items-center justify-between">
+                            <div class="flex items-center space-x-4">
+                                <div class="w-10 h-10 rounded-lg bg-brand-gold/10 flex items-center justify-center border border-brand-gold/20 group-hover:bg-brand-gold/20 transition">
+                                    <i class="fas fa-tools text-brand-gold"></i>
+                                </div>
+                                <div>
+                                    <h3 class="text-white font-bold text-lg group-hover:text-brand-gold transition">${item.title}</h3>
+                                    <p class="text-gray-500 text-xs mt-1 leading-relaxed">${item.description}</p>
+                                </div>
+                            </div>
+                            <div class="flex items-center space-x-3">
+                                ${item.status === 'coming_soon' ? 
+                                    `<span class="text-[9px] bg-gray-800 text-gray-400 px-2 py-1 rounded uppercase font-black tracking-tighter">Coming Soon</span>` : 
+                                    `<i class="fas fa-chevron-right text-gray-600 group-hover:text-brand-gold transform group-hover:translate-x-1 transition"></i>`
+                                }
+                            </div>
+                        </div>
+                    </a>
+                `).join('');
+            };
+
+            renderTools();
+
+            // Language change listener
+            const originalChangeLang = window.changeLang;
+            window.changeLang = function(language) {
+                if (originalChangeLang) originalChangeLang(language);
+                renderTools();
+            };
+        });
+    </script>
+</body>
+</html>

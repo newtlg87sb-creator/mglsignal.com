@@ -1,0 +1,172 @@
+<!DOCTYPE html>
+<html lang="mn">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Нэвтрэх - MGL Signal</title>
+
+    <meta name="description" content="Login to your MGL Signal account to access premium trading signals.">
+    <meta name="robots" content="noindex, nofollow">
+    <link rel="canonical" href="https://mglsignal.com/main_login.html"> 
+
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+
+    <link rel="icon" type="image/png" href="/static/new/images/logogo1.png">
+    
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        brand: { 'dark': '#05070a', 'dark-blue': '#0f1217', 'gold': '#c5a059', 'border': '#1f242d' }
+                    },
+                    fontFamily: { 'inter': ['Inter', 'sans-serif'] }
+                }
+            }
+        }
+    </script>
+    
+    <link rel="stylesheet" href="/static/main_style.css">
+</head>
+<body class="bg-brand-dark text-white font-inter flex flex-col min-h-screen">
+
+    <script src="/static/js/main_translate.js"></script>
+    <script src="/static/js/header.js"></script>
+
+    <main class="flex-grow flex items-center justify-center pt-32 pb-20 px-4">
+        <div class="w-full max-w-md bg-brand-dark-blue border border-brand-border rounded-xl p-8 shadow-2xl relative overflow-hidden">
+            <div class="absolute top-0 right-0 w-32 h-32 bg-brand-gold opacity-5 blur-[50px] -mr-16 -mt-16"></div>
+            
+            <div class="text-center mb-8 relative z-10">
+                <h1 data-i18n="login-title" class="text-2xl font-black uppercase tracking-wider text-white mb-2">Нэвтрэх</h1>
+                <p data-i18n="login-subtitle" class="text-xs text-gray-500">Арилжааны ертөнцөд тавтай морил</p>
+            </div>
+            
+            <form id="login-form" class="space-y-5 relative z-10">
+                <div class="space-y-1">
+                    <label data-i18n="lbl-email" for="email" class="text-[10px] font-bold uppercase text-gray-500 tracking-wider">Имэйл хаяг</label>
+                    <div class="relative">
+                        <div class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
+                            <i class="fas fa-envelope text-gray-600 text-sm"></i>
+                        </div>
+                        <input type="email" id="email" name="email" required data-i18n-placeholder="ph-email" placeholder="name@example.com" class="w-full bg-[#05070a] border border-brand-border rounded-lg py-3 pl-10 pr-3 text-sm focus:border-brand-gold focus:outline-none focus:ring-1 focus:ring-brand-gold transition text-white placeholder-gray-700">
+                    </div>
+                </div>
+
+                <div class="space-y-1">
+                    <div class="flex justify-between items-center">
+                        <label data-i18n="lbl-password" for="password" class="text-[10px] font-bold uppercase text-gray-500 tracking-wider">Нууц үг</label>
+                        <a data-i18n="link-forgot" href="main_forgot-password.html" class="text-[10px] text-brand-gold hover:underline">Нууц үг мартсан?</a>
+                    </div>
+                    <div class="relative">
+                        <div class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
+                            <i class="fas fa-lock text-gray-600 text-sm"></i>
+                        </div>
+                        <input type="password" id="password" name="password" required data-i18n-placeholder="ph-password" placeholder="••••••••" class="w-full bg-[#05070a] border border-brand-border rounded-lg py-3 pl-10 pr-3 text-sm focus:border-brand-gold focus:outline-none focus:ring-1 focus:ring-brand-gold transition text-white placeholder-gray-700">
+                    </div>
+                </div>
+
+                <div id="error-message" class="hidden text-red-500 text-xs text-center bg-red-500/10 p-2 rounded border border-red-500/20"></div>
+
+                <button type="submit" id="submit-btn" class="w-full bg-brand-gold text-black font-bold py-3.5 rounded-lg hover:bg-white transition transform hover:scale-[1.01] shadow-lg shadow-brand-gold/20 uppercase text-xs tracking-widest flex justify-center items-center">
+                    <span data-i18n="btn-login-submit" id="btn-text">Нэвтрэх</span>
+                    <i id="btn-spinner" class="fas fa-circle-notch fa-spin ml-2 hidden"></i>
+                </button>
+            </form>
+
+            <div class="mt-8 text-center text-xs text-gray-500 relative z-10">
+                <span data-i18n="text-no-account">Бүртгэлгүй юу?</span> <a data-i18n="link-register-now" href="main_register.html" class="text-brand-gold font-bold hover:underline ml-1">Шинээр бүртгүүлэх</a>
+            </div>
+        </div>
+    </main>
+
+    <script src="/static/js/footer.js"></script>
+
+    <script>
+        // header.js-ээс 'sb' client-ийг авч ашиглана.
+        const supabaseClient = sb;
+
+        const form = document.getElementById('login-form');
+        const errorDiv = document.getElementById('error-message');
+        const submitBtn = document.getElementById('submit-btn');
+        const btnText = document.getElementById('btn-text');
+        const btnSpinner = document.getElementById('btn-spinner');
+
+        form.addEventListener('submit', async function(e) {
+            e.preventDefault();
+            
+            const email = document.getElementById('email').value;
+            const password = document.getElementById('password').value;
+
+            // Түр зуур товчийг идэвхгүй болгох
+            errorDiv.classList.add('hidden');
+            btnText.textContent = "Уншиж байна...";
+            btnSpinner.classList.remove('hidden');
+            submitBtn.disabled = true;
+            submitBtn.classList.add('opacity-75', 'cursor-not-allowed');
+
+            try {
+                const { data, error } = await supabaseClient.auth.signInWithPassword({
+                    email: email,
+                    password: password
+                });
+
+                if (error) throw error;
+
+                // Нэвтэрсний дараа шууд баазаас (User control хүснэгтээс) хамгийн сүүлийн статусыг татах
+                const { data: profile } = await supabaseClient
+                    .from('User control')
+                    .select('username, membership_type, membership_expires_at')
+                    .eq('id', data.user.id)
+                    .maybeSingle();
+
+                // LocalStorage-д хэрэглэгчийн хамгийн сүүлийн мэдээллийг хадгалах
+                const userData = {
+                    id: data.user.id,
+                    username: profile?.username || data.user.user_metadata.display_name || data.user.email.split('@')[0],
+                    email: data.user.email,
+                    membership_type: profile?.membership_type || data.user.user_metadata.membership_type || 'free',
+                    membership_expires_at: profile?.membership_expires_at || data.user.user_metadata.membership_expires_at || null
+                };
+                localStorage.setItem('user', JSON.stringify(userData));
+
+                // Амжилттай болсон үед харагдах байдал
+                errorDiv.className = "text-green-500 text-xs text-center bg-green-500/10 p-2 rounded border border-green-500/20";
+                errorDiv.classList.remove('hidden');
+                submitBtn.classList.add('hidden'); // Товчийг нуух
+
+                let timeLeft = 5;
+                errorDiv.innerHTML = `Амжилттай нэвтэрлээ! <span id="countdown">${timeLeft}</span> секундын дараа шилжинэ.`;
+
+                const timer = setInterval(() => {
+                    timeLeft--;
+                    const cd = document.getElementById('countdown');
+                    if(cd) cd.innerText = timeLeft;
+
+                    if (timeLeft <= 0) {
+                        clearInterval(timer);
+                        window.location.href = "index.html";
+                    }
+                }, 1000);
+
+            } catch (err) {
+                // Алдааны мэдээлэл харуулах
+                errorDiv.className = "text-red-500 text-xs text-center bg-red-500/10 p-2 rounded border border-red-500/20";
+                errorDiv.textContent = "Нэвтэрч чадсангүй: " + err.message;
+                errorDiv.classList.remove('hidden');
+                
+                // Товчийг буцааж идэвхжүүлэх
+                btnText.textContent = "Нэвтрэх";
+                btnSpinner.classList.add('hidden');
+                submitBtn.disabled = false;
+                submitBtn.classList.remove('opacity-75', 'cursor-not-allowed');
+            }
+        });
+    </script>
+</body>
+</html>

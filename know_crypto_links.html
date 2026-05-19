@@ -1,0 +1,182 @@
+<!DOCTYPE html>
+<html lang="mn">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Crypto Links - MGL Signal</title>
+
+    <meta name="description" content="A curated list of essential tools, exchanges, and resources for crypto traders.">
+    <meta name="keywords" content="crypto links, trading tools, crypto exchanges, charts, airdrops, analysis">
+    <meta name="robots" content="index, follow">
+    <link rel="canonical" href="https://mglsignal.com/know_crypto_links.html"> 
+
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link rel="preconnect" href="https://cdnjs.cloudflare.com">
+
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+
+    <link rel="icon" type="image/png" href="/static/new/images/logogo1.png">
+    <link rel="apple-touch-icon" href="/static/new/images/logogo1.png">
+
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        brand: { 'dark': '#05070a', 'dark-blue': '#0f1217', 'gold': '#c5a059', 'border': '#1f242d' }
+                    },
+                    fontFamily: { 'inter': ['Inter', 'sans-serif'] }
+                }
+            }
+        }
+    </script>
+    
+    <link rel="stylesheet" href="/static/main_style.css">
+</head>
+<body class="bg-brand-dark text-white font-inter flex flex-col min-h-screen">
+
+    <script src="/static/js/main_translate.js"></script>
+    <script src="/static/js/header.js"></script>
+
+    <!-- Main Content -->
+    <main class="flex-grow pt-24 pb-12 px-6">
+        <div class="max-w-6xl mx-auto">
+            <!-- Header -->
+            <div class="text-center mb-16">
+                <h1 class="text-3xl md:text-5xl font-black uppercase tracking-tight text-white mb-4 page-title">
+                    Crypto <span class="text-brand-gold italic">Links</span>
+                </h1>
+                <p id="page-subtitle" class="text-gray-400 max-w-2xl mx-auto">Your curated directory for the best tools and resources in the cryptocurrency world.</p>
+                <div class="w-20 h-1 bg-brand-gold mx-auto mt-6"></div>
+            </div>
+
+            <!-- Links Grid -->
+            <div id="links-grid" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+                <!-- Content will be injected by JS -->
+            </div>
+        </div>
+    </main>
+
+    <script src="/static/js/footer.js"></script>
+    <script src="/static/lock.js"></script>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            const lang = localStorage.getItem('lang') || 'en';
+            
+            const categories = [
+                {
+                    id: 'market_data',
+                    title: { en: 'Market Data & Analytics', mn: 'Зах зээлийн дата & Шинжилгээ' },
+                    links: [
+                        { name: 'CoinMarketCap', url: 'https://coinmarketcap.com/', desc: { en: 'The original crypto price tracker.', mn: 'Крипто үнэ хянагч анхдагч сайт.' } },
+                        { name: 'CoinGecko', url: 'https://www.coingecko.com/', desc: { en: 'Comprehensive market data.', mn: 'Зах зээлийн дэлгэрэнгүй мэдээлэл.' } },
+                        { name: 'TradingView', url: 'https://www.tradingview.com/', desc: { en: 'Industry standard for charting.', mn: 'График шинжилгээний стандарт.' } },
+                        { name: 'Glassnode', url: 'https://glassnode.com/', desc: { en: 'Leading on-chain intelligence.', mn: 'On-chain шинжилгээний тэргүүлэгч.' } },
+                        { name: 'DeFi Llama', url: 'https://defillama.com/', desc: { en: 'DeFi TVL tracker.', mn: 'DeFi түгжигдсэн хөрөнгийн хянагч.' } },
+                        { name: 'CryptoBubbles', url: 'https://cryptobubbles.net/', desc: { en: 'Visualize market performance.', mn: 'Зах зээлийг бөмбөлгөөр харах.' } }
+                    ]
+                },
+                {
+                    id: 'exchanges',
+                    title: { en: 'Top Crypto Exchanges', mn: 'Шилдэг Крипто Биржүүд' },
+                    links: [
+                        { name: 'Binance', url: 'https://www.binance.com/', desc: { en: "World's largest exchange.", mn: 'Дэлхийн хамгийн том бирж.' } },
+                        { name: 'Coinbase', url: 'https://www.coinbase.com/', desc: { en: 'User-friendly platform.', mn: 'Хэрэглэхэд хялбар платформ.' } },
+                        { name: 'Bybit', url: 'https://www.bybit.com/', desc: { en: 'Popular for derivatives.', mn: 'Дериватив арилжаагаар алдартай.' } },
+                        { name: 'KuCoin', url: 'https://www.kucoin.com/', desc: { en: "The People's Exchange.", mn: 'Ард түмний бирж.' } },
+                        { name: 'OKX', url: 'https://www.okx.com/', desc: { en: 'Advanced exchange with Web3.', mn: 'Web3 хэтэвчтэй дэвшилтэт бирж.' } }
+                    ]
+                },
+                {
+                    id: 'tools',
+                    title: { en: 'Trading Tools & Bots', mn: 'Арилжааны Хэрэгсэл & Ботууд' },
+                    links: [
+                        { name: '3Commas', url: 'https://www.3commas.io/', desc: { en: 'Smart trading bots.', mn: 'Ухаалаг арилжааны ботууд.' } },
+                        { name: 'CryptoHopper', url: 'https://cryptohopper.com/', desc: { en: 'Automated trading.', mn: 'Автомат арилжааны платформ.' } },
+                        { name: 'Banana Gun', url: 'https://t.me/BananaGunSniper_bot', desc: { en: 'Telegram sniper bot.', mn: 'Telegram дээрх шинэ койн ангууч.' } },
+                        { name: 'Maestro Bot', url: 'https://t.me/MaestroSniperBot', desc: { en: 'Fast trading bot.', mn: 'Хурдан арилжааны бот.' } }
+                    ]
+                },
+                {
+                    id: 'security',
+                    title: { en: 'Security & Scam Check', mn: 'Аюулгүй байдал & Шалгалт' },
+                    links: [
+                        { name: 'RugDoc', url: 'https://rugdoc.io/', desc: { en: 'Check project safety.', mn: 'Төслийн аюулгүй байдлыг шалгах.' } },
+                        { name: 'Token Sniffer', url: 'https://tokensniffer.com/', desc: { en: 'Scan tokens for scams.', mn: 'Токеныг луйвар эсэхийг шүүх.' } },
+                        { name: 'Honeypot.is', url: 'https://honeypot.is/', desc: { en: 'Check honeypot risks.', mn: 'Honeypot эрсдэлийг шалгах.' } },
+                        { name: 'Revoke.cash', url: 'https://revoke.cash/', desc: { en: 'Revoke token allowances.', mn: 'Токены зөвшөөрлийг цуцлах.' } }
+                    ]
+                },
+                {
+                    id: 'wallets',
+                    title: { en: 'Wallets', mn: 'Хэтэвч' },
+                    links: [
+                        { name: 'MetaMask', url: 'https://metamask.io/', desc: { en: 'Popular browser wallet.', mn: 'Алдартай хөтчийн хэтэвч.' } },
+                        { name: 'Trust Wallet', url: 'https://trustwallet.com/', desc: { en: 'Secure mobile wallet.', mn: 'Гар утасны найдвартай хэтэвч.' } },
+                        { name: 'Ledger', url: 'https://www.ledger.com/', desc: { en: 'Hardware cold storage.', mn: 'Техник хангамжийн хүйтэн хэтэвч.' } },
+                        { name: 'Phantom', url: 'https://phantom.app/', desc: { en: 'Best for Solana.', mn: 'Solana сүлжээний шилдэг хэтэвч.' } }
+                    ]
+                },
+                {
+                    id: 'explorers',
+                    title: { en: 'Blockchain Explorers', mn: 'Блокчэйн Хайгч' },
+                    links: [
+                        { name: 'Etherscan', url: 'https://etherscan.io/', desc: { en: 'Ethereum explorer.', mn: 'Ethereum гүйлгээ шалгагч.' } },
+                        { name: 'BscScan', url: 'https://bscscan.com/', desc: { en: 'BSC explorer.', mn: 'Binance Smart Chain гүйлгээ шалгагч.' } },
+                        { name: 'Solscan', url: 'https://solscan.io/', desc: { en: 'Solana explorer.', mn: 'Solana гүйлгээ шалгагч.' } },
+                        { name: 'PolygonScan', url: 'https://polygonscan.com/', desc: { en: 'Polygon explorer.', mn: 'Polygon гүйлгээ шалгагч.' } }
+                    ]
+                }
+            ];
+
+            const renderLinks = (language) => {
+                const container = document.getElementById('links-grid');
+                if(!container) return;
+                
+                container.innerHTML = categories.map(cat => `
+                    <div class="bg-brand-dark-blue border border-brand-border rounded-xl p-6 hover:border-brand-gold/30 transition duration-300">
+                        <h3 class="text-white text-lg font-bold mb-4 pb-2 border-b border-brand-border uppercase tracking-wider flex items-center">
+                            <i class="fas fa-link text-brand-gold mr-3 text-sm"></i> ${cat.title[language] || cat.title.en}
+                        </h3>
+                        <ul class="space-y-3">
+                            ${cat.links.map(link => `
+                                <li>
+                                    <a href="${link.url}" target="_blank" class="group block">
+                                        <div class="flex items-center justify-between">
+                                            <span class="text-brand-gold font-bold text-sm group-hover:text-white transition">${link.name}</span>
+                                            <i class="fas fa-external-link-alt text-gray-600 text-[10px] group-hover:text-brand-gold"></i>
+                                        </div>
+                                        <p class="text-gray-500 text-xs mt-0.5 group-hover:text-gray-400 transition">${link.desc[language] || link.desc.en}</p>
+                                    </a>
+                                </li>
+                            `).join('')}
+                        </ul>
+                    </div>
+                `).join('');
+
+                // Update Page Title
+                const subTitle = document.getElementById('page-subtitle');
+                if(subTitle) {
+                    subTitle.textContent = language === 'mn' 
+                        ? "Криптовалютын ертөнц дэх хамгийн хэрэгцээт хэрэгсэл, нөөцийн лавлах." 
+                        : "Your curated directory for the best tools and resources in the cryptocurrency world.";
+                }
+            };
+
+            // Initial Render
+            renderLinks(lang);
+
+            // Override changeLang
+            const originalChangeLang = window.changeLang;
+            window.changeLang = function(language) {
+                if (originalChangeLang) originalChangeLang(language);
+                renderLinks(language);
+            };
+        });
+    </script>
+</body>
+</html>

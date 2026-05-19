@@ -1,0 +1,441 @@
+<!DOCTYPE html>
+<html lang="mn">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Cybersecurity: Password Hacking Time - MGL Signal</title>
+
+    <meta name="description" content="Learn how long it takes a computer to crack your password and check your password strength.">
+    <meta name="keywords" content="cybersecurity, password strength, password hacking time, crypto security">
+    <meta name="robots" content="index, follow">
+    <link rel="canonical" href="https://mglsignal.com/know_cybersecurity.html"> 
+
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link rel="preconnect" href="https://cdnjs.cloudflare.com">
+
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+
+    <link rel="icon" type="image/png" href="/static/new/images/logogo1.png">
+    <link rel="apple-touch-icon" href="/static/new/images/logogo1.png">
+
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        brand: { 'dark': '#05070a', 'dark-blue': '#0f1217', 'gold': '#c5a059', 'border': '#1f242d' }
+                    },
+                    fontFamily: { 'inter': ['Inter', 'sans-serif'] }
+                }
+            }
+        }
+    </script>
+    
+    <link rel="stylesheet" href="/static/main_style.css">
+</head>
+<body class="bg-brand-dark text-white font-inter flex flex-col min-h-screen">
+
+    <script src="/static/js/main_translate.js"></script>
+    <script src="/static/js/header.js"></script>
+
+    <!-- Main Content -->
+    <main class="flex-grow pt-24 pb-12 px-6">
+        <div class="max-w-4xl mx-auto">
+            <!-- Header -->
+            <div class="text-center mb-16">
+                <h1 class="text-3xl md:text-5xl font-black uppercase tracking-tight text-white mb-4 page-title">
+                    Cyber <span class="text-brand-gold italic">Security</span>
+                </h1>
+                <div class="w-20 h-1 bg-brand-gold mx-auto mt-6"></div>
+            </div>
+
+            <!-- Content Container -->
+            <div class="bg-brand-dark-blue border border-brand-border rounded-xl p-8 md:p-12 shadow-2xl relative overflow-hidden">
+                <!-- Background decoration -->
+                <div class="absolute top-0 right-0 w-64 h-64 bg-red-600 opacity-5 blur-[100px] -mr-16 -mt-16"></div>
+                
+                <div class="relative z-10 space-y-8 text-gray-300 leading-relaxed">
+                    <h1 id="article-title" class="text-2xl font-bold text-white mb-2">Cybersecurity: How long would it take a computer to hack your password?</h1>
+                    <div class="meta-info text-xs text-gray-500 mb-6">
+                        <p>Dec 7, 2021 | With the collaboration of Statista.</p>
+                        <p>By Katharina Buchholz, Data Journalist, Statista</p>
+                    </div>
+
+                    <img src="/static/images/Hive-passwords.jpg" alt="A chart showing how long it takes to crack passwords" class="w-full rounded-lg mb-8 border border-brand-border">
+
+                    <h2 id="section-title" class="text-xl font-bold text-white mb-3">The Big Picture: Password Security Explained</h2>
+                    <p id="section-desc" class="mb-4 text-sm">This chart shows the time it would take for a computer to crack passwords.</p>
+                    <ul class="list-disc list-inside text-sm text-gray-400 space-y-2 mb-8 pl-4 article-points">
+                        <li>A password of <span class="text-brand-gold font-bold">8 standard letters</span> contains 209 billion possible combinations, but a computer is able to calculate this <span class="text-brand-gold font-bold">instantly</span>.</li>
+                        <li>Adding <span class="text-brand-gold font-bold">one upper case letter</span> to a password dramatically alters a computer's potential to crack a password, extending it to <span class="text-brand-gold font-bold">22 minutes</span>.</li>
+                        <li>Having a long mix of upper and lower case letters, symbols and numbers is the best way to make your password more secure.</li>
+                        <li>A <span class="text-brand-gold font-bold">12-character password</span> containing at least one upper case letter, one symbol and one number would take <span class="text-brand-gold font-bold">34,000 years</span> for a computer to crack.</li>
+                    </ul>
+
+                    <h3 id="sub-title" class="text-lg font-bold text-white mb-3">The Exponential Power of Character Sets</h3>
+                    <p id="sub-desc" class="mb-4 text-sm">This happens because when we use more types of characters, the potential combinations making up the password increase exponentially. Consider the following:</p>
+                    <ul class="list-disc list-inside text-sm text-gray-400 space-y-2 mb-8 pl-4 combos-list">
+                        <li>With just 26 lower case letters, a password of eight characters has 26<sup>8</sup>, so around <span class="text-brand-gold font-bold">209 billion possible combinations</span>.</li>
+                        <li>Adding uppercase letters, we already arrive at 52<sup>8</sup>, around <span class="text-brand-gold font-bold">53.5 trillion combinations</span>.</li>
+                        <li>With numbers included, it’s 62<sup>8</sup> or <span class="text-brand-gold font-bold">218 trillion combinations</span>.</li>
+                        <li>Symbols add another great potential for security, upping the number of combinations once more to around 90<sup>8</sup> or <span class="text-brand-gold font-bold">430 trillion combinations</span>.</li>
+                    </ul>
+
+                    <!-- Password Strength Calculator Section -->
+                    <section class="bg-black/30 p-6 rounded-xl border border-brand-border mt-12">
+                        <h2 id="strength-title" class="text-xl font-bold text-white mb-2 text-center">How Secure Is My Password?</h2>
+                        <p id="strength-subtitle" class="text-xs text-gray-500 mb-6 text-center">The #1 Password Strength Tool. Trusted and used by millions.</p>
+                        
+                        <div class="relative mb-6">
+                            <input type="password" id="strength-password-input" placeholder="Enter your password" class="w-full bg-[#05070a] border border-brand-border rounded-lg py-3 px-4 text-sm focus:border-brand-gold focus:outline-none transition text-white pr-12">
+                            <button id="toggle-password-visibility" class="absolute top-1/2 right-3 -translate-y-1/2 text-gray-500 hover:text-white transition">👁️</button>
+                        </div>
+                        
+                        <div class="text-center">
+                            <p id="strength-time-label" class="text-xs text-gray-400 mb-2 uppercase tracking-widest">It would take a computer about</p>
+                            <div id="strength-time-value" class="text-2xl font-black text-brand-gold">Enter a password to check</div>
+                        </div>
+                    </section>
+
+                    <!-- Password Cracker Simulation Section -->
+                    <section class="bg-black/30 p-6 rounded-xl border border-brand-border mt-8">
+                        <h2 id="cracker-title" class="text-xl font-bold text-white mb-2 text-center">Try a Simple Password Cracker</h2>
+                        <p id="cracker-desc" class="text-xs text-gray-500 mb-6 text-center">Enter an 8-character password below to see how fast a computer can guess it.</p>
+                        
+                        <div class="text-center mb-6">
+                            <button id="crack-btn" class="bg-red-600 hover:bg-red-500 text-white font-bold py-3 px-6 rounded-lg transition uppercase text-xs tracking-widest shadow-lg shadow-red-900/20">Generate & Crack Password</button>
+                        </div>
+                        
+                        <div class="bg-[#05070a] p-4 rounded-lg font-mono text-xs border border-brand-border h-24 flex items-center justify-center overflow-hidden">
+                            <pre id="crack-output" class="text-green-400">Waiting for input...</pre>
+                        </div>
+                        <div id="crack-result" class="mt-4 text-center text-sm font-bold"></div>
+                    </section>
+
+                </div>
+
+                <div class="mt-12 pt-8 border-t border-brand-border flex justify-between items-center">
+                    <a href="know_knowledge.html" class="text-gray-500 hover:text-white text-xs font-bold uppercase tracking-widest flex items-center transition">
+                        <i class="fas fa-arrow-left mr-2"></i> Back to Knowledge Base
+                    </a>
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <script src="/static/js/footer.js"></script>
+    <script src="/static/lock.js"></script>
+
+  <script>
+    function initializeCracker() {
+      const crackBtn = document.getElementById('crack-btn');
+      const crackOutput = document.getElementById('crack-output');
+      const crackResult = document.getElementById('crack-result');
+      const characters = 'abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789';
+
+      if (!crackBtn) return;
+
+      let crackStage = 7;
+
+      crackBtn.addEventListener('click', () => {
+        const t = window.crackerLang;
+
+        crackBtn.disabled = true;
+        crackBtn.classList.add('opacity-50', 'cursor-not-allowed');
+        crackResult.textContent = '';
+        crackResult.style.color = '';
+
+        const passwordLength = crackStage;
+        const passwordToCrack = Array.from({ length: passwordLength }, () => characters.charAt(Math.floor(Math.random() * characters.length))).join('');
+
+        crackOutput.textContent = `Generated Password: ${passwordToCrack}`;
+
+        setTimeout(() => {
+          const animationInterval = setInterval(() => {
+            let randomAttempt = Array.from({ length: passwordLength }, () => characters.charAt(Math.floor(Math.random() * characters.length))).join('');
+            crackOutput.textContent = `Trying: ${randomAttempt}`;
+          }, 50);
+
+          setTimeout(() => {
+            clearInterval(animationInterval);
+            crackOutput.textContent = `Found:  ${passwordToCrack}`;
+            crackBtn.disabled = false;
+            crackBtn.classList.remove('opacity-50', 'cursor-not-allowed');
+
+            if (crackStage === 7) {
+              crackResult.innerHTML = t.crackerResult7Char;
+              crackBtn.textContent = t.crackerBtn8Char;
+              crackStage = 8;
+            } else if (crackStage === 8) {
+              crackResult.innerHTML = t.crackerResult8Char;
+              crackBtn.textContent = t.crackerBtn9Char;
+              crackStage = 9;
+            } else {
+              crackResult.innerHTML = t.crackerResult9Char;
+              crackBtn.textContent = t.crackerBtn7Char;
+              crackStage = 7;
+            }
+
+          }, 1500);
+
+        }, 1000);
+      });
+    }
+
+    function initializePasswordStrength() {
+      const passwordInput = document.getElementById('strength-password-input');
+      const timeValueEl = document.getElementById('strength-time-value');
+      const toggleBtn = document.getElementById('toggle-password-visibility');
+
+      // Check if already initialized to avoid duplicate listeners
+      if (!passwordInput || passwordInput.dataset.initialized) return;
+      passwordInput.dataset.initialized = "true";
+
+      function getLangData() {
+        const lang = localStorage.getItem('lang') || 'en';
+        const t = window.crackerLang || {};
+        const timeUnits = {
+            en: { second: 'second', minute: 'minute', hour: 'hour', day: 'day', month: 'month', year: 'year', century: 'century' },
+            mn: { second: 'секунд', minute: 'минут', hour: 'цаг', day: 'өдөр', month: 'сар', year: 'жил', century: 'зуун' }
+        };
+        return { lang, t, units: timeUnits[lang] };
+      }
+
+      function pluralize(value, unit, lang) {
+        if (lang === 'en' && value !== 1) {
+          return `${unit}s`;
+        }
+        return unit;
+      }
+
+      function formatTime(seconds) {
+        const { lang, t, units } = getLangData();
+        
+        if (seconds < 1) return t.strengthInstant || 'instantly';
+        if (seconds < 60) return `${Math.round(seconds)} ${pluralize(Math.round(seconds), units.second, lang)}`;
+
+        const minutes = seconds / 60;
+        if (minutes < 60) return `${Math.round(minutes)} ${pluralize(Math.round(minutes), units.minute, lang)}`;
+
+        const hours = minutes / 60;
+        if (hours < 24) return `${Math.round(hours)} ${pluralize(Math.round(hours), units.hour, lang)}`;
+
+        const days = hours / 24;
+        if (days < 30) return `${Math.round(days)} ${pluralize(Math.round(days), units.day, lang)}`;
+
+        const months = days / 30.44;
+        if (months < 12) return `${Math.round(months)} ${pluralize(Math.round(months), units.month, lang)}`;
+
+        const years = days / 365.25;
+        if (years < 100) return `${Math.round(years)} ${pluralize(Math.round(years), units.year, lang)}`;
+
+        const centuries = years / 100;
+        if (centuries < 1000) return `${Math.round(centuries)} ${pluralize(Math.round(centuries), units.century, lang)}`;
+
+        return `${years.toExponential(1)} ${pluralize(years, units.year, lang)}`;
+      }
+
+      function updatePasswordStrength() {
+        const password = passwordInput.value;
+        const { t } = getLangData();
+
+        if (!password) {
+          timeValueEl.textContent = t.strengthPrompt || 'Enter a password to check';
+          timeValueEl.style.color = '#c5a059';
+          return;
+        }
+
+        let characterPool = 0;
+        if (/[a-z]/.test(password)) characterPool += 26;
+        if (/[A-Z]/.test(password)) characterPool += 26;
+        if (/[0-9]/.test(password)) characterPool += 10;
+        if (/[^a-zA-Z0-9]/.test(password)) characterPool += 32;
+
+        if (characterPool === 0) return;
+
+        const combinations = Math.pow(characterPool, password.length);
+        const guessesPerSecond = 100e9;
+        const secondsToCrack = combinations / guessesPerSecond;
+
+        timeValueEl.textContent = formatTime(secondsToCrack);
+
+        if (secondsToCrack < 60 * 60 * 24) {
+          timeValueEl.style.color = '#ef4444';
+        } else if (secondsToCrack < 60 * 60 * 24 * 365 * 10) {
+          timeValueEl.style.color = '#f59e0b';
+        } else {
+          timeValueEl.style.color = '#10b981';
+        }
+      }
+
+      passwordInput.addEventListener('input', updatePasswordStrength);
+
+      toggleBtn.addEventListener('click', () => {
+        if (passwordInput.type === 'password') {
+          passwordInput.type = 'text';
+          toggleBtn.textContent = '🙈';
+        } else {
+          passwordInput.type = 'password';
+          toggleBtn.textContent = '👁️';
+        }
+      });
+    }
+
+    document.addEventListener('DOMContentLoaded', () => {
+      const mobileMenuButton = document.querySelector('.mobile-menu-button');
+      const mobileMenu = document.querySelector('.mobile-menu');
+      if(mobileMenuButton) {
+          mobileMenuButton.addEventListener('click', () => mobileMenu.classList.toggle('hidden'));
+      }
+
+      const lang = localStorage.getItem('lang') || 'en';
+
+      const texts = {
+          en: {
+              pageTitle: "Cybersecurity: Password Hacking Time | MGL Signal",
+              articleTitle: "Cybersecurity: How long would it take a computer to hack your password?",
+              meta1: "Dec 7, 2021 | With the collaboration of Statista.",
+              meta2: "By Katharina Buchholz, Data Journalist, Statista",
+              sectionTitle: "The Big Picture: Password Security Explained",
+              sectionDesc: "This chart shows the time it would take for a computer to crack passwords.",
+              point1: "A password of <span class=\"highlight\">8 standard letters</span> contains 209 billion possible combinations, but a computer is able to calculate this <span class=\"highlight\">instantly</span>.",
+              point2: "Adding <span class=\"highlight\">one upper case letter</span> to a password dramatically alters a computer's potential to crack a password, extending it to <span class=\"highlight\">22 minutes</span>.",
+              point3: "Having a long mix of upper and lower case letters, symbols and numbers is the best way to make your password more secure.",
+              point4: "A <span class=\"highlight\">12-character password</span> containing at least one upper case letter, one symbol and one number would take <span class=\"highlight\">34,000 years</span> for a computer to crack.",
+              subTitle: "The Exponential Power of Character Sets",
+              subDesc: "This happens because when we use more types of characters, the potential combinations making up the password increase exponentially. Consider the following:",
+              combo1: "With just 26 lower case letters, a password of eight characters has 26<sup>8</sup>, so around <span class=\"highlight\">209 billion possible combinations</span>.",
+              combo2: "Adding uppercase letters, we already arrive at 52<sup>8</sup>, around <span class=\"highlight\">53.5 trillion combinations</span>.",
+              combo3: "With numbers included, it’s 62<sup>8</sup> or <span class=\"highlight\">218 trillion combinations</span>.",
+              combo4: "Symbols add another great potential for security, upping the number of combinations once more to around 90<sup>8</sup> or <span class=\"highlight\">430 trillion combinations</span>.",
+              crackerTitle: "Try a Simple Password Cracker",
+              crackerDesc: "Click the button to see how fast a computer can crack short, random passwords.",
+              crackerBtn7Char: "Generate & Crack 7-Character Password",
+              crackerBtn8Char: "Now Try an 8-Character Password",
+              crackerBtn9Char: "Finally, Try a 9-Character Password",
+              crackerInitialOutput: "Click the button to start the simulation.",
+              crackerResult7Char: "Cracked in <span style=\"color: #ef4444;\">under 1 second</span>! That was easy. Now let's add one more character.",
+              crackerResult8Char: "Cracked in <span style=\"color: #f59e0b;\">~2 minutes</span>! A huge difference, but still not safe. What about one more?",
+              crackerResult9Char: "Cracked in <span style=\"color: #10b981;\">~2 days</span>! The power of one extra character is exponential. Always use long passwords.",
+              // New strings for strength checker
+              strengthTitle: "How Secure Is My Password?",
+              strengthSubtitle: "The #1 Password Strength Tool. Trusted and used by millions.",
+              strengthTimeLabel: "It would take a computer about",
+              strengthPrompt: "Enter a password to check",
+              strengthInstant: "instantly",
+          },
+          mn: {
+              pageTitle: "Кибер аюулгүй байдал: Нууц үг тайлах хугацаа | MGL Signal",
+              articleTitle: "Кибер аюулгүй байдал: Компьютер таны нууц үгийг тайлахад хэр хугацаа шаардагдах вэ?",
+              meta1: "2021 оны 12-р сарын 7 | Statista-тай хамтран.",
+              meta2: "Бичсэн: Катарина Буххольц, Мэдээллийн сэтгүүлч, Statista",
+              sectionTitle: "Ерөнхий зураг: Нууц үгийн аюулгүй байдлын тайлбар",
+              sectionDesc: "Энэ график нь компьютерт нууц үг тайлахад хэр хугацаа шаардагдахыг харуулж байна.",
+              point1: "<span class=\"highlight\">8 стандарт үсэгтэй</span> нууц үг нь 209 тэрбум боломжит хослолыг агуулдаг ч компьютер үүнийг <span class=\"highlight\">агшин зуур</span> тооцоолж чадна.",
+              point2: "Нууц үгэнд <span class=\"highlight\">нэг том үсэг</span> нэмэх нь компьютерын нууц үг тайлах боломжийг эрс өөрчилж, <span class=\"highlight\">22 минут</span> болгон уртасгадаг.",
+              point3: "Том, жижиг үсэг, тэмдэгт, тоог хольж урт нууц үг хийх нь нууц үгээ илүү аюулгүй болгох хамгийн сайн арга юм.",
+              point4: "Дор хаяж нэг том үсэг, нэг тэмдэгт, нэг тоо агуулсан <span class=\"highlight\">12 тэмдэгттэй нууц үгийг</span> компьютер тайлахад <span class=\"highlight\">34,000 жил</span> шаардагдана.",
+              subTitle: "Тэмдэгтийн багцын экспоненциал хүч",
+              subDesc: "Энэ нь бид илүү олон төрлийн тэмдэгт ашиглах үед нууц үгийг бүрдүүлэгч боломжит хослолууд экспоненциалаар нэмэгддэгтэй холбоотой. Дараахыг анхаарна уу:",
+              combo1: "Зөвхөн 26 жижиг үсэгтэй, найман тэмдэгттэй нууц үг нь 26<sup>8</sup> буюу ойролцоогоор <span class=\"highlight\">209 тэрбум боломжит хослолтой</span>.",
+              combo2: "Том үсэг нэмснээр бид 52<sup>8</sup> буюу ойролцоогоор <span class=\"highlight\">53.5 их наяд хослолд</span> хүрнэ.",
+              combo3: "Тоог оруулбал 62<sup>8</sup> буюу <span class=\"highlight\">218 их наяд хослол</span> болно.",
+              combo4: "Тэмдэгтүүд аюулгүй байдлын өөр нэгэн агуу боломжийг нэмж, хослолын тоог 90<sup>8</sup> буюу <span class=\"highlight\">430 их наяд хослол</span> болгодог.",
+              crackerTitle: "Энгийн нууц үг тайлагч туршиж үз",
+              crackerDesc: "Богино, санамсаргүй нууц үгийг компьютер хэр хурдан тайлж чадахыг харахын тулд товчлуур дээр дарна уу.",
+              crackerBtn7Char: "7 Тэмдэгттэй Нууц Үг Үүсгэж Тайл",
+              crackerBtn8Char: "Одоо 8 Тэмдэгттэйг Турш",
+              crackerBtn9Char: "Эцэст нь 9 Тэмдэгттэйг Турш",
+              crackerInitialOutput: "Симуляцийг эхлүүлэхийн тулд товчлуур дээр дарна уу.",
+              crackerResult7Char: "<span style=\"color: #ef4444;\">1 секунд хүрэхгүй хугацаанд</span> тайллаа! Энэ бол амархан байлаа. Одоо нэг тэмдэгт нэмье.",
+              crackerResult8Char: "<span style=\"color: #f59e0b;\">~2 минутын дотор</span> тайллаа! Асар том ялгаа, гэхдээ аюулгүй биш. Дахиад нэгийг нэмбэл яах вэ?",
+              crackerResult9Char: "<span style=\"color: #10b981;\">~2 өдрийн дотор</span> тайллаа! Нэг нэмэлт тэмдэгтийн хүч экспоненциал байдаг. Үргэлж урт нууц үг хэрэглээрэй.",
+              // New strings for strength checker
+              strengthTitle: "Миний нууц үг хэр аюулгүй вэ?",
+              strengthSubtitle: "№1 Нууц үгийн бат бэхийн хэрэгсэл. Сая сая хүн итгэж хэрэглэдэг.",
+              strengthTimeLabel: "Компьютерт таны нууц үгийг тайлахад ойролцоогоор",
+              strengthPrompt: "Шалгах нууц үгээ оруулна уу",
+              strengthInstant: "агшин зуур",
+          }
+      };
+
+      const t = texts[lang];
+
+      // Expose translations for cracker.js
+      window.crackerLang = t;
+
+      const setText = (id, text) => {
+          const element = document.getElementById(id);
+          if (element) element.textContent = text;
+      };
+      
+      const el = (selector) => document.querySelector(selector);
+      const setHTML = (selector, html) => {
+          const element = el(selector);
+          if (element) element.innerHTML = html;
+      };
+
+      const updateContent = (language) => {
+          const t = texts[language] || texts.en;
+          window.crackerLang = t; // Update global for cracker
+
+          document.title = t.pageTitle;
+
+          setHTML('#article-title', t.articleTitle);
+          setText('.meta-info p:nth-of-type(1)', t.meta1);
+          setText('.meta-info p:nth-of-type(2)', t.meta2);
+          setText('#section-title', t.sectionTitle);
+          setText('#section-desc', t.sectionDesc);
+
+          const points = document.querySelectorAll('.article-points > li');
+          if (points.length >= 4) {
+              points[0].innerHTML = t.point1;
+              points[1].innerHTML = t.point2;
+              points[2].innerHTML = t.point3;
+              points[3].innerHTML = t.point4;
+          }
+
+          setText('#sub-title', t.subTitle);
+          setText('#sub-desc', t.subDesc);
+
+          const combos = document.querySelectorAll('.combos-list > li');
+          if (combos.length >= 4) {
+              combos[0].innerHTML = t.combo1;
+              combos[1].innerHTML = t.combo2;
+              combos[2].innerHTML = t.combo3;
+              combos[3].innerHTML = t.combo4;
+          }
+
+          setText('cracker-title', t.crackerTitle);
+          setText('cracker-desc', t.crackerDesc);
+          setText('crack-btn', t.crackerBtn7Char);
+          setText('crack-output', t.crackerInitialOutput);
+
+          setText('strength-title', t.strengthTitle);
+          setText('strength-subtitle', t.strengthSubtitle);
+          setText('strength-time-label', t.strengthTimeLabel);
+          setText('strength-time-value', t.strengthPrompt);
+          const passInput = document.getElementById('strength-password-input');
+          if (passInput) passInput.placeholder = t.strengthPrompt;
+      };
+
+      // Initial Load
+      updateContent(lang);
+
+      // Override global changeLang
+      const originalChangeLang = window.changeLang;
+      window.changeLang = function(language) {
+          if (originalChangeLang) originalChangeLang(language);
+          updateContent(language);
+      };
+
+      // Initialize scripts
+      initializeCracker();
+      initializePasswordStrength();
+    });
+  </script>
+</body>
+</html>

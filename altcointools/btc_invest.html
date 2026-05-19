@@ -1,0 +1,718 @@
+<!DOCTYPE html>
+<html lang="mn">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Bitcoin Investment Dashboard - MGL Signal</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        brand: { 'dark': '#05070a', 'dark-blue': '#0f1217', 'gold': '#c5a059', 'border': '#1f242d' }
+                    },
+                    fontFamily: { 'inter': ['Inter', 'sans-serif'] }
+                }
+            }
+        }
+    </script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="stylesheet" href="/static/main_style.css">
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chartjs-adapter-date-fns"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chartjs-plugin-annotation"></script>
+    <script src="https://d3js.org/d3.v7.min.js"></script>
+    <style>
+        .heatmap-node {
+            transition: all 0.2s ease;
+            box-shadow: inset 0 0 10px rgba(0,0,0,0.2);
+        }
+        .heatmap-node:hover {
+            filter: brightness(1.2);
+            transform: scale(0.98);
+            z-index: 10;
+        }
+        .gauge-arc {
+            background: conic-gradient(from 180deg at 50% 100%, #ef4444 0deg, #f59e0b 90deg, #10b981 180deg);
+        }
+        .tile {
+            position: absolute;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            border: 1px solid #05070a;
+            color: white;
+            overflow: hidden;
+        }
+    </style>
+</head>
+<body class="bg-brand-dark text-white font-inter flex flex-col min-h-screen">
+    <script src="/static/js/main_translate.js"></script>
+    <script src="/static/js/header.js"></script>
+
+    <!-- Main Content -->
+    <main class="flex-grow pt-24 pb-12 px-6">
+        <div class="max-w-7xl mx-auto">
+          <div class="text-center mb-12">
+              <h1 id="chart-title" data-i18n="btcinv-title" class="text-3xl md:text-5xl font-black uppercase tracking-tight text-white mb-4">
+                  Bitcoin <span class="text-brand-gold italic">Intelligence</span>
+              </h1>
+              <div class="w-20 h-1 bg-brand-gold mx-auto"></div>
+          </div>
+          
+          <!-- Controls Section -->
+          <div class="controls-container flex flex-wrap items-center gap-4 p-4 bg-brand-dark-blue border border-brand-border rounded-xl shadow-lg">
+            <!-- Market -->
+            <div class="control-item flex items-center space-x-2">
+                <label class="text-gray-500 font-bold uppercase text-[10px]">Market:</label>
+                <select id="market" class="bg-brand-dark border border-brand-border text-white rounded px-3 py-1.5 text-xs shadow-inner">
+                    <option value="spot">Spot</option>
+                    <option value="futures">Futures</option>
+                </select>
+            </div>
+
+            <!-- Timeframe -->
+            <div class="control-item flex items-center space-x-2">
+                <label class="text-gray-500 font-bold uppercase text-[10px]">Time:</label>
+                <select id="interval" class="bg-brand-dark border border-brand-border text-white rounded px-3 py-1.5 text-xs shadow-inner">
+                    <option value="1s">1s</option>
+                    <option value="1m" selected>1m</option>
+                    <option value="3m">3m</option>
+                    <option value="5m">5m</option>
+                    <option value="15m">15m</option>
+                    <option value="30m">30m</option>
+                    <option value="1h">1h</option>
+                    <option value="2h">2h</option>
+                    <option value="4h">4h</option>
+                    <option value="6h">6h</option>
+                    <option value="8h">8h</option>
+                    <option value="12h">12h</option>
+                    <option value="1d">1d</option>
+                    <option value="3d">3d</option>
+                    <option value="1w">1w</option>
+                    <option value="1M">1M</option>
+                </select>
+            </div>
+
+            <!-- Ticker -->
+            <div id="pair-container" class="control-item flex items-center space-x-2">
+                <label class="text-gray-500 font-bold uppercase text-[10px]">Pair:</label>
+                <input type="text" id="coin" value="BTCUSDT" list="coin-list" placeholder="Search..." class="bg-brand-dark border border-brand-border text-white rounded px-3 py-1.5 w-32 uppercase font-bold text-xs shadow-inner transition-colors" />
+                <datalist id="coin-list"></datalist>
+            </div>
+
+            <!-- Date Range -->
+            <div class="control-item flex items-center space-x-2">
+                <label class="text-gray-500 font-bold uppercase text-[10px]">Range:</label>
+                <select id="range-select" class="bg-brand-dark border border-brand-border text-white rounded px-3 py-1.5 text-xs shadow-inner">
+                    <option value="1">1 Month</option>
+                    <option value="3">3 Months</option>
+                    <option value="6">6 Months</option>
+                    <option value="12" selected>1 Year</option>
+                    <option value="all">All</option>
+                </select>
+            </div>
+        </div>
+          
+          <div class="flex flex-col md:flex-row md:items-center justify-between mb-4 px-2">
+             <div class="flex items-center space-x-3">
+                <span data-i18n="btcinv-live" class="text-gray-500 text-sm font-bold uppercase tracking-widest">BTC/USDT Live:</span>
+                <div id="last-price-display" class="text-3xl font-mono text-brand-gold font-black">--</div>
+             </div>
+             <div data-i18n="btcinv-sma" class="text-[10px] text-gray-600 font-bold uppercase tracking-tighter mt-2 md:mt-0">SMA 50/200 Cross-Analysis Enabled</div>
+          </div>
+
+          <div id="chart-wrapper" class="bg-brand-dark-blue border border-brand-border rounded-xl p-4 h-[500px] relative mb-8">
+            <div id="loading-chart" class="absolute inset-0 flex items-center justify-center bg-brand-dark-blue/80 z-10" style="display: none;">
+                <div class="text-brand-gold font-bold animate-pulse">⚙️ Loading Chart Data...</div>
+            </div>
+            <canvas id="prediction-chart"></canvas>
+          </div>
+
+          <!-- New Dashboard Section -->
+          <div class="dashboard-section mb-16">
+            <h2 data-i18n="btcinv-dash-title" class="text-xl font-black text-white mb-8 border-l-4 border-brand-gold pl-4 uppercase tracking-tight">Market Intelligence & Profit Tracker</h2>
+            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+                <!-- Fear & Greed Index Card -->
+                <div class="bg-brand-dark-blue border border-brand-border rounded-2xl p-8 relative overflow-hidden shadow-2xl">
+                    <h3 data-i18n="fear-greed-title" class="text-gray-500 text-xs font-black uppercase tracking-widest mb-8">Fear & Greed Index</h3>
+                    <div id="fear-greed-loader" class="text-center text-gray-500 py-8">Loading...</div>
+                    <div id="fear-greed-content" style="display: none;" class="flex flex-col items-center">
+                        <div class="relative w-64 h-32 overflow-hidden mb-6">
+                            <div class="w-full h-full bg-gray-800 rounded-t-full relative overflow-hidden">
+                                <div class="absolute bottom-0 left-0 w-full h-full rounded-t-full gauge-arc"></div>
+                            </div>
+                            <div id="gauge-needle" class="absolute bottom-0 left-1/2 w-1.5 h-28 bg-white origin-bottom transform -translate-x-1/2 transition-transform duration-1000 shadow-lg" style="transform: rotate(-90deg);"></div>
+                            <div class="absolute bottom-0 left-1/2 w-6 h-6 bg-brand-dark border-4 border-white rounded-full -translate-x-1/2 translate-y-1/2"></div>
+                        </div>
+                        <div class="text-center">
+                            <div class="text-5xl font-black text-white mb-1" id="gauge-value">--</div>
+                            <div class="text-sm font-black text-brand-gold uppercase tracking-widest" id="gauge-classification">--</div>
+                        </div>
+                    </div>
+                </div>
+                <!-- BTC Dominance Card -->
+                <div class="bg-brand-dark-blue border border-brand-border rounded-2xl p-8 relative overflow-hidden shadow-2xl flex flex-col justify-center">
+                    <h3 data-i18n="btcinv-dom-title" class="text-gray-500 text-xs font-black uppercase tracking-widest mb-8">Bitcoin Dominance</h3>
+                    <div id="btc-dom-loader" class="text-center text-gray-500 py-8">Loading...</div>
+                    <div id="btc-dom-content" style="display: none;" class="flex flex-col items-center">
+                        <div class="text-7xl font-black text-brand-gold mb-4" id="btc-dom-value">--%</div>
+                        <p data-i18n="btcinv-dom-desc" class="text-xs text-gray-500 text-center max-w-xs">Percentage of total crypto market cap held by Bitcoin. High dominance can indicate a risk-off market.</p>
+                    </div>
+                </div>
+
+                <!-- Live Signal Profit Tracker Card -->
+                <div class="bg-brand-dark-blue border border-brand-gold/30 rounded-2xl p-8 relative overflow-hidden shadow-2xl flex flex-col">
+                    <div class="absolute top-0 right-0 p-2">
+                        <span class="flex h-2 w-2 relative">
+                            <span class="animate-ping absolute inline-flex h-full w-full rounded-full bg-green-400 opacity-75"></span>
+                            <span class="relative inline-flex rounded-full h-2 w-2 bg-green-500"></span>
+                        </span>
+                    </div>
+                    <h3 data-i18n="btcinv-pnl-title" class="text-gray-500 text-xs font-black uppercase tracking-widest mb-6">Last Signal Performance</h3>
+                    <div id="pnl-loader" data-i18n="btcinv-pnl-wait" class="text-center text-gray-500 py-8">Waiting for signal...</div>
+                    <div id="pnl-content" style="display: none;" class="flex flex-col h-full justify-between">
+                        <div class="flex justify-between items-center mb-4">
+                            <div id="pnl-signal-badge" class="px-3 py-1 rounded text-[10px] font-black uppercase tracking-tighter">--</div>
+                            <div class="text-right">
+                                <div data-i18n="btcinv-pnl-entry" class="text-[9px] text-gray-500 uppercase font-bold">Entry Price</div>
+                                <div id="pnl-entry-price" class="text-sm font-mono text-white font-bold">--</div>
+                            </div>
+                        </div>
+                        <div class="text-center my-4">
+                            <div id="pnl-value" class="text-5xl font-black leading-none mb-1">--</div>
+                            <div id="pnl-percentage" class="text-sm font-bold opacity-80">--% (20x Leverage)</div>
+                        </div>
+                        <p data-i18n="btcinv-pnl-note" class="text-[9px] text-gray-600 text-center uppercase font-bold mt-4 italic">Based on $1,000 Margin at 20x Leverage</p>
+                    </div>
+                </div>
+            </div>
+          </div>
+
+          <!-- New Heatmap Section -->
+          <div class="dashboard-section">
+            <h2 data-i18n="btcinv-heatmap" class="text-xl font-black text-white mb-8 border-l-4 border-brand-gold pl-4 uppercase tracking-tight">Top 30 Market Heatmap</h2>
+            <div id="heatmap-chart-container" class="w-full h-[500px] bg-brand-dark-blue border border-brand-border rounded-2xl relative overflow-hidden shadow-2xl">
+                <div id="heatmap-loading-overlay" class="absolute inset-0 flex items-center justify-center bg-brand-dark-blue/90 z-10 text-brand-gold font-bold">⚙️ Loading Market Data...</div>
+                <div id="heatmap-content" class="w-full h-full relative"></div>
+            </div>
+          </div>
+        </div>
+    </main>
+
+  <script src="/static/js/footer.js"></script>
+  <script src="/static/lock.js"></script>
+  
+  <script>
+    document.addEventListener('DOMContentLoaded', async () => {
+      const loadingEl = document.getElementById('loading-chart');
+      const canvas = document.getElementById('prediction-chart');
+      const ctx = canvas.getContext('2d');
+      let chartInstance = null;
+      let priceWebSocket = null; // To manage the WebSocket connection
+
+      // Helper functions to get control elements
+      const marketEl = () => document.getElementById('market');
+      const intervalEl = () => document.getElementById('interval');
+      const coinEl = () => document.getElementById('coin');
+      const rangeSelect = () => document.getElementById('range-select');
+
+      // Logic to populate symbols dynamically based on Market selection
+      async function fetchAndPopulateSymbols() {
+          const market = marketEl()?.value || 'spot';
+          const coinList = document.getElementById('coin-list');
+          if (!coinList) return;
+          coinList.innerHTML = '';
+
+          const url = market === 'futures' 
+              ? 'https://fapi.binance.com/fapi/v1/exchangeInfo' 
+              : 'https://api.binance.com/api/v3/exchangeInfo';
+          
+          try {
+              const response = await fetch(url);
+              const data = await response.json();
+              const symbols = data.symbols || [];
+              let usdtSymbols = [];
+
+              if (market === 'futures') {
+                  usdtSymbols = symbols.filter(s => s.quoteAsset === 'USDT' && s.status === 'TRADING' && s.contractType === 'PERPETUAL').map(s => s.symbol);
+              } else {
+                  usdtSymbols = symbols.filter(s => s.quoteAsset === 'USDT' && s.status === 'TRADING' && !s.symbol.endsWith('UP') && !s.symbol.endsWith('DOWN') && !s.symbol.endsWith('BEAR') && !s.symbol.endsWith('BULL')).map(s => s.symbol);
+              }
+
+              usdtSymbols.sort().forEach(symbol => {
+                  const option = document.createElement('option');
+                  option.value = symbol;
+                  coinList.appendChild(option);
+              });
+          } catch (error) {
+              console.error("Failed to fetch symbol list:", error);
+          }
+      }
+      if (marketEl()) marketEl().addEventListener('change', fetchAndPopulateSymbols);
+      fetchAndPopulateSymbols();
+
+      // Initial setup for controls (hiding and default values)
+      if(intervalEl()) intervalEl().value = '1d'; // Default to 1d for investment analysis
+      if(coinEl()) coinEl().value = 'BTCUSDT'; // Default to BTCUSDT
+
+      // Profit Calculator State & Elements
+      let lastSignal = null; // { type, price, time }
+      let currentBtcPrice = 0;
+      const DEFAULT_MARGIN = 1000;
+      const DEFAULT_LEVERAGE = 20;
+      const pnlContent = document.getElementById('pnl-content');
+      const pnlLoader = document.getElementById('pnl-loader');
+
+      async function fetchKlines() {
+        const symbol = coinEl()?.value.toUpperCase() || 'BTCUSDT';
+        const interval = intervalEl()?.value || '1d';
+        const market = marketEl()?.value || 'spot';
+
+        // The symbol should already be correctly formatted (e.g., BTCUSDT) from the input/datalist.
+        const baseUrl = market === 'futures' ? 'https://fapi.binance.com/fapi/v1/klines' : 'https://api.binance.com/api/v3/klines';
+
+        const url = `${baseUrl}?symbol=${symbol}&interval=${interval}&limit=1000`;
+        const response = await fetch(url);
+        if (!response.ok) throw new Error(`Failed to fetch data for ${symbol}. Check symbol name.`);
+        return await response.json();
+      }
+
+      function calculateSMA(priceData, period) {
+          const smaData = [];
+          if (priceData.length < period) return smaData;
+          for (let i = period - 1; i < priceData.length; i++) {
+              const window = priceData.slice(i - period + 1, i + 1);
+              const sum = window.reduce((acc, val) => acc + val.y, 0);
+              smaData.push({ x: priceData[i].x, y: sum / period });
+          }
+          return smaData;
+      }
+
+      // Updated chart generation to use dynamic controls
+      async function generateChart() {
+        loadingEl.style.display = 'flex';
+        
+        // --- Timeframe Intelligence ---
+        // Хэрэв Range их үед Interval хэт бага байвал Binance-ийн 1000 лааны хязгаараас болоод өгөгдөл харагдахгүй.
+        // Тиймээс интервалыг автоматаар зохистой хэмжээнд тохируулна.
+        const rangeVal = rangeSelect()?.value || '12';
+        const intervalInput = intervalEl();
+        if (intervalInput) {
+            const currentInt = intervalInput.value;
+            if (rangeVal === '12' && (currentInt.includes('m') || ['1h', '2h', '4h'].includes(currentInt))) {
+                intervalInput.value = '1d';
+            } else if (rangeVal === 'all') {
+                intervalInput.value = '1w';
+            }
+        }
+
+        if (chartInstance) chartInstance.destroy();
+
+        try {
+          const klineData = await fetchKlines();
+
+          // Update Title based on selection
+          const currentSymbol = coinEl()?.value.toUpperCase() || 'BTCUSDT';
+          const symbol = currentSymbol.replace('USDT', ''); // For display purposes
+          const titleEl = document.getElementById('chart-title');
+          if(titleEl) titleEl.textContent = `${symbol} - Price Action Analysis`;
+
+          if (klineData.length < 2) throw new Error("Not enough historical data.");
+
+          const priceData = klineData.map(k => ({ x: k[0], y: parseFloat(k[4]) }));
+
+          // --- Display Last Price ---
+          currentBtcPrice = priceData[priceData.length - 1].y; // Update global currentBtcPrice for PnL
+          document.getElementById('last-price-display').textContent = `$${currentBtcPrice.toLocaleString()}`;
+
+          // --- Харах хугацааг дататай уялдуулж тохируулах ---
+          const rangeSelect = document.getElementById('range-select');
+          const rangeVal = rangeSelect ? rangeSelect.value : '12';
+          
+          let minViewTime;
+          if (rangeVal === 'all') {
+              minViewTime = priceData[0].x;
+          } else {
+              const monthsToShow = parseInt(rangeVal) || 12;
+              const startDate = new Date();
+              startDate.setMonth(startDate.getMonth() - monthsToShow);
+              // Хэрэв сонгосон хугацаа датаны эхлэлээс өмнө байвал датаны эхлэлийг авна
+              minViewTime = Math.max(startDate.getTime(), priceData[0].x);
+          }
+          
+          const maxDataTime = priceData[priceData.length - 1].x;
+          // Баруун талд 3%-ийн сул зай үлдээх (график ирмэг рүү наалдахгүй)
+          const maxViewTime = maxDataTime + ((maxDataTime - minViewTime) * 0.03);
+
+          // --- Generate Annotation Lines ---
+          const prices = priceData.map(p => p.y);
+          const minPrice = Math.min(...prices);
+          const maxPrice = Math.max(...prices);
+          const startLine = Math.floor(minPrice / 1000) * 1000;
+          const endLine = Math.ceil(maxPrice / 1000) * 1000;
+          const annotations = {};
+          for (let priceLevel = startLine; priceLevel <= endLine; priceLevel += 1000) {
+              if (priceLevel <= 0) continue;
+              annotations[`line${priceLevel}`] = {
+                  type: 'line', yMin: priceLevel, yMax: priceLevel,
+                  borderColor: 'rgba(255, 255, 255, 0.15)',
+                  borderWidth: 1, borderDash: [5, 5],
+              };
+          }
+
+          // --- New: Calculate Moving Averages ---
+          const sma50 = calculateSMA(priceData, 50);
+          const sma200 = calculateSMA(priceData, 200);
+
+          // --- New: Generate Golden Cross / Death Cross Signals ---
+          const signals = [];
+          // Align all arrays to the start of the 200-day SMA, which is the shortest.
+          const sma200StartIndex = priceData.findIndex(p => sma200[0] && p.x === sma200[0].x);
+          
+          if (sma200StartIndex !== -1) {
+            // Start the loop from the second data point of the 200 SMA to have a "previous" value
+            for (let i = 1; i < sma200.length; i++) { 
+                const sma50Index = sma200StartIndex + i; // The corresponding index in the 50-day SMA and priceData
+                if (!sma50[sma50Index] || !sma50[sma50Index - 1]) continue; // Ensure we have data for the 50-day SMA as well
+
+                const prev50 = sma50[sma50Index - 1].y;
+                const current50 = sma50[sma50Index].y;
+                const prev200 = sma200[i - 1].y;
+                const current200 = sma200[i].y;
+
+                // Golden Cross (BUY)
+                if (prev50 < prev200 && current50 >= current200) {
+                    signals.push({ type: 'BUY', price: priceData[sma50Index].y, time: priceData[sma50Index].x });
+                }
+                // Death Cross (SELL)
+                if (prev50 > prev200 && current50 <= current200) {
+                    signals.push({ type: 'SELL', price: priceData[sma50Index].y, time: priceData[sma50Index].x });
+                }
+            }
+          }
+
+          // Capture the latest signal for the calculator
+          if (signals.length > 0) {
+              lastSignal = signals[signals.length - 1];
+              pnlLoader.style.display = 'none';
+              pnlContent.style.display = 'flex';
+              updatePnLDisplay();
+          }
+
+          // Create annotation objects from the filtered signals
+          signals.forEach((signal, index) => {
+            annotations[`signal${index}`] = {
+              type: 'label',
+              xValue: signal.time,
+              yValue: signal.price,
+              backgroundColor: signal.type === 'BUY' ? 'rgba(16, 185, 129, 0.9)' : 'rgba(239, 68, 68, 0.9)',
+              content: [signal.type],
+              font: { size: 12, weight: 'bold' },
+              yAdjust: signal.type === 'BUY' ? 20 : -20, // Position below for BUY, above for SELL
+            };
+          });
+
+          const datasets = [
+            {
+              label: `${symbol} Price`,
+              data: priceData, // Use priceData directly
+              borderColor: 'rgba(255, 255, 255, 0.9)',
+              borderWidth: 2,
+              pointRadius: 0,
+              fill: true, // Enable filling
+              segment: {
+                  backgroundColor: (ctx) => {
+                      // If it's the first point, default to green
+                      if (ctx.p0DataIndex === undefined) return 'rgba(16, 185, 129, 0.2)';
+                      // Color segment green if price is going up, red if going down
+                      return ctx.p1.raw.y > ctx.p0.raw.y ? 'rgba(16, 185, 129, 0.2)' : 'rgba(239, 68, 68, 0.2)';
+                  },
+                  borderColor: 'rgba(255, 255, 255, 0.9)' // Keep the line white
+              }
+            },
+            {
+              label: '50-Day MA',
+              data: sma50,
+              borderColor: 'rgba(59, 130, 246, 0.7)', // Blue
+              borderWidth: 1.5,
+              pointRadius: 0,
+              fill: false,
+            },
+            {
+              label: '200-Day MA',
+              data: sma200,
+              borderColor: 'rgba(249, 115, 22, 0.7)', // Orange
+              borderWidth: 1.5,
+              pointRadius: 0,
+              fill: false,
+            }
+          ];
+
+          chartInstance = new Chart(ctx, {
+            type: 'line',
+            data: { datasets },
+            options: {
+              responsive: true,
+              maintainAspectRatio: false,
+              interaction: { mode: 'index', intersect: false },
+              scales: {
+                x: {
+                  type: 'time',
+                  min: minViewTime,
+                  max: maxViewTime,
+                  time: { unit: (rangeVal === '1' || rangeVal === '3') ? 'day' : 'month' },
+                  grid: { color: 'rgba(255, 255, 255, 0.1)' },
+                  ticks: { color: '#9ca3af' }
+                },
+                y: {
+                  type: 'linear', // Changed from logarithmic
+                  grid: { color: 'rgba(255, 255, 255, 0.1)' },
+                  ticks: {
+                    color: '#9ca3af',
+                    // Format ticks to show '50k', '60k' etc.
+                    callback: (value) => '$' + (value / 1000) + 'k'
+                  }
+                }
+              },
+              plugins: {
+                legend: {
+                  display: true, // Show legend for MAs
+                  labels: { color: '#cbd5e1' }
+                },
+                annotation: {
+                  annotations: annotations
+                },
+                tooltip: {
+                  backgroundColor: 'rgba(15, 23, 42, 0.9)',
+                  titleColor: '#facc15',
+                  bodyColor: '#f1f5f9',
+                  callbacks: {
+                    label: (context) => {
+                      let label = context.dataset.label || '';
+                      if (label) label += ': ';
+                      if (context.parsed.y !== null) { // Format to 8 decimal places, then remove trailing zeros
+                        label += '$' + parseFloat(context.parsed.y.toFixed(8)).toString();
+                      }
+                      return label;
+                    }
+                  }
+                }
+              }
+            }
+          });
+
+          // Restart WebSocket with new symbol and interval
+          // The WebSocket for last price display should reflect the selected symbol and a suitable interval (e.g., 1m)
+          startPriceWebSocket(currentSymbol, '1m'); // Always use 1m for live price updates
+        } catch (error) {
+          loadingEl.innerText = `❌ Error: ${error.message}`;
+          loadingEl.style.display = 'flex';
+          return;
+        }
+
+        loadingEl.style.display = 'none';
+      }
+
+      function updatePnLDisplay() {
+          if (!lastSignal || !currentBtcPrice) return;
+
+          const entry = lastSignal.price;
+          const current = currentBtcPrice;
+          const isBuy = lastSignal.type === 'BUY';
+          
+          // Calculate price change percentage
+          const priceChangePercent = ((current - entry) / entry);
+          
+          // Calculate PnL percentage with leverage (Invert if SELL)
+          const pnlPercent = (isBuy ? priceChangePercent : -priceChangePercent) * DEFAULT_LEVERAGE * 100;
+          const profitUsd = (DEFAULT_MARGIN * pnlPercent) / 100;
+
+          const valueEl = document.getElementById('pnl-value');
+          const percentEl = document.getElementById('pnl-percentage');
+          const badgeEl = document.getElementById('pnl-signal-badge');
+          const entryEl = document.getElementById('pnl-entry-price');
+
+          if (valueEl) valueEl.textContent = `${profitUsd >= 0 ? '+' : ''}$${profitUsd.toLocaleString(undefined, {minimumFractionDigits: 2, maximumFractionDigits: 2})}`;
+          if (percentEl) percentEl.textContent = `${pnlPercent >= 0 ? '+' : ''}${pnlPercent.toFixed(2)}% (20x Leverage)`;
+          
+          const colorClass = pnlPercent >= 0 ? 'text-green-400' : 'text-red-500';
+          if (valueEl) valueEl.className = `text-5xl font-black leading-none mb-1 ${colorClass}`;
+          if (percentEl) percentEl.className = `text-sm font-bold opacity-80 ${colorClass}`;
+
+          if (badgeEl) {
+              badgeEl.textContent = lastSignal.type;
+              badgeEl.className = `px-3 py-1 rounded text-[10px] font-black uppercase tracking-tighter ${isBuy ? 'bg-green-500/20 text-green-400' : 'bg-red-500/20 text-red-400'}`;
+          }
+          
+          if (entryEl) entryEl.textContent = `$${entry.toLocaleString()}`;
+      }
+
+      function startPriceWebSocket(symbol, wsInterval) {
+          // Close existing WebSocket if open
+          if (priceWebSocket) {
+              priceWebSocket.close();
+          }
+
+          // Use the provided symbol and interval for the WebSocket
+          priceWebSocket = new WebSocket(`wss://stream.binance.com:9443/ws/${symbol.toLowerCase()}@kline_${wsInterval}`);
+          priceWebSocket.onmessage = (event) => {
+              const msg = JSON.parse(event.data);
+              if (msg.k) {
+                  currentBtcPrice = parseFloat(msg.k.c);
+                  document.getElementById('last-price-display').textContent = `$${currentBtcPrice.toLocaleString()}`;
+                  updatePnLDisplay();
+              }
+          };
+          priceWebSocket.onerror = (error) => { console.error("WebSocket Error:", error); };
+      }
+
+      // Initialize after controls are likely ready (controls.js is sync inject)
+      const initAutoUpdate = () => {
+          const m = marketEl();
+          const i = intervalEl();
+          const c = coinEl();
+          const r = rangeSelect();
+          
+          if (m && i && c && r) {
+              const update = () => generateChart();
+              m.addEventListener('change', update);
+              i.addEventListener('change', (e) => {
+                  // Хэрэв хэрэглэгч гараараа Timeframe сольсон бол Range-ийг 'all' биш болгох (хэт их өгөгдөл алдаа гарахаас сэргийлэх)
+                  update();
+              });
+              c.addEventListener('change', update);
+              c.addEventListener('keydown', (e) => { if (e.key === 'Enter') update(); });
+              r.addEventListener('change', update);
+              
+              generateChart(); // Initial Load
+          } else {
+              setTimeout(initAutoUpdate, 100); // Retry if elements not ready
+          }
+      };
+
+      initAutoUpdate();
+
+      // --- New Functions for Dashboard ---
+      async function fetchFearAndGreed() {
+          try {
+              const response = await fetch('https://api.alternative.me/fng/?limit=1');
+              const data = await response.json();
+              const fng = data.data[0];
+              
+              document.getElementById('gauge-value').textContent = fng.value;
+              document.getElementById('gauge-classification').textContent = fng.value_classification;
+              
+              const rotation = (fng.value / 100) * 180 - 90;
+              document.getElementById('gauge-needle').style.transform = `rotate(${rotation}deg)`;
+
+              document.getElementById('fear-greed-loader').style.display = 'none';
+              document.getElementById('fear-greed-content').style.display = 'block';
+          } catch (error) {
+              document.getElementById('fear-greed-loader').textContent = 'Error loading Fear & Greed data.';
+          }
+      }
+
+      async function fetchBtcDominance() {
+          try {
+              const response = await fetch('https://api.coingecko.com/api/v3/global');
+              const data = await response.json();
+              const btcDom = data.data.market_cap_percentage.btc;
+
+              document.getElementById('btc-dom-value').textContent = `${btcDom.toFixed(2)}%`;
+              document.getElementById('btc-dom-loader').style.display = 'none';
+              document.getElementById('btc-dom-content').style.display = 'block';
+          } catch (error) {
+              document.getElementById('btc-dom-loader').textContent = 'Error loading BTC Dominance data.';
+          }
+      }
+
+      // Fetch data for the new dashboard components
+      fetchFearAndGreed();
+      fetchBtcDominance();
+
+      // --- New Heatmap Logic ---
+      const heatmapLoadingOverlay = document.getElementById('heatmap-loading-overlay');
+      const heatmapChartContainer = document.getElementById('heatmap-chart-container');
+
+      async function fetchHeatmapData() {
+          try {
+              // Fetch top 30 coins by market cap
+              const response = await fetch('https://api.coingecko.com/api/v3/coins/markets?vs_currency=usd&order=market_cap_desc&per_page=30&page=1&sparkline=false');
+              if (!response.ok) {
+                  throw new Error('Failed to fetch data from CoinGecko API.');
+              }
+              const data = await response.json();
+              return data.map(coin => ({
+                  id: coin.id,
+                  symbol: coin.symbol.toUpperCase(),
+                  market_cap: coin.market_cap,
+                  change: coin.price_change_percentage_24h,
+              }));
+          } catch (error) {
+              console.error("Error fetching heatmap data:", error);
+              heatmapLoadingOverlay.innerHTML = `<div style="text-align: center;">❌ Error: ${error.message}</div>`;
+              return [];
+          }
+      }
+
+      function renderHeatmap(data) {
+          heatmapLoadingOverlay.style.display = 'none';
+          heatmapChartContainer.innerHTML = ''; // Clear previous content
+
+          const width = heatmapChartContainer.clientWidth;
+          const height = heatmapChartContainer.clientHeight;
+
+          const treemap = d3.treemap().size([width, height]).padding(2).round(true);
+
+          const root = d3.hierarchy({ children: data })
+              .sum(d => d.market_cap)
+              .sort((a, b) => b.value - a.value);
+
+          treemap(root);
+
+          const color = d3.scaleLinear().domain([-5, 0, 5]).range(["#ef4444", "#4b5563", "#10b981"]).clamp(true);
+
+          const tiles = d3.select(heatmapChartContainer)
+              .selectAll(".tile")
+              .data(root.leaves())
+              .enter()
+              .append("div")
+              .attr("class", "tile absolute border border-brand-dark-blue flex flex-col items-center justify-center text-white overflow-hidden p-1 cursor-pointer transition hover:opacity-90")
+              .style("left", d => `${d.x0}px`)
+              .style("top", d => `${d.y0}px`)
+              .style("width", d => `${d.x1 - d.x0}px`)
+              .style("height", d => `${d.y1 - d.y0}px`)
+              .style("background-color", d => color(d.data.change));
+
+          tiles.append("div").attr("class", "symbol font-bold leading-none").text(d => d.data.symbol)
+              .style("font-size", d => `${Math.max(8, Math.min((d.x1 - d.x0) / 4, (d.y1 - d.y0) / 4, Math.sqrt((d.x1 - d.x0) * (d.y1 - d.y0)) / 8))}px`);
+
+          tiles.append("div").attr("class", "change leading-none mt-1").text(d => `${d.data.change.toFixed(2)}%`)
+              .style("font-size", d => `${Math.max(6, Math.min((d.x1 - d.x0) / 6, (d.y1 - d.y0) / 6, Math.sqrt((d.x1 - d.x0) * (d.y1 - d.y0)) / 12))}px`);
+      }
+
+      async function initHeatmap() {
+          const marketData = await fetchHeatmapData();
+          if (marketData && marketData.length > 0) {
+              renderHeatmap(marketData);
+          }
+
+          let resizeTimer;
+          window.addEventListener('resize', () => {
+              clearTimeout(resizeTimer);
+              resizeTimer = setTimeout(() => {
+                  if (marketData && marketData.length > 0) {
+                      renderHeatmap(marketData);
+                  }
+              }, 250);
+          });
+      }
+
+      initHeatmap(); // Initialize the heatmap
+    });
+  </script>
+</body>
+</html>

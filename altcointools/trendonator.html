@@ -1,0 +1,315 @@
+
+<!DOCTYPE html>
+<html lang="mn">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Trend Tracker Pro - MGL Signal</title>
+
+    <!-- SEO & Metadata -->
+    <meta name="description" content="MGL Signal - Trend Tracker Pro Signal Analysis">
+    <meta name="robots" content="noindex, nofollow">
+    
+    <!-- Fonts & Icons -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="icon" type="image/png" href="/static/new/images/logogo1.png">
+
+    <!-- Libraries -->
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chartjs-adapter-date-fns"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chartjs-plugin-annotation@3.0.1/dist/chartjs-plugin-annotation.min.js"></script>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        brand: { 'dark': '#05070a', 'dark-blue': '#0f1217', 'gold': '#c5a059', 'border': '#1f242d' }
+                    },
+                    fontFamily: { 'inter': ['Inter', 'sans-serif'] }
+                }
+            }
+        }
+    </script>
+    <link rel="stylesheet" href="/static/main_style.css">
+</head>
+<body class="bg-brand-dark text-white font-inter flex flex-col min-h-screen">
+
+    <!-- Global Header -->
+    <script src="/static/js/main_translate.js"></script>
+    <script src="/static/js/header.js"></script>
+
+    <main class="flex-grow pt-32 pb-12 px-4 md:px-6">
+        <div class="max-w-7xl mx-auto flex flex-col gap-6">
+            
+            <!-- 1. Controls Component -->
+            <div class="controls-container flex flex-wrap items-center gap-4 p-4 bg-brand-dark-blue border border-brand-border rounded-xl shadow-lg">
+            <!-- Market -->
+            <div class="control-item flex items-center space-x-2">
+                <label class="text-gray-500 font-bold uppercase text-[10px]">Market:</label>
+                <select id="market" class="bg-brand-dark border border-brand-border text-white rounded px-3 py-1.5 text-xs shadow-inner">
+                    <option value="spot">Spot</option>
+                    <option value="futures">Futures</option>
+                </select>
+            </div>
+
+            <!-- Timeframe -->
+            <div class="control-item flex items-center space-x-2">
+                <label class="text-gray-500 font-bold uppercase text-[10px]">Time:</label>
+                <select id="interval" class="bg-brand-dark border border-brand-border text-white rounded px-3 py-1.5 text-xs shadow-inner">
+                    <option value="1s">1s</option>
+                    <option value="1m" selected>1m</option>
+                    <option value="3m">3m</option>
+                    <option value="5m">5m</option>
+                    <option value="15m">15m</option>
+                    <option value="30m">30m</option>
+                    <option value="1h">1h</option>
+                    <option value="2h">2h</option>
+                    <option value="4h">4h</option>
+                    <option value="6h">6h</option>
+                    <option value="8h">8h</option>
+                    <option value="12h">12h</option>
+                    <option value="1d">1d</option>
+                    <option value="3d">3d</option>
+                    <option value="1w">1w</option>
+                    <option value="1M">1M</option>
+                </select>
+            </div>
+
+            <!-- Ticker -->
+            <div id="pair-container" class="control-item flex items-center space-x-2">
+                <label class="text-gray-500 font-bold uppercase text-[10px]">Pair:</label>
+                <input type="text" id="coin" value="BTCUSDT" list="coin-list" placeholder="Search..." class="bg-brand-dark border border-brand-border text-white rounded px-3 py-1.5 w-32 uppercase font-bold text-xs shadow-inner transition-colors" />
+                <datalist id="coin-list"></datalist>
+            </div>
+
+            <!-- RSI Input -->
+            <div id="rsi-control" class="control-item flex items-center space-x-2">
+                <label class="text-gray-500 font-bold uppercase text-[10px]">RSI Len:</label>
+                <input type="number" id="rsi-period" value="14" min="1" max="100" class="bg-brand-dark border border-brand-border text-white rounded px-3 py-1.5 w-16 text-xs shadow-inner transition-colors" />
+            </div>
+
+        </div>
+
+            <!-- Header Title -->
+            <div class="text-center mb-6">
+                <h1 class="text-3xl md:text-5xl font-black uppercase tracking-tight text-white mb-4">
+                    Trend <span class="text-brand-gold italic">Tracker Pro</span>
+                </h1>
+                <div class="w-20 h-1 bg-brand-gold mx-auto mt-6"></div>
+            </div>
+
+            <div class="grid grid-cols-1 lg:grid-cols-3 gap-8">
+                <!-- Dashboard Panel -->
+                <div class="space-y-6">
+                    <!-- Gauge/Meter Card -->
+                    <div class="bg-brand-dark-blue border border-brand-border rounded-2xl p-8 shadow-2xl relative overflow-hidden h-fit">
+                        <div class="absolute top-0 right-0 w-32 h-32 bg-brand-gold opacity-5 blur-3xl rounded-full"></div>
+                        
+                        <h3 class="text-[10px] text-gray-500 font-black uppercase tracking-[0.2em] mb-6">Market Intensity</h3>
+                        <div id="trendmetr-value" class="text-6xl font-black text-white mb-4 tracking-tighter">--%</div>
+                        
+                        <div class="w-full bg-brand-dark h-3 rounded-full overflow-hidden border border-brand-border mb-6">
+                            <div id="progress-bar-fill" class="h-full bg-brand-gold transition-all duration-1000" style="width: 50%"></div>
+                        </div>
+
+                        <div id="trend-status" class="text-sm font-black uppercase tracking-widest text-gray-400">Waiting for data...</div>
+                    </div>
+
+                    <!-- Analysis Summary -->
+                    <div class="bg-brand-dark-blue border border-brand-border rounded-2xl p-6 shadow-xl">
+                        <h3 class="text-[10px] text-gray-500 font-black uppercase tracking-[0.2em] mb-4">Signal Metadata</h3>
+                        <div id="trend-extra" class="space-y-3 text-xs text-gray-400 font-medium">
+                            <p class="italic">Analyzing market structure...</p>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Right: Chart Area -->
+                <div class="lg:col-span-2 space-y-6">
+                    <div id="chart-wrapper" class="bg-brand-dark-blue border border-brand-border rounded-2xl p-4 h-[600px] relative shadow-2xl">
+                        <canvas id="trend-chart"></canvas>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <script src="/static/js/footer.js"></script>
+    <script src="/static/js/lock.js"></script>
+
+    <script>
+    document.addEventListener('DOMContentLoaded', () => {
+        const marketEl = () => document.getElementById('market');
+        const intervalEl = () => document.getElementById('interval');
+        const coinEl = () => document.getElementById('coin');
+        const rsiPeriodEl = () => document.getElementById('rsi-period');
+        
+    let intervalId;
+    let trendChart = null;
+
+    async function fetchKlines(market, symbol, interval, limit = 1000) {
+        const endpoint = market === "futures" ? "https://fapi.binance.com/fapi/v1/klines" : "https://api.binance.com/api/v3/klines";
+        const url = `${endpoint}?symbol=${symbol}&interval=${interval}&limit=${limit}`;
+        const response = await fetch(url);
+        if (!response.ok) throw new Error(`Failed to fetch klines for ${symbol}`);
+        return await response.json();
+    }
+
+    function calculateTrueRSI(closes, period) {
+        const rsi = [];
+        if (closes.length <= period) return rsi;
+        let gains = 0, losses = 0;
+        for (let i = 1; i <= period; i++) {
+            const change = closes[i] - closes[i - 1];
+            if (change >= 0) gains += change; else losses -= change;
+        }
+        let avgGain = gains / period; let avgLoss = losses / period;
+        rsi.push(100 - 100 / (1 + (avgLoss === 0 ? 100 : avgGain / avgLoss)));
+        for (let i = period + 1; i < closes.length; i++) {
+            const change = closes[i] - closes[i - 1];
+            avgGain = (avgGain * (period - 1) + (change > 0 ? change : 0)) / period;
+            avgLoss = (avgLoss * (period - 1) + (change < 0 ? -change : 0)) / period;
+            rsi.push(100 - 100 / (1 + (avgLoss === 0 ? 100 : avgGain / avgLoss)));
+        }
+        return rsi;
+    }
+
+    async function updateTrendMetr() {
+        const market = marketEl()?.value || 'spot';
+        const symbol = coinEl()?.value.trim().toUpperCase() || 'BTCUSDT';
+        const period = parseInt(rsiPeriodEl()?.value) || 14;
+        const interval = intervalEl()?.value || '15m';
+
+        try {
+            const klines = await fetchKlines(market, symbol, interval, period + 500);
+            const closes = klines.map(k => parseFloat(k[4]));
+            const rsi = calculateTrueRSI(closes, period);
+
+            let longTriggerLL_30 = null, shortTriggerHH_70 = null;
+            const rsiOffset = period;
+
+            for (let i = 2; i < rsi.length; i++) {
+                const rsiBefore = rsi[i - 2], rsiPrev = rsi[i - 1], cIdx = i + rsiOffset;
+                if (!klines[cIdx]) continue;
+                if (rsiBefore < 30 && rsiPrev > 30) longTriggerLL_30 = Math.min(parseFloat(klines[cIdx-2][3]), parseFloat(klines[cIdx-1][3]), parseFloat(klines[cIdx][3]));
+                if (rsiBefore > 70 && rsiPrev < 70) shortTriggerHH_70 = Math.max(parseFloat(klines[cIdx-2][2]), parseFloat(klines[cIdx-1][2]), parseFloat(klines[cIdx][2]));
+            }
+
+            const latestPrice = closes[closes.length - 1];
+            const avgTrend = (longTriggerLL_30 && shortTriggerHH_70) ? (longTriggerLL_30 + shortTriggerHH_70) / 2 : null;
+            let trendMetr = null;
+            if (avgTrend) {
+                if (latestPrice >= avgTrend) trendMetr = ((latestPrice - avgTrend) / (shortTriggerHH_70 - avgTrend)) * 100;
+                else trendMetr = -((avgTrend - latestPrice) / (avgTrend - longTriggerLL_30)) * 100;
+            }
+
+            // Dashboard Update
+            const valEl = document.getElementById('trendmetr-value');
+            valEl.textContent = trendMetr !== null ? `${trendMetr.toFixed(2)}%` : '—';
+            valEl.className = `text-6xl font-black mb-4 tracking-tighter ${trendMetr >= 0 ? 'text-green-400' : 'text-red-500'}`;
+            
+            const fill = document.getElementById('progress-bar-fill');
+            fill.style.width = `${Math.max(0, Math.min(100, 50 + (trendMetr / 2)))}%`;
+            fill.className = `h-full transition-all duration-1000 ${trendMetr >= 0 ? 'bg-green-500 shadow-[0_0_15px_rgba(34,197,94,0.5)]' : 'bg-red-500 shadow-[0_0_15px_rgba(239,68,68,0.5)]'}`;
+
+            const statusEl = document.getElementById('trend-status');
+            let s = "⚖️ Neutral";
+            if (trendMetr >= 80) s = "🔥 Strong Uptrend"; else if (trendMetr >= 50) s = "📈 Moderate Uptrend"; else if (trendMetr > 0) s = "🔼 Weak Uptrend";
+            else if (trendMetr <= -80) s = "❄️ Strong Downtrend"; else if (trendMetr <= -50) s = "📉 Moderate Downtrend"; else if (trendMetr < 0) s = "🔽 Weak Downtrend";
+            statusEl.textContent = s;
+            statusEl.style.color = trendMetr >= 0 ? '#4ade80' : '#f87171';
+
+            document.getElementById('trend-extra').innerHTML = `
+                <div class="flex justify-between border-b border-brand-border/50 pb-2"><span>Strength:</span><span class="text-white font-bold">${s}</span></div>
+                <div class="flex justify-between border-b border-brand-border/50 pb-2"><span>Price:</span><span class="text-white font-mono">$${latestPrice.toLocaleString()}</span></div>
+                <div class="flex justify-between"><span>S/R Range:</span><span class="text-brand-gold font-mono">${longTriggerLL_30?.toFixed(2)} - ${shortTriggerHH_70?.toFixed(2)}</span></div>
+            `;
+            updateChart(klines, longTriggerLL_30, shortTriggerHH_70);
+        } catch (e) { console.error(e); }
+    }
+
+    function updateChart(klines, support, resistance) {
+        const canvas = document.getElementById('trend-chart');
+        if (!canvas) return;
+        
+        const ctx = canvas.getContext('2d');
+        const priceData = klines.map(k => ({ x: k[0], y: parseFloat(k[4]) }));
+        
+        const annotations = {};
+        if (support) annotations.s = { type: 'line', yMin: support, yMax: support, borderColor: '#10b981', borderWidth: 2, borderDash: [5, 5], label: { display: true, content: 'Support', position: 'start', backgroundColor: 'rgba(16, 185, 129, 0.8)', color: '#fff', font: { size: 10 } } };
+        if (resistance) annotations.r = { type: 'line', yMin: resistance, yMax: resistance, borderColor: '#ef4444', borderWidth: 2, borderDash: [5, 5], label: { display: true, content: 'Resistance', position: 'start', backgroundColor: 'rgba(239, 68, 68, 0.8)', color: '#fff', font: { size: 10 } } };
+
+        if (trendChart) {
+            trendChart.data.datasets[0].data = priceData;
+            trendChart.options.plugins.annotation.annotations = annotations;
+            trendChart.update();
+        } else {
+            trendChart = new Chart(ctx, {
+                type: 'line',
+                data: { 
+                    datasets: [{ 
+                        label: 'Price', 
+                        data: priceData, 
+                        borderColor: 'rgba(255, 255, 255, 0.9)', 
+                        borderWidth: 2, 
+                        pointRadius: 0, 
+                        fill: true,
+                        backgroundColor: 'rgba(197, 160, 89, 0.05)'
+                    }] 
+                },
+                options: {
+                    responsive: true, maintainAspectRatio: false,
+                    interaction: { mode: 'index', intersect: false },
+                    plugins: { 
+                        legend: { display: false }, 
+                        annotation: { annotations },
+                        tooltip: { 
+                            backgroundColor: 'rgba(5, 7, 10, 0.9)', 
+                            titleFont: { size: 12 }, 
+                            bodyFont: { size: 12 }, 
+                            padding: 12, 
+                            borderColor: '#1f242d', 
+                            borderWidth: 1 
+                        }
+                    },
+                    scales: {
+                        x: { type: 'time', grid: { color: 'rgba(255,255,255,0.05)' }, ticks: { color: '#4b5563', font: { size: 10 } } },
+                        y: { grid: { color: 'rgba(255,255,255,0.05)' }, ticks: { color: '#4b5563', font: { size: 10 } } }
+                    }
+                }
+            });
+        }
+    }
+
+    const triggerAutoUpdate = () => {
+        clearInterval(intervalId);
+        updateTrendMetr();
+        intervalId = setInterval(updateTrendMetr, 15000);
+    };
+
+    const initAutoUpdate = () => {
+        const m = marketEl();
+        const i = intervalEl();
+        const c = coinEl();
+        const r = rsiPeriodEl();
+        
+        if (m && i && c && r) {
+            m.addEventListener('change', triggerAutoUpdate);
+            i.addEventListener('change', triggerAutoUpdate);
+            r.addEventListener('change', triggerAutoUpdate);
+            c.addEventListener('change', triggerAutoUpdate);
+            c.addEventListener('keydown', (e) => { if (e.key === "Enter") triggerAutoUpdate(); });
+            
+            triggerAutoUpdate(); // Initial Load
+        } else {
+            setTimeout(initAutoUpdate, 100);
+        }
+    };
+
+    initAutoUpdate();
+    });
+    </script>

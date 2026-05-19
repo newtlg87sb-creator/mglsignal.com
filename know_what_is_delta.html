@@ -1,0 +1,143 @@
+<!DOCTYPE html>
+<html lang="mn">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>What is Delta in Trading? - MGL Signal</title>
+
+    <meta name="description" content="Understand what Delta means in order flow trading and how it shows buying vs. selling pressure.">
+    <meta name="keywords" content="delta trading, order flow, trading volume, buying pressure, selling pressure">
+    <meta name="robots" content="index, follow">
+    <link rel="canonical" href="https://mglsignal.com/know_what_is_delta.html"> 
+
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link rel="preconnect" href="https://cdnjs.cloudflare.com">
+
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+
+    <link rel="icon" type="image/png" href="/static/new/images/logogo1.png">
+    <link rel="apple-touch-icon" href="/static/new/images/logogo1.png">
+
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        brand: { 'dark': '#05070a', 'dark-blue': '#0f1217', 'gold': '#c5a059', 'border': '#1f242d' }
+                    },
+                    fontFamily: { 'inter': ['Inter', 'sans-serif'] }
+                }
+            }
+        }
+    </script>
+    
+    <link rel="stylesheet" href="/static/main_style.css">
+</head>
+<body class="bg-brand-dark text-white font-inter flex flex-col min-h-screen">
+
+    <script src="/static/js/main_translate.js"></script>
+    <script src="/static/js/header.js"></script>
+
+    <!-- Main Content -->
+    <main class="flex-grow pt-24 pb-12 px-6">
+        <div class="max-w-4xl mx-auto">
+            <!-- Header -->
+            <div class="text-center mb-16">
+                <h1 class="text-3xl md:text-5xl font-black uppercase tracking-tight text-white mb-4 page-title">
+                    Trading <span class="text-brand-gold italic">Delta</span>
+                </h1>
+                <div class="w-20 h-1 bg-brand-gold mx-auto mt-6"></div>
+            </div>
+
+            <!-- Content Container -->
+            <div class="bg-brand-dark-blue border border-brand-border rounded-xl p-8 md:p-12 shadow-2xl relative overflow-hidden">
+                <!-- Background decoration -->
+                <div class="absolute top-0 right-0 w-64 h-64 bg-blue-600 opacity-5 blur-[100px] -mr-16 -mt-16"></div>
+                
+                <div class="relative z-10 space-y-8 text-gray-300 leading-relaxed">
+                    <h1 id="main-title" class="text-2xl font-bold text-white mb-4"></h1>
+                    
+                    <p id="intro-p1" class="mb-4 text-sm"></p>
+
+                    <div class="bg-black/30 border border-brand-gold/30 p-6 rounded-lg text-center my-8">
+                        <div id="formula" class="font-mono text-lg md:text-xl font-bold text-brand-gold"></div>
+                    </div>
+
+                    <h2 id="how-calc-title" class="text-xl font-bold text-white mb-3"></h2>
+                    <p id="how-calc-p1" class="mb-4 text-sm"></p>
+                    <ul class="list-disc list-inside text-sm space-y-2 pl-2">
+                        <li id="how-calc-li1"></li>
+                        <li id="how-calc-li2"></li>
+                    </ul>
+                    <p id="how-calc-p2" class="mt-4 text-sm italic text-gray-500"></p>
+
+                    <h2 id="what-it-means-title" class="text-xl font-bold text-white mb-3 pt-6 border-t border-brand-border"></h2>
+                    <ul class="space-y-3 text-sm">
+                        <li id="what-it-means-li1" class="flex items-start"><i class="fas fa-arrow-up text-green-500 mt-1 mr-3"></i><span></span></li>
+                        <li id="what-it-means-li2" class="flex items-start"><i class="fas fa-arrow-down text-red-500 mt-1 mr-3"></i><span></span></li>
+                        <li id="what-it-means-li3" class="flex items-start"><i class="fas fa-minus text-yellow-500 mt-1 mr-3"></i><span></span></li>
+                    </ul>
+
+                    <h2 id="example-title" class="text-xl font-bold text-white mb-3 pt-6 border-t border-brand-border"></h2>
+                    <p id="example-p1" class="text-sm"></p>
+
+                </div>
+
+                <div class="mt-12 pt-8 border-t border-brand-border flex justify-between items-center">
+                    <a href="know_knowledge.html" class="text-gray-500 hover:text-white text-xs font-bold uppercase tracking-widest flex items-center transition">
+                        <i class="fas fa-arrow-left mr-2"></i> Back to Knowledge Base
+                    </a>
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <script src="/static/js/footer.js"></script>
+    <script src="/static/lock.js"></script>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            const savedLang = localStorage.getItem('lang') || 'mn';
+            const texts = {
+                en: { pageTitle: "What is Delta in Trading? | MGL Signal", mainTitle: "What is Delta in Trading?", introP1: "In the context of order flow and volume analysis, **Delta** is a simple but powerful metric. It represents the net difference between buying and selling pressure within a specific period (like a single candle or a group of candles).", formula: "Delta = Total Buying Volume - Total Selling Volume", howCalcTitle: "How We Calculate It", howCalcP1: "To get the Delta, we look at the \"aggressiveness\" of trades. We don't just look at total volume; we look at who initiated the trade at the market price.", howCalcLi1: "<strong>Buying Volume (Taker Buys):</strong> This is the volume from buyers who were so eager to buy that they accepted the seller's asking price (the \"ask\"). This is considered aggressive buying.", howCalcLi2: "<strong>Selling Volume (Taker Sells):</strong> This is the volume from sellers who were so eager to sell that they accepted the buyer's bid price (the \"bid\"). This is considered aggressive selling.", howCalcP2: "On our signal pages, we get this data directly from the Binance API. The \"Taker Buy Volume\" is provided, and we calculate the selling volume by subtracting it from the total volume for that candle.", whatItMeansTitle: "What It Tells You", whatItMeansLi1: 'A <strong class="text-green-500">Positive Delta</strong> means there was more aggressive buying than selling. It\'s a bullish sign, suggesting buyers are in control.', whatItMeansLi2: 'A <strong class="text-red-500">Negative Delta</strong> means there was more aggressive selling than buying. It\'s a bearish sign, suggesting sellers are in control.', whatItMeansLi3: 'A <strong class="text-yellow-500">Near-Zero Delta</strong> indicates a balance between buyers and sellers, often seen during periods of consolidation or indecision.', exampleTitle: "Practical Example", exampleP1: 'On the <a href="/liquidity_zone.html" class="text-blue-400 hover:underline">Liquidity Zone</a> page, the "Last 10 Candle Volume Analysis" bar is a direct visualization of Delta. It sums up the buying and selling volume over the last 10 candles and shows you the balance of power as a percentage.' },
+                mn: { pageTitle: "Арилжаан дахь Дельта гэж юу вэ? | MGL Signal", mainTitle: "Арилжаан дахь Дельта гэж юу вэ?", introP1: "Захиалгын урсгал ба эзлэхүүний шинжилгээний хүрээнд **Дельта** нь энгийн боловч хүчирхэг хэмжүүр юм. Энэ нь тодорхой хугацаанд (нэг лаа эсвэл хэсэг лааны хувьд) худалдан авах ба худалдах даралтын цэвэр зөрүүг илэрхийлдэг.", formula: "Дельта = Нийт Худалдан Авах Эзлэхүүн - Нийт Худалдах Эзлэхүүн", howCalcTitle: "Бид хэрхэн тооцоолдог вэ", howCalcP1: "Дельтаг олохын тулд бид арилжааны \"түрэмгийллийг\" хардаг. Бид зөвхөн нийт эзлэхүүнийг хараад зогсохгүй, зах зээлийн үнээр арилжааг хэн эхлүүлснийг хардаг.", howCalcLi1: "<strong>Худалдан авах эзлэхүүн (Taker Buys):</strong> Энэ нь худалдагчийн санал болгосон үнийг (\"ask\") хүлээн зөвшөөрч, худалдан авахыг маш их хүссэн худалдан авагчдын эзлэхүүн юм. Энэ нь түрэмгий худалдан авалт гэж тооцогддог.", howCalcLi2: "<strong>Худалдах эзлэхүүн (Taker Sells):</strong> Энэ нь худалдан авагчийн үнийн саналыг (\"bid\") хүлээн зөвшөөрч, худалдахыг маш их хүссэн худалдагчдын эзлэхүүн юм. Энэ нь түрэмгий худалдаа гэж тооцогддог.", howCalcP2: "Манай сигналын хуудсууд дээр бид энэ мэдээллийг Binance API-аас шууд авдаг. \"Taker Buy Volume\"-г өгдөг бөгөөд бид тухайн лааны нийт эзлэхүүнээс хасч худалдах эзлэхүүнийг тооцоолдог.", whatItMeansTitle: "Энэ танд юу хэлж байна вэ", whatItMeansLi1: '<strong class="text-green-500">Эерэг Дельта</strong> нь худалдахаас илүү түрэмгий худалдан авалт байсныг илтгэнэ. Энэ нь өсөлтийн дохио бөгөөд худалдан авагчид хяналтандаа байгааг харуулж байна.', whatItMeansLi2: '<strong class="text-red-500">Сөрөг Дельта</strong> нь худалдан авахаас илүү түрэмгий худалдаа байсныг илтгэнэ. Энэ нь уналтын дохио бөгөөд худалдагчид хяналтандаа байгааг харуулж байна.', whatItMeansLi3: '<strong class="text-yellow-500">Тэгтэй ойролцоо Дельта</strong> нь худалдан авагчид ба худалдагчдын хоорондын тэнцвэрийг илтгэдэг бөгөөд ихэвчлэн нэгтгэх эсвэл шийдвэргүй үед ажиглагддаг.', exampleTitle: "Практик жишээ", exampleP1: '<a href="/liquidity_zone.html" class="text-blue-400 hover:underline">Хөрвөх чадварын бүс</a> хуудсан дээрх "Сүүлийн 10 лааны эзлэхүүний шинжилгээ" хэсэг нь Дельтагийн шууд дүрслэл юм. Энэ нь сүүлийн 10 лааны худалдан авах ба худалдах эзлэхүүнийг нэгтгэж, хүчний тэнцвэрийг хувиар харуулдаг.' }
+            };
+            
+            const setHTML = (id, html) => { 
+                const el = document.getElementById(id); 
+                if (el) el.innerHTML = html.replace(/\*\*(.*?)\*\*/g, '<strong>$1</strong>'); 
+            };
+
+            const updateContent = (language) => {
+                const t = texts[language] || texts.en;
+                document.title = t.pageTitle;
+                Object.keys(t).forEach(key => setHTML(key.replace(/([A-Z])/g, '-$1').toLowerCase(), t[key]));
+                
+                // Re-apply span content for list items as they are replaced completely
+                const spanLi1 = document.querySelector('#what-it-means-li1 span');
+                const spanLi2 = document.querySelector('#what-it-means-li2 span');
+                const spanLi3 = document.querySelector('#what-it-means-li3 span');
+                
+                // We need to parse the HTML string from t.whatItMeansLi1 etc to separate the strong tag content if needed, 
+                // but since we are replacing innerHTML of the LI, we lose the icon if we are not careful.
+                // A better approach for this specific list is to target the span inside.
+                
+                if(spanLi1) spanLi1.innerHTML = t.whatItMeansLi1;
+                if(spanLi2) spanLi2.innerHTML = t.whatItMeansLi2;
+                if(spanLi3) spanLi3.innerHTML = t.whatItMeansLi3;
+            };
+
+            updateContent(savedLang);
+
+            const originalChangeLang = window.changeLang;
+            window.changeLang = function(language) {
+                if (originalChangeLang) originalChangeLang(language);
+                updateContent(language);
+            };
+        });
+    </script>
+</body>
+</html>

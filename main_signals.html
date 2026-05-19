@@ -1,0 +1,184 @@
+<!DOCTYPE html>
+<html lang="mn">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Trading Signals - MGL Signal</title>
+
+    <meta name="description" content="Live trading signals for Binance Futures, Spot, and Forex markets. High-accuracy signals for BTC, ETH, GOLD, and more.">
+    <meta name="keywords" content="trading signals, crypto signals, forex signals, MGL Signal, Binance, live crypto prices, stock signals, trading for beginners">
+    <meta name="robots" content="index, follow">
+    <meta name="googlebot" content="index, follow">
+    <meta name="bingbot" content="index, follow">
+    <link rel="canonical" href="https://mglsignal.com/main_signals.html"> 
+
+    <meta property="og:title" content="Trading Signals - MGL Signal">
+    <meta property="og:description" content="Live trading signals for Binance Futures, Spot, and Forex markets. High-accuracy signals for BTC, ETH, GOLD, and more.">
+    <meta property="og:image" content="https://mglsignal.com/static/new/images/logogo1.png">
+    <meta property="og:url" content="https://mglsignal.com/main_signals.html"> 
+    <meta property="og:type" content="website">
+    
+    <meta name="twitter:card" content="summary_large_image">
+    <meta name="twitter:title" content="Trading Signals - MGL Signal">
+    <meta name="twitter:description" content="Live trading signals for Binance Futures, Spot, and Forex markets. High-accuracy signals for BTC, ETH, GOLD, and more.">
+    <meta name="twitter:image" content="https://mglsignal.com/static/new/images/logogo1.png">
+
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link rel="preconnect" href="https://cdnjs.cloudflare.com">
+
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+
+    <link rel="icon" type="image/png" href="/static/new/images/logogo1.png">
+    <link rel="apple-touch-icon" href="/static/new/images/logogo1.png">
+
+    <script async src="https://www.googletagmanager.com/gtag/js?id=G-Q1FKYGV6Z1"></script>
+    <script defer>
+        window.dataLayer = window.dataLayer || [];
+        function gtag(){dataLayer.push(arguments);}
+        gtag('js', new Date());
+        gtag('config', 'G-Q1FKYGV6Z1');
+    </script>
+
+    <meta http-equiv="Content-Security-Policy" content="
+        default-src 'self';
+        img-src 'self' data: https:; 
+        script-src 'self' https://www.googletagmanager.com https://unpkg.com https://cdn.tailwindcss.com https://cdn.jsdelivr.net 'unsafe-inline';
+        style-src 'self' https://fonts.googleapis.com https://cdnjs.cloudflare.com 'unsafe-inline';
+        font-src 'self' https://fonts.gstatic.com https://cdnjs.cloudflare.com;
+        frame-src 'self' https://s.tradingview.com;
+        connect-src 'self' https://bsdkbxyjwjljximdxdst.supabase.co https://www.google-analytics.com https://api.binance.com https://fapi.binance.com https://api.coingecko.com https://api.alternative.me https://min-api.cryptocompare.com;
+    ">
+
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        brand: { 'dark': '#05070a', 'dark-blue': '#0f1217', 'gold': '#c5a059', 'border': '#1f242d' }
+                    },
+                    fontFamily: { 'inter': ['Inter', 'sans-serif'] }
+                }
+            }
+        }
+    </script>
+
+    <script type="application/ld+json">
+    {
+        "@context": "https://schema.org",
+        "@type": "WebSite",
+        "name": "MGL Signal",
+        "url": "https://mglsignal.com",
+        "publisher": {
+        "@type": "Organization",
+        "name": "MGL Signal",
+        "logo": {
+            "@type": "ImageObject",
+            "url": "https://mglsignal.com/static/new/images/logogo1.png"
+        }
+        }
+    }
+    </script>
+    
+    <link rel="stylesheet" href="/static/main_style.css">
+
+</head>
+<body class="bg-brand-dark text-white font-inter flex flex-col min-h-screen">
+
+    <script src="/static/js/main_translate.js"></script>
+
+    <script src="/static/js/header.js"></script>
+
+    <!-- Main Content -->
+    <main class="flex-grow pt-24 pb-12 px-6">
+        <div class="max-w-screen-xl mx-auto">
+            <!-- Header -->
+            <div class="text-center mb-12">
+                <h1 data-i18n="signals-page-title" class="text-3xl md:text-5xl font-black uppercase tracking-tight text-white mb-4">
+                    Trading <span class="text-brand-gold italic">Signals</span>
+                </h1>
+                <p data-i18n="signals-page-desc" class="text-gray-400 max-w-2xl mx-auto">Бодит цагийн Крипто болон Форекс зах зээлийн сигналууд.</p>
+                <div class="w-20 h-1 bg-brand-gold mx-auto mt-6"></div>
+            </div>
+
+            <div class="w-full">
+                
+                <!-- Main Column: Signals Table -->
+                <div class="w-full">
+                    <div class="page-container">
+                        <h2 class="text-xl font-bold text-white uppercase mb-6 hidden">Select Signal</h2> <!-- Hidden initially, text set by JS -->
+                        <div class="signal-grid grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
+                            <!-- Cards will be injected here -->
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            const savedLang = localStorage.getItem('lang') || 'mn';
+            changeLang(savedLang);
+            
+            const mobileMenuButton = document.querySelector('.mobile-menu-button');
+            const mobileMenu = document.querySelector('.mobile-menu');
+            if(mobileMenuButton) {
+                mobileMenuButton.addEventListener('click', () => mobileMenu.classList.toggle('hidden'));
+            }
+
+            // Render signal cards using global translations from main_translate.js
+            function renderSignals() {
+                const lang = localStorage.getItem('lang') || 'mn';
+                if (typeof translations === 'undefined' || !translations[lang]) return;
+                
+                const t = translations[lang];
+                const cards = (t['signal-list'] || [])
+                    .filter(card => card.link === 'future.html' || card.link === 'spot.html');
+                const comingSoonText = t['sig-coming-soon'] || 'Coming Soon';
+                const readMoreText = t['sig-read-more'] || 'Read More...';
+
+                const grid = document.querySelector('.signal-grid');
+                if (!grid) return;
+
+                grid.innerHTML = cards.map((card) => {
+                const isComingSoon = card.status === 'coming_soon';
+                if (isComingSoon) {
+                    return `
+                    <div class="signal-card-new disabled bg-brand-dark-blue border border-brand-border rounded-xl p-6 relative overflow-hidden opacity-70">
+                        <h3 class="text-white font-bold text-lg mb-2">${card.title}</h3>
+                        <p class="text-gray-400 text-sm">${card.description}</p>
+                        <div class="status-badge absolute top-2 right-2 bg-yellow-500/20 text-yellow-500 text-[10px] font-bold px-2 py-1 rounded">${comingSoonText}</div>
+                    </div>
+                    `;
+                } else {
+                    return `
+                    <a href="/${card.link}" class="signal-card-new bg-brand-dark-blue border border-brand-border rounded-xl p-6 flex flex-col h-full hover:border-brand-gold transition duration-300 transform hover:-translate-y-1 group">
+                        <h3 class="text-white font-bold text-lg mb-2 text-brand-gold">${card.title}</h3>
+                        <p class="text-gray-400 text-sm flex-grow">${card.description}</p>
+                        <span class="text-[10px] text-gray-500 mt-4 block italic group-hover:text-brand-gold transition">${readMoreText}</span>
+                    </a>
+                    `;
+                }
+                }).join('');
+            }
+
+            // Initial render
+            renderSignals();
+
+            // Override changeLang to re-render the grid when language is switched
+            const originalChangeLang = window.changeLang;
+            window.changeLang = function(lang) {
+                if (originalChangeLang) originalChangeLang(lang);
+                renderSignals();
+            };
+        });
+    </script>
+
+    <script src="/static/js/footer.js"></script>
+    <script src="/static/js/access_control.js"></script> <!-- Хандалтыг хянах шинэ скрипт -->
+    <script src="/static/lock.js"></script>
+</body>
+</html>

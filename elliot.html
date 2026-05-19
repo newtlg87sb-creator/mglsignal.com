@@ -1,0 +1,245 @@
+<!DOCTYPE html>
+<html lang="mn">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Elliot Wave Intelligence - MGL Signal</title>
+
+    <meta name="description" content="Elliot Wave Theory Intelligence - Advanced Fractal Wave Analysis for Crypto and Forex markets.">
+    <meta name="keywords" content="elliot wave, trading signals, crypto signals, MGL Signal, technical analysis">
+    <meta name="robots" content="index, follow">
+    <link rel="canonical" href="https://mglsignal.com/elliot.html"> 
+
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+
+    <link rel="icon" type="image/png" href="/static/new/images/logogo1.png">
+
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        brand: { 'dark': '#05070a', 'dark-blue': '#0f1217', 'gold': '#c5a059', 'border': '#1f242d' }
+                    },
+                    fontFamily: { 'inter': ['Inter', 'sans-serif'] }
+                }
+            }
+        }
+    </script>
+    <link rel="stylesheet" href="/static/main_style.css">
+</head>
+<body class="bg-brand-dark text-white font-inter flex flex-col min-h-screen">
+    <script src="/static/js/main_translate.js"></script>
+    <script src="/static/js/header.js"></script>
+
+    <main class="flex-grow pt-32 flex flex-col gap-6 pb-12">
+        <div class="max-w-7xl mx-auto px-6 mb-6">
+            <div class="flex justify-between items-end">
+                <div>
+                    <h1 class="text-3xl font-black text-white uppercase tracking-tighter">Elliot <span class="text-brand-gold italic">Wave</span> Analysis</h1>
+                    <p class="text-gray-500 text-[10px] mt-1 uppercase font-bold tracking-[0.3em]">Fractal Market Geometry Intelligence</p>
+                </div>
+                <div class="text-right hidden md:block">
+                    <div class="text-[9px] text-blue-400 font-bold uppercase tracking-widest animate-pulse">● Fractal Sync Active</div>
+                    <div id="current-pair-display" class="text-xl font-black text-white leading-none">BTCUSDT</div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Modular Chart & Controls -->
+        <div class="max-w-7xl mx-auto px-6 w-full flex flex-col gap-6">
+            <script src="/static/js/control.js"></script>
+            <script src="/static/js/chart.js"></script>
+        </div>
+
+        <!-- Elliot Wave Dashboard -->
+        <div class="max-w-7xl mx-auto px-6 mt-8">
+            <div class="grid grid-cols-1 lg:grid-cols-4 gap-6">
+                
+                <!-- Main Wave Card -->
+                <div class="lg:col-span-2 bg-brand-dark-blue border border-brand-border rounded-2xl p-6 shadow-2xl border-t-2 border-t-brand-gold/30">
+                    <div class="text-[10px] text-gray-500 font-black uppercase tracking-widest mb-4">Current Wave Projection</div>
+                    <div class="flex items-center justify-between mb-8">
+                        <div id="elliot-wave-status" class="text-6xl font-black italic tracking-tighter text-white uppercase">SCANNING</div>
+                        <div class="text-center bg-black/40 px-6 py-3 rounded-2xl border border-brand-border">
+                            <div class="text-[9px] text-gray-500 font-bold uppercase mb-1">Confidence</div>
+                            <div id="wave-confidence" class="text-3xl font-black text-brand-gold leading-none">--</div>
+                        </div>
+                    </div>
+
+                    <div class="grid grid-cols-2 md:grid-cols-4 gap-4">
+                        <div class="bg-black/20 p-3 rounded-xl border border-brand-border text-center">
+                            <div class="text-[8px] text-gray-500 font-bold uppercase mb-1">Cycle Phase</div>
+                            <div id="stat-phase" class="text-xs font-black uppercase">--</div>
+                        </div>
+                        <div class="bg-black/20 p-3 rounded-xl border border-brand-border text-center">
+                            <div class="text-[8px] text-gray-500 font-bold uppercase mb-1">Pattern</div>
+                            <div id="stat-pattern" class="text-xs font-black uppercase">--</div>
+                        </div>
+                        <div class="bg-black/20 p-3 rounded-xl border border-brand-border text-center">
+                            <div class="text-[8px] text-gray-500 font-bold uppercase mb-1">Next Expected</div>
+                            <div id="stat-next" class="text-xs font-black uppercase">--</div>
+                        </div>
+                        <div class="bg-black/20 p-3 rounded-xl border border-brand-border text-center">
+                            <div class="text-[8px] text-gray-500 font-bold uppercase mb-1">Pivots Found</div>
+                            <div id="stat-zigzag" class="text-xs font-black uppercase">--</div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Targets -->
+                <div class="bg-brand-dark-blue border border-brand-border rounded-2xl p-6 shadow-lg">
+                    <div class="text-[10px] text-gray-500 font-black uppercase tracking-widest mb-6 flex items-center">
+                        <i class="fas fa-layer-group mr-2 text-brand-gold"></i> Fibonacci Projections
+                    </div>
+                    <div class="space-y-4">
+                        <div class="flex justify-between items-center"><span class="text-xs text-gray-400">Target (1.618):</span> <span id="fib-1618" class="text-sm font-mono font-bold text-green-400">--</span></div>
+                        <div class="flex justify-between items-center"><span class="text-xs text-gray-400">Target (1.000):</span> <span id="fib-1000" class="text-sm font-mono font-bold text-green-500">--</span></div>
+                        <div class="flex justify-between items-center border-y border-brand-border py-2"><span class="text-xs text-white uppercase font-bold">Pivot Origin:</span> <span id="wave-origin" class="text-sm font-mono font-bold text-brand-gold">--</span></div>
+                        <div class="flex justify-between items-center"><span class="text-xs text-gray-400">Invalidation:</span> <span id="wave-invalid" class="text-sm font-mono font-bold text-red-500">--</span></div>
+                    </div>
+                </div>
+
+                <!-- Rule Engine -->
+                <div class="bg-brand-dark-blue border border-brand-border rounded-2xl p-6 shadow-lg">
+                    <div class="text-[10px] text-gray-500 font-black uppercase tracking-widest mb-6">Elliot Rule Engine</div>
+                    <div id="rule-list" class="space-y-3">
+                        <div class="flex items-center justify-between text-[10px] font-bold"><span class="text-gray-500 uppercase">W2 Retrace:</span> <span id="rule-1" class="text-white uppercase">Waiting</span></div>
+                        <div class="flex items-center justify-between text-[10px] font-bold"><span class="text-gray-500 uppercase">W3 Length:</span> <span id="rule-2" class="text-white uppercase">Waiting</span></div>
+                        <div class="flex items-center justify-between text-[10px] font-bold"><span class="text-gray-500 uppercase">W4 Overlap:</span> <span id="rule-3" class="text-white uppercase">Waiting</span></div>
+                    </div>
+                </div>
+
+            </div>
+        </div>
+    </main>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            const updateElliotDashboard = (allData) => {
+                if (!allData || allData.length < 100) return;
+                const highs = allData.map(d => +d[2]), lows = allData.map(d => +d[3]), closes = allData.map(d => +d[4]);
+                const lastClose = closes[closes.length - 1];
+
+                // Dynamic Price Formatter for low-priced coins
+                const formatVal = (p) => {
+                    if (!p || isNaN(p)) return "--";
+                    const price = parseFloat(p);
+                    if (price >= 100) return price.toFixed(2);
+                    if (price >= 1) return price.toFixed(4);
+                    if (price >= 0.0001) return price.toFixed(6);
+                    return price.toFixed(8);
+                };
+
+                // More sensitive ZigZag Pivot Detection (Depth 12 -> 8)
+                const getPivots = (data, depth = 8) => {
+                    let p = [];
+                    for (let i = depth; i < data.length - depth; i++) {
+                        let isH = true, isL = true;
+                        for (let j = 1; j <= depth; j++) {
+                            if (data[i] <= data[i-j] || data[i] <= data[i+j]) isH = false;
+                            if (data[i] >= data[i-j] || data[i] >= data[i+j]) isL = false;
+                        }
+                        if (isH) p.push({ type: 'H', price: data[i], idx: i });
+                        if (isL) p.push({ type: 'L', price: data[i], idx: i });
+                    }
+                    return p;
+                };
+
+                const pivots = [...getPivots(highs), ...getPivots(lows)].sort((a, b) => a.idx - b.idx);
+                let clean = [];
+                if (pivots.length) {
+                    clean.push(pivots[0]);
+                    for (let i = 1; i < pivots.length; i++) {
+                        if (pivots[i].type !== clean[clean.length-1].type) clean.push(pivots[i]);
+                        else if (pivots[i].type === 'H' && pivots[i].price > clean[clean.length-1].price) clean[clean.length-1] = pivots[i];
+                        else if (pivots[i].type === 'L' && pivots[i].price < clean[clean.length-1].price) clean[clean.length-1] = pivots[i];
+                    }
+                }
+
+                let status = "NEUTRAL", conf = 0, phase = "SCANNING", next = "--";
+                let fib1618 = 0, fib1000 = 0, origin = 0, invalid = 0;
+                let rules = { r1: "Waiting", r2: "Waiting", r3: "Waiting" };
+
+                // Use at least 3 pivots to start some analysis
+                if (clean.length >= 3) {
+                    const p0 = clean[clean.length-3]; 
+                    const p1 = clean[clean.length-2];
+                    const p2 = clean[clean.length-1];
+
+                    const isBull = p1.price > p0.price;
+                    status = isBull ? "BULLISH" : "BEARISH";
+                    phase = clean.length > 4 ? "CORRECTION" : "IMPULSE";
+                    next = isBull ? "WAVE 3/5" : "WAVE C";
+                    
+                    const w1Len = Math.abs(p1.price - p0.price);
+                    fib1000 = isBull ? p2.price + w1Len : p2.price - w1Len;
+                    fib1618 = isBull ? p2.price + (w1Len * 1.618) : p2.price - (w1Len * 1.618);
+                    origin = p0.price;
+                    invalid = p1.price;
+
+                    const w2Retrace = Math.abs(p2.price - p1.price) / w1Len;
+                    rules.r1 = w2Retrace < 1.0 ? "VALID" : "VIOLATED";
+                    rules.r2 = clean.length >= 4 ? "VALID" : "PENDING";
+                    rules.r3 = clean.length >= 5 ? "VALID" : "FORMING";
+
+                    conf = 20 + (clean.length * 10);
+                    if (rules.r1 === "VALID") conf += 20;
+                } else {
+                    // Fallback using visible range
+                    const maxH = Math.max(...highs.slice(-50)), minL = Math.min(...lows.slice(-50));
+                    status = lastClose > (maxH + minL)/2 ? "UPTREND" : "DOWNTREND";
+                    phase = "INITIAL SCAN";
+                    conf = 15;
+                    fib1000 = maxH;
+                    fib1618 = maxH + (maxH - minL) * 0.618;
+                    origin = minL;
+                    invalid = minL - (maxH - minL) * 0.2;
+                }
+
+                // UI UPDATES
+                document.getElementById("elliot-wave-status").textContent = status;
+                document.getElementById("elliot-wave-status").style.color = (status === "BULLISH" || status === "UPTREND") ? "#4ade80" : "#f87171";
+                document.getElementById("wave-confidence").textContent = Math.min(conf, 99) + "%";
+                document.getElementById("stat-phase").textContent = phase;
+                document.getElementById("stat-next").textContent = next;
+                document.getElementById("stat-zigzag").textContent = clean.length;
+
+                document.getElementById("fib-1618").textContent = formatVal(fib1618);
+                document.getElementById("fib-1000").textContent = formatVal(fib1000);
+                document.getElementById("wave-origin").textContent = formatVal(origin);
+                document.getElementById("wave-invalid").textContent = formatVal(invalid);
+
+                // Rule Engine UI
+                const updateRuleUI = (id, val) => {
+                    const el = document.getElementById(id);
+                    if (!el) return;
+                    el.textContent = val;
+                    if (val === "VALID") {
+                        el.className = "text-green-400 uppercase";
+                    } else if (val === "VIOLATED") {
+                        el.className = "text-red-500 uppercase font-black animate-pulse";
+                    } else if (val === "FORMING" || val === "PENDING") {
+                        el.className = "text-brand-gold uppercase";
+                    } else {
+                        el.className = "text-white uppercase opacity-40";
+                    }
+                };
+
+                updateRuleUI("rule-1", rules.r1);
+                updateRuleUI("rule-2", rules.r2);
+                updateRuleUI("rule-3", rules.r3);
+            };
+
+            window.addEventListener('chartUpdate', (e) => {
+                if (e.detail && e.detail.data) updateElliotDashboard(e.detail.data);
+                if (e.detail && e.detail.symbol) document.getElementById("current-pair-display").textContent = e.detail.symbol;
+            });
+        });
+    </script>
+    <script src="/static/js/footer.js"></script>
+</body>
+</html>

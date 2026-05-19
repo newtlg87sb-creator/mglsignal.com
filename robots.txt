@@ -1,0 +1,6 @@
+# Allow all user agents (crawlers)
+User-agent: *
+Allow: /
+
+# Point crawlers to the sitemap
+Sitemap: https://mglsignal.com/sitemap.xml

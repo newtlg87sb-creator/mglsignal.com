@@ -1,0 +1,195 @@
+<!DOCTYPE html>
+<html lang="mn">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Forex Basics: Lot & Pip - MGL Signal</title>
+
+    <meta name="description" content="Understand the fundamental concepts of Forex trading: Lot size and Pip value.">
+    <meta name="keywords" content="forex basics, what is lot, what is pip, trading education, forex guide">
+    <meta name="robots" content="index, follow">
+    <link rel="canonical" href="https://mglsignal.com/know_forex.html"> 
+
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link rel="preconnect" href="https://cdnjs.cloudflare.com">
+
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+
+    <link rel="icon" type="image/png" href="/static/new/images/logogo1.png">
+    <link rel="apple-touch-icon" href="/static/new/images/logogo1.png">
+
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        brand: { 'dark': '#05070a', 'dark-blue': '#0f1217', 'gold': '#c5a059', 'border': '#1f242d' }
+                    },
+                    fontFamily: { 'inter': ['Inter', 'sans-serif'] }
+                }
+            }
+        }
+    </script>
+    
+    <link rel="stylesheet" href="/static/main_style.css">
+</head>
+<body class="bg-brand-dark text-white font-inter flex flex-col min-h-screen">
+
+    <script src="/static/js/main_translate.js"></script>
+    <script src="/static/js/header.js"></script>
+
+    <!-- Main Content -->
+    <main class="flex-grow pt-24 pb-12 px-6">
+        <div class="max-w-4xl mx-auto">
+            <!-- Header -->
+            <div class="text-center mb-16">
+                <h1 class="text-3xl md:text-5xl font-black uppercase tracking-tight text-white mb-4 page-title">
+                    Forex <span class="text-brand-gold italic">Basics</span>
+                </h1>
+                <div class="w-20 h-1 bg-brand-gold mx-auto mt-6"></div>
+            </div>
+
+            <!-- Content Container -->
+            <div class="bg-brand-dark-blue border border-brand-border rounded-xl p-8 md:p-12 shadow-2xl relative overflow-hidden">
+                <!-- Background decoration -->
+                <div class="absolute top-0 right-0 w-64 h-64 bg-green-600 opacity-5 blur-[100px] -mr-16 -mt-16"></div>
+                
+                <div class="relative z-10 space-y-8 text-gray-300 leading-relaxed">
+                    <h1 id="lotabout-title" class="text-2xl font-bold text-white mb-6"></h1>
+
+                    <div>
+                        <h2 id="what-is-lot-title" class="text-xl font-bold text-brand-gold mb-3"></h2>
+                        <p id="what-is-lot-desc" class="mb-4 text-sm"></p>
+                        <div class="bg-black/30 p-4 rounded-lg border border-brand-border space-y-2 text-sm font-mono text-gray-400">
+                            <p id="lot-1"></p>
+                            <p id="lot-2"></p>
+                            <p id="lot-3"></p>
+                        </div>
+                        <p id="lot-example" class="mt-4 text-sm italic text-gray-500"></p>
+                    </div>
+
+                    <div class="border-t border-brand-border pt-8">
+                        <h2 id="what-is-pip-title" class="text-xl font-bold text-brand-gold mb-3"></h2>
+                        <p id="what-is-pip-desc1" class="mb-2 text-sm"></p>
+                        <p id="what-is-pip-desc2" class="text-sm bg-brand-gold/10 inline-block px-3 py-1 rounded text-brand-gold font-bold"></p>
+                    </div>
+
+                    <div class="border-t border-brand-border pt-8">
+                        <h2 id="profit-loss-title" class="text-xl font-bold text-white mb-4"></h2>
+                        <div class="overflow-x-auto">
+                            <table id="profit-loss-table" class="w-full text-left text-sm text-gray-400">
+                                <thead class="text-xs text-brand-gold uppercase bg-black/30">
+                                    <tr>
+                                        <th class="px-6 py-3 rounded-l-lg">Lot Size</th>
+                                        <th class="px-6 py-3">Pip Movement</th>
+                                        <th class="px-6 py-3 rounded-r-lg">Profit/Loss</th>
+                                    </tr>
+                                </thead>
+                                <tbody class="divide-y divide-brand-border/30">
+                                    <tr class="hover:bg-brand-border/10 transition">
+                                        <td class="px-6 py-4">0.01 Lot</td><td class="px-6 py-4">10 Pips</td><td class="px-6 py-4 font-bold text-white">$1</td>
+                                    </tr>
+                                    <tr class="hover:bg-brand-border/10 transition">
+                                        <td class="px-6 py-4">0.10 Lot</td><td class="px-6 py-4">10 Pips</td><td class="px-6 py-4 font-bold text-white">$10</td>
+                                    </tr>
+                                    <tr class="hover:bg-brand-border/10 transition">
+                                        <td class="px-6 py-4">1.00 Lot</td><td class="px-6 py-4">10 Pips</td><td class="px-6 py-4 font-bold text-white">$100</td>
+                                    </tr>
+                                    <tr class="hover:bg-brand-border/10 transition">
+                                        <td class="px-6 py-4">1.00 Lot</td><td class="px-6 py-4">100 Pips</td><td class="px-6 py-4 font-bold text-green-400">$1,000</td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
+                        <p id="profit-note" class="mt-4 text-xs text-gray-500"></p>
+                    </div>
+                </div>
+
+                <div class="mt-12 pt-8 border-t border-brand-border flex justify-between items-center">
+                    <a href="know_knowledge.html" class="text-gray-500 hover:text-white text-xs font-bold uppercase tracking-widest flex items-center transition">
+                        <i class="fas fa-arrow-left mr-2"></i> Back to Knowledge Base
+                    </a>
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <script src="/static/js/footer.js"></script>
+    <script src="/static/lock.js"></script>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            const savedLang = localStorage.getItem('lang') || 'mn';
+
+            const texts = {
+                en: {
+                    pageTitle: "Forex Basics: Lot & Pip | MGL Signal",
+                    lotaboutTitle: "Forex Basics: What are Lot and Pip?",
+                    whatIsLotTitle: "What is a Lot?",
+                    whatIsLotDesc: "In Forex trading, a 'Lot' refers to the size or volume of your trade. There are 3 main types:",
+                    lot1: "✔ 1.00 Lot = 100,000 units (Standard Lot)",
+                    lot2: "✔ 0.10 Lot = 10,000 units (Mini Lot)",
+                    lot3: "✔ 0.01 Lot = 1,000 units (Micro Lot)",
+                    lotExample: "For example, 0.01 lot means you gain or lose about $0.10 per pip movement.",
+                    whatIsPipTitle: "What is a Pip?",
+                    whatIsPipDesc1: `"Pip" is the smallest price change in a currency pair. For most major pairs, this is 0.0001.`,
+                    whatIsPipDesc2: "Example: If EUR/USD changes from 1.1000 → 1.1001, that is 1 pip.",
+                    profitLossTitle: "Profit/Loss Calculation:",
+                    profitNote: "☝️ Profit and loss may slightly vary depending on the currency pair and broker settings."
+                },
+                mn: {
+                    pageTitle: "Форекс-н үндэс: Лот ба Пип | MGL Signal",
+                    lotaboutTitle: "Форекс-н үндэс: Лот ба Пип гэж юу вэ?",
+                    whatIsLotTitle: "Лот гэж юу вэ?",
+                    whatIsLotDesc: "Форекс арилжаанд 'Лот' гэдэг нь таны арилжааны хэмжээ буюу эзлэхүүнийг хэлнэ. Үндсэн 3 төрөл байдаг:",
+                    lot1: "✔ 1.00 Лот = 100,000 нэгж (Стандарт Лот)",
+                    lot2: "✔ 0.10 Лот = 10,000 нэгж (Мини Лот)",
+                    lot3: "✔ 0.01 Лот = 1,000 нэгж (Микро Лот)",
+                    lotExample: "Жишээлбэл, 0.01 лот гэдэг нь пип хөдөлгөөн тутамд ойролцоогоор $0.10-ын ашиг олох эсвэл алдахыг хэлнэ.",
+                    whatIsPipTitle: "Пип гэж юу вэ?",
+                    whatIsPipDesc1: `"Пип" гэдэг нь валютын хосын үнийн хамгийн бага өөрчлөлт юм. Ихэнх гол хосуудын хувьд энэ нь 0.0001 байна.`,
+                    whatIsPipDesc2: "Жишээ: Хэрэв EUR/USD 1.1000 → 1.1001 болж өөрчлөгдвөл энэ нь 1 пип юм.",
+                    profitLossTitle: "Ашиг/Алдагдлын тооцоолол:",
+                    profitNote: "☝️ Ашиг, алдагдал нь валютын хос болон брокерийн тохиргооноос хамаарч бага зэрэг ялгаатай байж болно."
+                }
+            };
+
+            const setText = (id, text) => {
+                const el = document.getElementById(id);
+                if (el) el.textContent = text;
+            };
+
+            const updateContent = (language) => {
+                const t = texts[language] || texts.en;
+                document.title = t.pageTitle;
+                
+                setText('lotabout-title', t.lotaboutTitle);
+                setText('what-is-lot-title', t.whatIsLotTitle);
+                setText('what-is-lot-desc', t.whatIsLotDesc);
+                setText('lot-1', t.lot1);
+                setText('lot-2', t.lot2);
+                setText('lot-3', t.lot3);
+                setText('lot-example', t.lotExample);
+                setText('what-is-pip-title', t.whatIsPipTitle);
+                setText('what-is-pip-desc1', t.whatIsPipDesc1);
+                setText('what-is-pip-desc2', t.whatIsPipDesc2);
+                setText('profit-loss-title', t.profitLossTitle);
+                setText('profit-note', t.profitNote);
+            };
+
+            updateContent(savedLang);
+
+            const originalChangeLang = window.changeLang;
+            window.changeLang = function(language) {
+                if (originalChangeLang) originalChangeLang(language);
+                updateContent(language);
+            };
+        });
+    </script>
+</body>
+</html>
+</body>
+</html>
