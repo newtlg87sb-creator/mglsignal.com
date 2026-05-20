@@ -1,5 +1,5 @@
 // Энэ файл заавал /api/ хавтас дотор байх ёстой
-// Зам: g:\mglsignal.com\api\forgot-password.js
+// Зам: d:\CODE\mglsignal.com\api\forgot-password.js
 
 import { createClient } from '@supabase/supabase-js';
 
