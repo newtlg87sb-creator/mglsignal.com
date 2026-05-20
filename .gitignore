@@ -1,6 +1,12 @@
-node_modules/
-backend/node_modules/
-.vercel
+# Local environment variables
 .env
-.vscode
-.env*.local
+.env.local
+.env.development.local
+.env.test.local
+.env.production.local
+
+# Dependencies
+node_modules/
+
+# Vercel
+.vercel

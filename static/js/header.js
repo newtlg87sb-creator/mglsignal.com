@@ -181,8 +181,10 @@ const headerHTML = `    <style>
     </nav>
 `;
 
-// Initialize Supabase client in header to use across all pages
-const SB_URL = "https://bsdkbxyjwjljximdxdst.supabase.co";
+// Supabase client-ийг тохируулах
+// Public болгох гэж байгаа тул утгуудыг шууд бичихгүй байхыг зөвлөж байна.
+// Гэвч static JS дээр Environment Variable шууд уншиж болдоггүй тул Anon Key-г энд үлдээж болно.
+const SB_URL = "https://bsdkbxyjwjljximdxdst.supabase.co"; 
 const SB_KEY = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImJzZGtieHlqd2psanhpbWR4ZHN0Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzUzODg1MTQsImV4cCI6MjA5MDk2NDUxNH0.Qwfpd0cEaAKwlv5B-Uh0MlTLR-WH8qt19HHlTxUnUYs";
 const sb = (typeof supabase !== 'undefined') ? supabase.createClient(SB_URL, SB_KEY) : null;
 
