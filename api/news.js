@@ -10,9 +10,14 @@ export default async function handler(req, res) {
   
   try {
     const response = await fetch(`https://min-api.cryptocompare.com/data/v2/news/?lang=EN&api_key=${apiKey}`);
+    
+    if (!response.ok) {
+      throw new Error(`External API responded with status: ${response.status}`);
+    }
+
     const data = await response.json();
     res.status(200).json(data);
   } catch (error) {
-    res.status(500).json({ error: "Мэдээ татахад алдаа гарлаа" });
+    res.status(500).json({ error: "Мэдээ татахад алдаа гарлаа", details: error.message });
   }
 }

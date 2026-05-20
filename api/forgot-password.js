@@ -11,10 +11,16 @@ export default async function handler(req, res) {
 
   const { email, redirectTo } = req.body;
 
-  // Vercel Environment Variables-аас утгуудыг авна
+  const supabaseUrl = process.env.SUPABASE_URL;
+  const supabaseServiceKey = process.env.SUPABASE_SERVICE_ROLE_KEY || process.env.SUPABASE_KEY;
+
+  if (!supabaseUrl || !supabaseServiceKey) {
+    return res.status(500).json({ message: 'Серверийн тохиргоо дутуу байна (API Keys missing).' });
+  }
+
   const supabase = createClient(
-    process.env.SUPABASE_URL,
-    process.env.SUPABASE_SERVICE_ROLE_KEY
+    supabaseUrl,
+    supabaseServiceKey
   );
 
   const { error } = await supabase.auth.resetPasswordForEmail(email, {
