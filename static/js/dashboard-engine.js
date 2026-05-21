@@ -1,10 +1,10 @@
 window.arbInterval = window.arbInterval || null;
 window.detailInterval = window.detailInterval || null;
-window.kucoinSpotInterval = window.kucoinSpotInterval || null; // New interval for KuCoin Spot
-let lastKucoinSpotData = []; // To store fetched KuCoin spot data
-let isKucoinScanning = false;
-let kucoinLogs = [];
-let kucoinSearchQuery = '';
+window.exchangeSpotInterval = window.exchangeSpotInterval || null;
+let lastExchangeSpotData = []; 
+let isExchangeScanning = false;
+let currentExchange = ''; // 'binance', 'mexc', 'bybit', 'kucoin'
+let exchangeSearchQuery = '';
 
 function showTool(toolId) {
     const contentArea = document.getElementById('content-area');
@@ -18,7 +18,7 @@ function showTool(toolId) {
     // Хуучин интервалыг цэвэрлэх
     if (window.arbInterval) clearInterval(window.arbInterval);
     if (window.detailInterval) clearInterval(window.detailInterval);
-    if (window.kucoinSpotInterval) clearInterval(window.kucoinSpotInterval); // Clear new interval
+    if (window.exchangeSpotInterval) clearInterval(window.exchangeSpotInterval);
 
     if (toolId === 'arbitrage') {
         toolTitle.innerHTML = 'Arbitrage <span class="text-brand-gold">Price Comparison</span>';
@@ -69,30 +69,40 @@ function showTool(toolId) {
         fetchArbitrageData();
         if (window.arbInterval) clearInterval(window.arbInterval);
         window.arbInterval = setInterval(fetchArbitrageData, 15000);
-    } else if (toolId === 'kucoin_spot') {
-        toolTitle.innerHTML = 'KuCoin <span class="text-brand-gold">Partner Exchange</span>';
+    } else if (toolId.endsWith('_spot')) {
+        const exchangeId = toolId.replace('_spot', '');
+        currentExchange = exchangeId;
+        
+        const exchangeNames = {
+            binance: 'Binance',
+            mexc: 'MEXC Global',
+            bybit: 'Bybit',
+            kucoin: 'KuCoin'
+        };
+        
+        const displayTitle = exchangeNames[exchangeId] || exchangeId.toUpperCase();
+        
+        toolTitle.innerHTML = `${displayTitle} <span class="text-brand-gold">Partner Exchange</span>`;
         contentArea.innerHTML = `
             <div class="flex flex-col lg:flex-row gap-6 h-[calc(100vh-250px)] animate-in fade-in duration-500">
-                <!-- Left Panel: Logs (Python-той адил) -->
                 <div class="w-full lg:w-1/3 flex flex-col gap-3">
                     <div class="flex items-center justify-between px-2">
                         <h3 class="text-[10px] font-black text-brand-gold uppercase tracking-widest">EXCHANGE LOGS</h3>
-                        <span id="kucoin-status-badge" class="text-[9px] px-2 py-0.5 rounded bg-red-500/20 text-red-400 font-bold uppercase">Stopped</span>
+                        <span id="exchange-status-badge" class="text-[9px] px-2 py-0.5 rounded bg-red-500/20 text-red-400 font-bold uppercase">Stopped</span>
                     </div>
-                    <div id="kucoin-logs" class="flex-1 bg-black border border-brand-border rounded-xl p-4 font-mono text-[10px] text-green-500 overflow-y-auto shadow-inner">
-                        <div class="opacity-50 italic">[System] Ready to scan KuCoin Market...</div>
+                    <div id="exchange-logs" class="flex-1 bg-black border border-brand-border rounded-xl p-4 font-mono text-[10px] text-green-500 overflow-y-auto shadow-inner">
+                        <div class="opacity-50 italic">[System] Ready to scan ${displayTitle} Market...</div>
                     </div>
                 </div>
 
-            <!-- Right Panel: Controls & Table -->
                 <div class="w-full lg:w-2/3 flex flex-col gap-4">
                     <div class="flex flex-col sm:flex-row gap-4">
-                        <button id="btn-kucoin-toggle" onclick="toggleKucoinScan()" class="flex-1 bg-[#009292] hover:opacity-90 text-white font-black py-4 rounded-xl transition-all uppercase text-xs tracking-widest shadow-lg">
-                            CONNECT TO KUCOIN
+                        <button id="btn-exchange-toggle" onclick="toggleExchangeScan()" class="flex-1 bg-[#009292] hover:opacity-90 text-white font-black py-4 rounded-xl transition-all uppercase text-xs tracking-widest shadow-lg">
+                            CONNECT TO ${exchangeId.toUpperCase()}
                         </button>
                         <div class="relative flex-1">
                             <i class="fas fa-search absolute left-4 top-1/2 -translate-y-1/2 text-gray-500 text-xs"></i>
-                            <input type="text" id="kucoin-search" oninput="updateKucoinSearch(this.value)" placeholder="SEARCH SYMBOL..." 
+                            <input type="text" id="exchange-search" oninput="updateExchangeSearch(this.value)" placeholder="SEARCH SYMBOL..." 
                                 class="w-full h-full bg-brand-dark border border-brand-border text-white text-xs rounded-xl pl-11 pr-4 py-3 focus:border-brand-gold outline-none transition-all uppercase font-bold">
                         </div>
                     </div>
@@ -109,7 +119,7 @@ function showTool(toolId) {
                                         <th class="p-4 text-right">Action</th>
                                     </tr>
                                 </thead>
-                                <tbody id="kucoin-spot-table-body" class="text-xs">
+                                <tbody id="exchange-spot-table-body" class="text-xs">
                                     <tr>
                                         <td colspan="5" class="p-12 text-center text-gray-600 font-bold uppercase tracking-widest italic">
                                             Press START to fetch market data
@@ -122,18 +132,18 @@ function showTool(toolId) {
                 </div>
             </div>
         `;
-        resetKucoinState();
+        resetExchangeState();
     }
 }
 
-function resetKucoinState() {
-    isKucoinScanning = false;
-    lastKucoinSpotData = [];
-    if (window.kucoinSpotInterval) clearInterval(window.kucoinSpotInterval);
+function resetExchangeState() {
+    isExchangeScanning = false;
+    lastExchangeSpotData = [];
+    if (window.exchangeSpotInterval) clearInterval(window.exchangeSpotInterval);
 }
 
-function addKucoinLog(msg) {
-    const logContainer = document.getElementById('kucoin-logs');
+function addExchangeLog(msg) {
+    const logContainer = document.getElementById('exchange-logs');
     if (!logContainer) return;
     
     const time = new Date().toLocaleTimeString('en-GB', { hour12: false });
@@ -144,82 +154,90 @@ function addKucoinLog(msg) {
     logContainer.scrollTop = logContainer.scrollHeight;
 }
 
-function updateKucoinSearch(val) {
-    kucoinSearchQuery = val.trim().toUpperCase();
-    renderKucoinSpotTable();
+function updateExchangeSearch(val) {
+    exchangeSearchQuery = val.trim().toUpperCase();
+    renderExchangeSpotTable();
 }
 
-function toggleKucoinScan() {
-    const btn = document.getElementById('btn-kucoin-toggle');
-    const badge = document.getElementById('kucoin-status-badge');
+function toggleExchangeScan() {
+    const btn = document.getElementById('btn-exchange-toggle');
+    const badge = document.getElementById('exchange-status-badge');
     if (!btn || !badge) return;
     
-    if (!isKucoinScanning) {
-        isKucoinScanning = true;
-        btn.innerText = "STOP KUCOIN LIST";
+    if (!isExchangeScanning) {
+        isExchangeScanning = true;
+        btn.innerText = `STOP ${currentExchange.toUpperCase()} LIST`;
         btn.style.backgroundColor = "#dc3545";
         badge.innerText = "Scanning";
         badge.className = "text-[9px] px-2 py-0.5 rounded bg-green-500/20 text-green-400 font-bold uppercase animate-pulse";
         
-        addKucoinLog("KuCoin-аас мэдээлэл татаж байна...");
-        fetchKucoinSpotData();
-        if (window.kucoinSpotInterval) clearInterval(window.kucoinSpotInterval);
-        window.kucoinSpotInterval = setInterval(fetchKucoinSpotData, 5000);
+        const exchangeNames = {
+            binance: 'Binance',
+            mexc: 'MEXC',
+            bybit: 'Bybit',
+            kucoin: 'KuCoin'
+        };
+        addExchangeLog(`${exchangeNames[currentExchange]}-аас мэдээлэл татаж байна...`);
+        fetchExchangeSpotData();
+        if (window.exchangeSpotInterval) clearInterval(window.exchangeSpotInterval);
+        window.exchangeSpotInterval = setInterval(fetchExchangeSpotData, 5000);
     } else {
-        isKucoinScanning = false;
-        btn.innerText = "START KUCOIN LIST";
+        isExchangeScanning = false;
+        btn.innerText = `START ${currentExchange.toUpperCase()} LIST`;
         btn.style.backgroundColor = "#009292";
         badge.innerText = "Stopped";
         badge.className = "text-[9px] px-2 py-0.5 rounded bg-red-500/20 text-red-400 font-bold uppercase";
         
-        addKucoinLog("Scanning halted by user.");
-        if (window.kucoinSpotInterval) clearInterval(window.kucoinSpotInterval);
+        addExchangeLog("Scanning halted by user.");
+        if (window.exchangeSpotInterval) clearInterval(window.exchangeSpotInterval);
     }
 }
 
-async function fetchKucoinSpotData() {
-    if (!isKucoinScanning) return;
+async function fetchExchangeSpotData() {
+    if (!isExchangeScanning) return;
     
     try {
         const response = await fetch('/api/arbitrage');
         
         if (!response.ok) {
-             addKucoinLog(`⚠️ Сервер түр саатлаа (${response.status}). Дахин оролдож байна...`);
+             addExchangeLog(`⚠️ Сервер түр саатлаа (${response.status}). Дахин оролдож байна...`);
              return;
         }
 
         const result = await response.json();
-        console.log("API Result:", result); // Дата ирж байгаа эсэхийг хянах
         
         if (result && Array.isArray(result.data)) {
-            // api/arbitrage.js-ээс ирж буй өгөгдлийн бүтцэд тааруулж форматлах
-            const newData = result.data.filter(item => item.k).map(item => ({
+            // Биржийн key-г тодорхойлох (b: binance, m: mexc, by: bybit, k: kucoin)
+            const keyMap = { binance: 'b', mexc: 'm', bybit: 'by', kucoin: 'k' };
+            const key = keyMap[currentExchange];
+            
+            const newData = result.data.filter(item => item[key]).map(item => ({
                 symbol: item.symbol,
-                last: item.k.p,
-                bid: item.k.bp,
-                ask: item.k.ap
+                last: item[key].p,
+                bid: item[key].bp,
+                ask: item[key].ap
             }));
             
-            if (lastKucoinSpotData.length === 0) {
-                addKucoinLog(`Нийт ${newData.length} USDT хос олдлоо.`);
+            if (lastExchangeSpotData.length === 0) {
+                addExchangeLog(`Нийт ${newData.length} USDT хос олдлоо.`);
             }
-            lastKucoinSpotData = newData;
-            renderKucoinSpotTable();
+            lastExchangeSpotData = newData;
+            renderExchangeSpotTable();
         } else {
             throw new Error(result.msg || "Unknown API error");
         }
     } catch (error) {
-        addKucoinLog(`⚠️ Алдаа: ${error.message}`);
+        addExchangeLog(`⚠️ Алдаа: ${error.message}`);
     }
 }
 
-function renderKucoinSpotTable() {
-    const tableBody = document.getElementById('kucoin-spot-table-body');
+function renderExchangeSpotTable() {
+    const tableBody = document.getElementById('exchange-spot-table-body');
     if (!tableBody) return;
 
-    let filteredData = [...lastKucoinSpotData];
-    if (kucoinSearchQuery) {
-        filteredData = filteredData.filter(item => item.symbol.includes(kucoinSearchQuery));
+    let filteredData = [...lastExchangeSpotData];
+    if (exchangeSearchQuery) {
+        filteredData = filteredData.filter(item => item.symbol.includes(exchangeSearchQuery));
     }
 
     if (filteredData.length === 0) {
@@ -228,13 +246,22 @@ function renderKucoinSpotTable() {
     }
 
     tableBody.innerHTML = filteredData.map(item => {
-        const tradeUrl = `https://www.kucoin.com/trade/${item.symbol.replace('USDT','-USDT')}`;
+        // Бирж тус бүрийн арилжааны URL үүсгэх
+        let tradeUrl = '';
+        if (currentExchange === 'binance') tradeUrl = `https://www.binance.com/en/trade/${item.symbol.replace('USDT','_USDT')}`;
+        else if (currentExchange === 'mexc') tradeUrl = `https://www.mexc.com/exchange/${item.symbol.replace('USDT','_USDT')}`;
+        else if (currentExchange === 'bybit') tradeUrl = `https://www.bybit.com/en/trade/spot/${item.symbol.replace('USDT','')}/USDT`;
+        else if (currentExchange === 'kucoin') tradeUrl = `https://www.kucoin.com/trade/${item.symbol.replace('USDT','-USDT')}`;
+
+        // Үнэ форматлах функцийг arbitrage-scanner.js-ээс ашиглаж байгаа гэж үзэв
+        const priceFormatter = typeof formatArbPrice === 'function' ? formatArbPrice : (p) => p;
+
         return `
             <tr class="border-b border-brand-border hover:bg-white/5 transition-colors">
                 <td class="p-4 font-black text-white italic text-xs border-r border-brand-border/30 bg-black/20">${item.symbol}</td>
-                <td class="p-4 font-mono text-[11px] text-gray-400">$${formatArbPrice(item.last)}</td>
-                <td class="p-4 font-mono text-[11px] text-red-500 font-bold">$${formatArbPrice(item.bid)}</td>
-                <td class="p-4 font-mono text-[11px] text-green-500 font-bold">$${formatArbPrice(item.ask)}</td>
+                <td class="p-4 font-mono text-[11px] text-gray-400">$${priceFormatter(item.last)}</td>
+                <td class="p-4 font-mono text-[11px] text-red-500 font-bold">$${priceFormatter(item.bid)}</td>
+                <td class="p-4 font-mono text-[11px] text-green-500 font-bold">$${priceFormatter(item.ask)}</td>
                 <td class="p-4 text-right">
                     <a href="${tradeUrl}" target="_blank" class="text-[10px] font-black text-brand-gold hover:text-white transition uppercase tracking-tighter">
                         TRADE <i class="fas fa-external-link-alt ml-1"></i>
