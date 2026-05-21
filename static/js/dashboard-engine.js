@@ -331,7 +331,14 @@ function renderExchangeSpotTable() {
 
 async function fetchMarketIntelligenceData() {
     const tableBody = document.getElementById('market-data-body');
-    if (!tableBody || typeof sb === 'undefined' || !sb) return;
+    
+    if (!tableBody) return;
+
+    if (typeof sb === 'undefined' || !sb) {
+        console.error("Supabase client (sb) is not initialized. Check if library is loaded.");
+        tableBody.innerHTML = `<tr><td colspan="10" class="p-8 text-center text-red-500 font-bold uppercase">Supabase Client Error - Check Console</td></tr>`;
+        return;
+    }
 
     try {
         const { data, error } = await sb
