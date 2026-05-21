@@ -20,7 +20,6 @@
     <link rel="stylesheet" href="/static/main_style.css">
 </head>
 <body class="bg-brand-dark text-white font-inter flex flex-col min-h-screen">
-    <script src="/static/js/main_translate.js"></script>
     <script src="/static/js/header.js"></script>
 
     <main class="flex-grow pt-24 pb-12 px-6">
@@ -35,68 +34,68 @@
             <div class="bg-brand-dark-blue border border-brand-border rounded-xl p-8 md:p-12 shadow-2xl relative overflow-hidden">
                 <div class="relative z-10 space-y-8 text-gray-300 leading-relaxed">
                     <div class="text-center mb-10">
-                        <h2 data-i18n="tp-header" class="text-[10px] font-black text-brand-gold uppercase tracking-[0.4em] mb-4">BSC Wallet Creation/Import Tutorial</h2>
-                        <h1 data-i18n="tp-title" class="text-2xl md:text-3xl font-black text-white mb-4">How to Create and Import BSC Wallet?</h1>
-                        <p data-i18n="tp-desc" class="text-sm text-gray-400 max-w-2xl mx-auto italic">This is a tokenpocket wallet tutorial, and also a binance chain wallet tutorial, guide to creating and importing BSC wallets in Tokenpocket.</p>
+                        <h2 id="tp-header" class="text-[10px] font-black text-brand-gold uppercase tracking-[0.4em] mb-4">BSC Wallet Creation/Import Tutorial</h2>
+                        <h1 id="tp-title" class="text-2xl md:text-3xl font-black text-white mb-4">How to Create and Import BSC Wallet?</h1>
+                        <p id="tp-desc" class="text-sm text-gray-400 max-w-2xl mx-auto italic">This is a tokenpocket wallet tutorial, and also a binance chain wallet tutorial, guide to creating and importing BSC wallets in Tokenpocket.</p>
                     </div>
                     
-                    <p data-i18n="tp-p2" class="text-sm">This guide provides a simple, step-by-step walkthrough on how to create and import a BSC wallet using TokenPocket. Whether you're a new or existing user, you'll learn everything from selecting the right network to securely backing up your private keys, ensuring a smooth and safe start to your BSC journey.</p>
+                    <p id="tp-p2" class="text-sm">This guide provides a simple, step-by-step walkthrough on how to create and import a BSC wallet using TokenPocket. Whether you're a new or existing user, you'll learn everything from selecting the right network to securely backing up your private keys, ensuring a smooth and safe start to your BSC journey.</p>
 
                     <!-- Part 1: Create -->
                     <div class="space-y-10 pt-6">
-                        <h2 data-i18n="tp-part1-t" class="text-xl font-black text-brand-gold uppercase tracking-widest border-b border-brand-border pb-2">Part 1: Create BSC Wallet</h2>
-                        <p data-i18n="tp-part1-d" class="text-sm">If you don't have a BSC wallet or BSC USDT wallet yet, follow our guide to create one first.</p>
+                        <h2 id="tp-part1-t" class="text-xl font-black text-brand-gold uppercase tracking-widest border-b border-brand-border pb-2">Part 1: Create BSC Wallet</h2>
+                        <p id="tp-part1-d" class="text-sm">If you don't have a BSC wallet or BSC USDT wallet yet, follow our guide to create one first.</p>
                         
                         <!-- Open TokenPocket -->
                         <div class="space-y-6">
-                            <h3 data-i18n="tp-s1-t" class="text-lg font-bold text-white flex items-center"><span class="w-8 h-8 bg-brand-gold text-black rounded-full flex items-center justify-center mr-3 text-xs">1</span> Open TokenPocket</h3>
+                            <h3 class="text-lg font-bold text-white flex items-center"><span class="w-8 h-8 bg-brand-gold text-black rounded-full flex items-center justify-center mr-3 text-xs">1</span> <span id="tp-s1-t">Open TokenPocket</span></h3>
                             
                             <div class="bg-black/20 p-6 rounded-xl border border-brand-border space-y-4">
-                                <h4 data-i18n="tp-s1-new-u" class="text-brand-gold font-bold text-sm uppercase">For New Users Creating a Wallet:</h4>
-                                <p data-i18n="tp-s1-new-d" class="text-sm">Download and open your TokenPocket. On the initial interface, you can choose between [I have an account] or [No accounts] to create or import a wallet. When selecting the wallet network (blockchain), you can either directly select or search for the desired network to proceed with creation/import.</p>
+                                <h4 id="tp-s1-new-u" class="text-brand-gold font-bold text-sm uppercase">For New Users Creating a Wallet:</h4>
+                                <p id="tp-s1-new-d" class="text-sm">Download and open your TokenPocket. On the initial interface, you can choose between [I have an account] or [No accounts] to create or import a wallet. When selecting the wallet network (blockchain), you can either directly select or search for the desired network to proceed with creation/import.</p>
                                 <img src="/static/images/tp1.avif" alt="New users creating a wallet" class="rounded-lg border border-brand-border w-full h-auto shadow-2xl">
                             </div>
 
                             <div class="bg-black/20 p-6 rounded-xl border border-brand-border space-y-4">
-                                <h4 data-i18n="tp-s1-exist-u" class="text-brand-gold font-bold text-sm uppercase">For Existing Users Creating a Wallet:</h4>
-                                <p data-i18n="tp-s1-exist-d" class="text-sm">Open TokenPocket, click the first entry [Create Wallet] in the top right corner of the interface. When selecting the wallet network (blockchain), you can either directly select or search for the desired network to proceed with creation/import.</p>
+                                <h4 id="tp-s1-exist-u" class="text-brand-gold font-bold text-sm uppercase">For Existing Users Creating a Wallet:</h4>
+                                <p id="tp-s1-exist-d" class="text-sm">Open TokenPocket, click the first entry [Create Wallet] in the top right corner of the interface. When selecting the wallet network (blockchain), you can either directly select or search for the desired network to proceed with creation/import.</p>
                                 <img src="/static/images/tp2.avif" alt="Existing users creating a wallet" class="rounded-lg border border-brand-border w-full h-auto shadow-2xl">
                             </div>
                         </div>
 
                         <!-- Select Network -->
                         <div class="space-y-4">
-                            <h3 data-i18n="tp-s2-t" class="text-lg font-bold text-white flex items-center"><span class="w-8 h-8 bg-brand-gold text-black rounded-full flex items-center justify-center mr-3 text-xs">2</span> Select Wallet Network</h3>
-                            <p data-i18n="tp-s2-d" class="text-sm">Choose [BNB Chain] in the wallet network selection and click [Create Wallet]. In the creation method, select [Create Wallet].</p>
+                            <h3 class="text-lg font-bold text-white flex items-center"><span class="w-8 h-8 bg-brand-gold text-black rounded-full flex items-center justify-center mr-3 text-xs">2</span> <span id="tp-s2-t">Select Wallet Network</span></h3>
+                            <p id="tp-s2-d" class="text-sm">Choose [BNB Chain] in the wallet network selection and click [Create Wallet]. In the creation method, select [Create Wallet].</p>
                             <img src="/static/images/tp3.avif" alt="Select wallet network" class="rounded-lg border border-brand-border w-full h-auto shadow-2xl">
                         </div>
 
                         <!-- Set Wallet Details -->
                         <div class="space-y-4">
-                            <h3 data-i18n="tp-s3-t" class="text-lg font-bold text-white flex items-center"><span class="w-8 h-8 bg-brand-gold text-black rounded-full flex items-center justify-center mr-3 text-xs">3</span> Set Wallet Details</h3>
-                            <p data-i18n="tp-s3-d" class="text-sm">Enter the wallet name, password, and optional hint information, then click [Create Wallet]. On the mnemonic phrase backup page, carefully review the security tips and ensure to save the mnemonic phrase using offline methods.</p>
-                            <p data-i18n="tp-s3-adv" class="text-xs text-gray-500">Click [Advanced Settings] to enable the Passphrase option for wallet creation. If not needed, directly click [Generate Mnemonic].</p>
+                            <h3 class="text-lg font-bold text-white flex items-center"><span class="w-8 h-8 bg-brand-gold text-black rounded-full flex items-center justify-center mr-3 text-xs">3</span> <span id="tp-s3-t">Set Wallet Details</span></h3>
+                            <p id="tp-s3-d" class="text-sm">Enter the wallet name, password, and optional hint information, then click [Create Wallet]. On the mnemonic phrase backup page, carefully review the security tips and ensure to save the mnemonic phrase using offline methods.</p>
+                            <p id="tp-s3-adv" class="text-xs text-gray-500">Click [Advanced Settings] to enable the Passphrase option for wallet creation. If not needed, directly click [Generate Mnemonic].</p>
                             <img src="/static/images/tp4.avif" alt="Set your password" class="rounded-lg border border-brand-border w-full h-auto shadow-2xl">
                         </div>
 
                         <!-- Mnemonic Phrase Backup -->
                         <div class="space-y-4">
-                            <h3 data-i18n="tp-s4-t" class="text-lg font-bold text-white flex items-center"><span class="w-8 h-8 bg-brand-gold text-black rounded-full flex items-center justify-center mr-3 text-xs">4</span> Mnemonic Phrase Backup</h3>
-                            <p data-i18n="tp-s4-d" class="text-sm">On the mnemonic phrase backup page, ensure to back up the displayed mnemonic phrase offline. After completing the backup, click [Backup Complete, Proceed to Verification].</p>
-                            <p data-i18n="tp-s4-pass" class="text-sm">If using the Passphrase feature, make sure to remember it. Only the correct mnemonic phrase combined with the correct Passphrase can import the correct wallet.</p>
+                            <h3 class="text-lg font-bold text-white flex items-center"><span class="w-8 h-8 bg-brand-gold text-black rounded-full flex items-center justify-center mr-3 text-xs">4</span> <span id="tp-s4-t">Mnemonic Phrase Backup</span></h3>
+                            <p id="tp-s4-d" class="text-sm">On the mnemonic phrase backup page, ensure to back up the displayed mnemonic phrase offline. After completing the backup, click [Backup Complete, Proceed to Verification].</p>
+                            <p id="tp-s4-pass" class="text-sm">If using the Passphrase feature, make sure to remember it. Only the correct mnemonic phrase combined with the correct Passphrase can import the correct wallet.</p>
                             <img src="/static/images/tp5.avif" alt="Set passphrase" class="rounded-lg border border-brand-border w-full h-auto shadow-2xl">
                             <div class="bg-brand-gold/10 p-4 rounded-lg border border-brand-gold/20">
-                                <p data-i18n="tp-rec" class="text-brand-gold text-[10px] font-black uppercase tracking-widest">Recommend: What is the private key, mnemonic and wallet password</p>
+                                <p id="tp-rec" class="text-brand-gold text-[10px] font-black uppercase tracking-widest">Recommend: What is the private key, mnemonic and wallet password</p>
                             </div>
                         </div>
 
                         <!-- Verify Mnemonic Phrase -->
                         <div class="space-y-4">
-                            <h3 data-i18n="tp-s5-t" class="text-lg font-bold text-white flex items-center"><span class="w-8 h-8 bg-brand-gold text-black rounded-full flex items-center justify-center mr-3 text-xs">5</span> Verify Mnemonic Phrase</h3>
-                            <p data-i18n="tp-s5-d" class="text-sm">On the verification page, you will see 12 shuffled words. Arrange them in the correct order to pass the verification. Once verified, the BSC wallet will be successfully created.</p>
+                            <h3 class="text-lg font-bold text-white flex items-center"><span class="w-8 h-8 bg-brand-gold text-black rounded-full flex items-center justify-center mr-3 text-xs">5</span> <span id="tp-s5-t">Verify Mnemonic Phrase</span></h3>
+                            <p id="tp-s5-d" class="text-sm">On the verification page, you will see 12 shuffled words. Arrange them in the correct order to pass the verification. Once verified, the BSC wallet will be successfully created.</p>
                             <div class="bg-red-900/20 border border-red-500/30 p-5 rounded-xl">
-                                <h4 data-i18n="tp-attn" class="text-red-400 font-black text-xs uppercase mb-2">Attention：</h4>
-                                <p data-i18n="tp-warn" class="text-red-400 text-sm font-bold">Do not share your private keys or recovery phrases with others, as doing so may result in the loss of your assets！</p>
+                                <h4 id="tp-attn" class="text-red-400 font-black text-xs uppercase mb-2">Attention：</h4>
+                                <p id="tp-warn" class="text-red-400 text-sm font-bold">Do not share your private keys or recovery phrases with others, as doing so may result in the loss of your assets！</p>
                             </div>
                             <img src="/static/images/tp6.avif" alt="Verify Mnemonic Phrase" class="rounded-lg border border-brand-border w-full h-auto shadow-2xl">
                         </div>
@@ -104,39 +103,39 @@
 
                     <!-- Part 2: Import -->
                     <div class="space-y-10 pt-10 border-t border-brand-border">
-                        <h2 data-i18n="tp-part2-t" class="text-xl font-black text-brand-gold uppercase tracking-widest border-b border-brand-border pb-2">Part 2: Import BSC Wallet</h2>
+                        <h2 id="tp-part2-t" class="text-xl font-black text-brand-gold uppercase tracking-widest border-b border-brand-border pb-2">Part 2: Import BSC Wallet</h2>
                         
                         <!-- Open TokenPocket (Import) -->
                         <div class="space-y-4">
-                            <h3 data-i18n="tp-i1-t" class="text-lg font-bold text-white flex items-center"><span class="w-8 h-8 bg-brand-gold text-black rounded-full flex items-center justify-center mr-3 text-xs">1</span> Open TokenPocket</h3>
-                            <p data-i18n="tp-i1-d" class="text-sm">Click the first entry [Create Wallet] in the top right corner of the interface. Select Binance Smart Chain in the wallet network and click [Import Wallet].</p>
+                            <h3 class="text-lg font-bold text-white flex items-center"><span class="w-8 h-8 bg-brand-gold text-black rounded-full flex items-center justify-center mr-3 text-xs">1</span> <span id="tp-i1-t">Open TokenPocket</span></h3>
+                            <p id="tp-i1-d" class="text-sm">Click the first entry [Create Wallet] in the top right corner of the interface. Select Binance Smart Chain in the wallet network and click [Import Wallet].</p>
                             <img src="/static/images/tp7.avif" alt="click wallet icon" class="rounded-lg border border-brand-border w-full h-auto shadow-2xl">
                         </div>
 
                         <!-- Choose Import Method -->
                         <div class="space-y-4">
-                            <h3 data-i18n="tp-i2-t" class="text-lg font-bold text-white flex items-center"><span class="w-8 h-8 bg-brand-gold text-black rounded-full flex items-center justify-center mr-3 text-xs">2</span> Choose Import Method</h3>
-                            <p data-i18n="tp-i2-d" class="text-sm">You can choose to import via mnemonic phrase or private key. You can also switch between these methods on the import interface. Ensure you input your mnemonic phrase or private key in a secure environment to prevent theft by malicious tools.</p>
-                            <p data-i18n="tp-i2-adv" class="text-xs text-gray-500 italic">If you have set a Passphrase, click [Advanced mode].</p>
+                            <h3 class="text-lg font-bold text-white flex items-center"><span class="w-8 h-8 bg-brand-gold text-black rounded-full flex items-center justify-center mr-3 text-xs">2</span> <span id="tp-i2-t">Choose Import Method</span></h3>
+                            <p id="tp-i2-d" class="text-sm">You can choose to import via mnemonic phrase or private key. You can also switch between these methods on the import interface. Ensure you input your mnemonic phrase or private key in a secure environment to prevent theft by malicious tools.</p>
+                            <p id="tp-i2-adv" class="text-xs text-gray-500 italic">If you have set a Passphrase, click [Advanced mode].</p>
                             <img src="/static/images/tp8.avif" alt="Choose import method" class="rounded-lg border border-brand-border w-full h-auto shadow-2xl">
                         </div>
 
                         <!-- Enter Passphrase -->
                         <div class="space-y-4">
-                            <h3 data-i18n="tp-i3-t" class="text-lg font-bold text-white flex items-center"><span class="w-8 h-8 bg-brand-gold text-black rounded-full flex items-center justify-center mr-3 text-xs">3</span> Enter Passphrase (If Applicable)</h3>
-                            <p data-i18n="tp-i3-d" class="text-sm">In Advanced Settings, enter the correct Passphrase, click Confirm, and import it into the wallet. This completes the import process for the BSC wallet.</p>
+                            <h3 class="text-lg font-bold text-white flex items-center"><span class="w-8 h-8 bg-brand-gold text-black rounded-full flex items-center justify-center mr-3 text-xs">3</span> <span id="tp-i3-t">Enter Passphrase (If Applicable)</span></h3>
+                            <p id="tp-i3-d" class="text-sm">In Advanced Settings, enter the correct Passphrase, click Confirm, and import it into the wallet. This completes the import process for the BSC wallet.</p>
                             <img src="/static/images/tp9.avif" alt="Enter passphrase" class="rounded-lg border border-brand-border w-full h-auto shadow-2xl">
                         </div>
                     </div>
 
                     <!-- FAQ & Conclusion -->
                     <div id="tp-faq-container" class="space-y-6 pt-10 border-t border-brand-border">
-                        <h2 data-i18n="tp-faq-t" class="text-xl font-black text-white uppercase tracking-widest">FAQs About BSC Wallet</h2>
+                        <h2 id="tp-faq-t" class="text-xl font-black text-white uppercase tracking-widest">FAQs About BSC Wallet</h2>
                         <!-- Content added via script if needed, or kept as provided in the turn -->
                     </div>
 
                     <div class="pt-10 text-center border-t border-brand-border">
-                        <p data-i18n="tp-conc" class="text-sm italic text-gray-400 mb-8 max-w-2xl mx-auto">Now that you know how to create and import a BSC wallet with TokenPocket, you're ready to explore the vast world of decentralized applications on the BNB Chain. Remember, the most critical step is always to secure your mnemonic phrase and private keys. Keep them offline and safe from prying eyes to ensure the security of your assets. With your new wallet, you can now seamlessly engage with DeFi, dApps, and the entire BSC ecosystem.</p>
+                        <p id="tp-conc" class="text-sm italic text-gray-400 mb-8 max-w-2xl mx-auto">Now that you know how to create and import a BSC wallet with TokenPocket, you're ready to explore the vast world of decentralized applications on the BNB Chain. Remember, the most critical step is always to secure your mnemonic phrase and private keys. Keep them offline and safe from prying eyes to ensure the security of your assets. With your new wallet, you can now seamlessly engage with DeFi, dApps, and the entire BSC ecosystem.</p>
                         <a href="https://www.tokenpocket.pro/" target="_blank" class="inline-block bg-brand-gold text-black font-black py-4 px-12 rounded-lg hover:bg-white transition shadow-lg shadow-brand-gold/20 uppercase text-sm tracking-widest">
                             Download TokenPocket
                         </a>
@@ -144,8 +143,8 @@
                 </div>
 
                 <div class="mt-12 pt-10 border-t border-brand-border flex justify-between items-center">
-                    <a href="main_knowledge.html" data-i18n="back-to-home" class="text-gray-500 hover:text-white text-xs font-bold uppercase tracking-widest flex items-center transition">
-                        <i class="fas fa-arrow-left mr-2"></i> Back to Knowledge Base
+                    <a href="main_knowledge.html" class="text-gray-500 hover:text-white text-xs font-bold uppercase tracking-widest flex items-center transition">
+                        <i class="fas fa-arrow-left mr-2"></i> <span id="back-to-home">Back to Knowledge Base</span>
                     </a>
                 </div>
             </div>
@@ -153,5 +152,104 @@
     </main>
     <script src="/static/js/footer.js"></script>
     <script src="/static/lock.js"></script>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            const savedLang = localStorage.getItem('lang') || 'mn';
+            const texts = {
+                en: {
+                    tpHeader: "BSC Wallet Creation/Import Tutorial",
+                    tpTitle: "How to Create and Import BSC Wallet?",
+                    tpDesc: "This is a tokenpocket wallet tutorial, and also a binance chain wallet tutorial, guide to creating and importing BSC wallets in Tokenpocket.",
+                    tpP2: "This guide provides a simple, step-by-step walkthrough on how to create and import a BSC wallet using TokenPocket. Whether you're a new or existing user, you'll learn everything from selecting the right network to securely backing up your private keys, ensuring a smooth and safe start to your BSC journey.",
+                    tpPart1T: "Part 1: Create BSC Wallet",
+                    tpPart1D: "If you don't have a BSC wallet or BSC USDT wallet yet, follow our guide to create one first.",
+                    tpS1T: "Open TokenPocket",
+                    tpS1NewU: "For New Users Creating a Wallet:",
+                    tpS1NewD: "Download and open your TokenPocket. On the initial interface, you can choose between [I have an account] or [No accounts] to create or import a wallet. When selecting the wallet network (blockchain), you can either directly select or search for the desired network to proceed with creation/import.",
+                    tpS1ExistU: "For Existing Users Creating a Wallet:",
+                    tpS1ExistD: "Open TokenPocket, click the first entry [Create Wallet] in the top right corner of the interface. When selecting the wallet network (blockchain), you can either directly select or search for the desired network to proceed with creation/import.",
+                    tpS2T: "Select Wallet Network",
+                    tpS2D: "Choose [BNB Chain] in the wallet network selection and click [Create Wallet]. In the creation method, select [Create Wallet].",
+                    tpS3T: "Set Wallet Details",
+                    tpS3D: "Enter the wallet name, password, and optional hint information, then click [Create Wallet]. On the mnemonic phrase backup page, carefully review the security tips and ensure to save the mnemonic phrase using offline methods.",
+                    tpS3Adv: "Click [Advanced Settings] to enable the Passphrase option for wallet creation. If not needed, directly click [Generate Mnemonic].",
+                    tpS4T: "Mnemonic Phrase Backup",
+                    tpS4D: "On the mnemonic phrase backup page, ensure to back up the displayed mnemonic phrase offline. After completing the backup, click [Backup Complete, Proceed to Verification].",
+                    tpS4Pass: "If using the Passphrase feature, make sure to remember it. Only the correct mnemonic phrase combined with the correct Passphrase can import the correct wallet.",
+                    tpRec: "Recommend: What is the private key, mnemonic and wallet password",
+                    tpS5T: "Verify Mnemonic Phrase",
+                    tpS5D: "On the verification page, you will see 12 shuffled words. Arrange them in the correct order to pass the verification. Once verified, the BSC wallet will be successfully created.",
+                    tpAttn: "Attention：",
+                    tpWarn: "Do not share your private keys or recovery phrases with others, as doing so may result in the loss of your assets！",
+                    tpPart2T: "Part 2: Import BSC Wallet",
+                    tpI1T: "Open TokenPocket",
+                    tpI1D: "Click the first entry [Create Wallet] in the top right corner of the interface. Select Binance Smart Chain in the wallet network and click [Import Wallet].",
+                    tpI2T: "Choose Import Method",
+                    tpI2D: "You can choose to import via mnemonic phrase or private key. You can also switch between these methods on the import interface. Ensure you input your mnemonic phrase or private key in a secure environment to prevent theft by malicious tools.",
+                    tpI2Adv: "If you have set a Passphrase, click [Advanced mode].",
+                    tpI3T: "Enter Passphrase (If Applicable)",
+                    tpI3D: "In Advanced Settings, enter the correct Passphrase, click Confirm, and import it into the wallet. This completes the import process for the BSC wallet.",
+                    tpFaqT: "FAQs About BSC Wallet",
+                    tpConc: "Now that you know how to create and import a BSC wallet with TokenPocket, you're ready to explore the vast world of decentralized applications on the BNB Chain. Remember, the most critical step is always to secure your mnemonic phrase and private keys. Keep them offline and safe from prying eyes to ensure the security of your assets. With your new wallet, you can now seamlessly engage with DeFi, dApps, and the entire BSC ecosystem.",
+                    backToHome: "Back to Knowledge Base"
+                },
+                mn: {
+                    tpHeader: "BSC Хэтэвч Үүсгэх/Импортлох Заавар",
+                    tpTitle: "BSC хэтэвчийг хэрхэн үүсгэх болон импортлох вэ?",
+                    tpDesc: "Энэ бол TokenPocket хэтэвч болон Binance Chain хэтэвч ашиглах заавар бөгөөд BSC хэтэвчийг TokenPocket-д хэрхэн үүсгэх, импортлохыг харуулна.",
+                    tpP2: "Энэхүү заавар нь TokenPocket ашиглан BSC хэтэвчийг хэрхэн үүсгэх болон импортлох талаарх энгийн, алхам алхмаар тайлбар юм. Та шинэ эсвэл хуучин хэрэглэгч байсан ч сүлжээгээ зөв сонгохоос эхлээд нууц түлхүүрээ хэрхэн аюулгүй хадгалах хүртэл бүгдийг сурах болно.",
+                    tpPart1T: "1-р хэсэг: BSC хэтэвч үүсгэх",
+                    tpPart1D: "Хэрэв танд BSC хэтэвч эсвэл BSC USDT хэтэвч байхгүй бол эхлээд энэ зааврыг дагаж үүсгэнэ үү.",
+                    tpS1T: "TokenPocket-г нээх",
+                    tpS1NewU: "Шинэ хэрэглэгч хэтэвч үүсгэхэд:",
+                    tpS1NewD: "TokenPocket-оо татаж аваад нээгээрэй. Эхний нүүрэн дээр [I have an account] эсвэл [No accounts] гэсэн сонголтуудаас хэтэвч үүсгэх эсвэл импортлохыг сонгож болно. Сүлжээ (блокчэйн) сонгохдоо хүссэн сүлжээгээ шууд сонгох эсвэл хайж олоод үүсгэж/импортлоно.",
+                    tpS1ExistU: "Бүртгэлтэй хэрэглэгч хэтэвч үүсгэхэд:",
+                    tpS1ExistD: "TokenPocket-г нээгээд баруун дээд буланд байрлах [Create Wallet] хэсэгт дарна уу. Сүлжээ сонгохдоо хүссэн сүлжээгээ шууд сонгох эсвэл хайж олоод үүсгэж/импортлоно.",
+                    tpS2T: "Сүлжээгээ сонгох",
+                    tpS2D: "Сүлжээ сонгох хэсэгт [BNB Chain]-ийг сонгоод [Create Wallet] дээр дарна уу. Үүсгэх аргыг [Create Wallet] гэж сонгоно.",
+                    tpS3T: "Хэтэвчний мэдээллийг тохируулах",
+                    tpS3D: "Хэтэвчний нэр, нууц үг, болон сануулах мэдээллийг (заавал биш) оруулаад [Create Wallet] дээр дарна уу. Сануулах хэллэг (mnemonic) нөөцлөх хуудсан дээрх аюулгүй байдлын зөвлөмжүүдийг анхааралтай уншиж, хэллэгийг интернэтээс гадуур (offline) хадгалахаа мартуузай.",
+                    tpS3Adv: "[Advanced Settings] дээр дарж Passphrase сонголтыг идэвхжүүлж болно. Шаардлагагүй бол шууд [Generate Mnemonic] дээр дарна уу.",
+                    tpS4T: "Сануулах хэллэгийг (Mnemonic) нөөцлөх",
+                    tpS4D: "Сануулах хэллэг нөөцлөх хуудсан дээр харагдаж буй үгсийг заавал офлайн байдлаар тэмдэглэж аваарай. Нөөцөлж дууссаны дараа [Backup Complete, Proceed to Verification] дээр дарна уу.",
+                    tpS4Pass: "Хэрэв Passphrase ашиглаж байгаа бол түүнийгээ заавал санаарай. Зөвхөн зөв сануулах хэллэг болон зөв Passphrase хосолсон тохиолдолд л таны хэтэвч зөв сэргээгдэх болно.",
+                    tpRec: "Зөвлөмж: Нууц түлхүүр (private key), сануулах хэллэг (mnemonic) болон хэтэвчний нууц үг гэж юу вэ?",
+                    tpS5T: "Сануулах хэллэгийг баталгаажуулах",
+                    tpS5D: "Баталгаажуулах хуудсан дээр 12 холилдсон үг харагдах болно. Тэдгээрийг зөв дарааллаар нь байрлуулж баталгаажуулна. Баталгаажсаны дараа BSC хэтэвч амжилттай үүсэх болно.",
+                    tpAttn: "Анхаарах：",
+                    tpWarn: "Өөрийн нууц түлхүүр болон сэргээх хэллэгийг бусадтай хэзээ ч бүү хуваалц, ингэснээр та хөрөнгөө бүрмөсөн алдах эрсдэлтэй!",
+                    tpPart2T: "2-р хэсэг: BSC хэтэвч импортлох",
+                    tpI1T: "TokenPocket-г нээх",
+                    tpI1D: "Баруун дээд буланд байрлах [Create Wallet] хэсэгт дарна уу. Сүлжээ сонгох хэсэгт Binance Smart Chain-ийг сонгоод [Import Wallet] дээр дарна уу.",
+                    tpI2T: "Импортлох аргыг сонгох",
+                    tpI2D: "Та сануулах хэллэг (mnemonic) эсвэл нууц түлхүүрээр (private key) импортлох боломжтой. Эдгээр аргуудыг импортлох цонхноос сольж болно. Мэдээллээ оруулахдаа аюулгүй орчинд байгаа эсэхээ шалгаарай.",
+                    tpI2Adv: "Хэрэв та Passphrase тохируулсан бол [Advanced mode] дээр дарна уу.",
+                    tpI3T: "Passphrase оруулах (Хэрэв байгаа бол)",
+                    tpI3D: "Advanced Settings хэсэгт зөв Passphrase-аа оруулаад Confirm дээр дарж хэтэвчээ импортлоно. Ингэснээр BSC хэтэвч импортлох үйлц явц дуусна.",
+                    tpFaqT: "BSC хэтэвчний талаарх түгээмэл асуултууд",
+                    tpConc: "Одоо та TokenPocket ашиглан BSC хэтэвч хэрхэн үүсгэх, импортлохоо мэддэг боллоо. Та BNB Chain дээрх төвлөрсөн бус аппликейшнуудын ертөнцтэй танилцахад бэлэн боллоо. Хамгийн чухал алхам бол сануулах хэллэг болон нууц түлхүүрээ үргэлж аюулгүй, офлайн хадгалах явдал гэдгийг санаарай. Шинэ хэтэвчээрээ та одоо DeFi, dApps болон BSC экосистемд саадгүй оролцох боломжтой боллоо.",
+                    backToHome: "Мэдлэгийн сан руу буцах"
+                }
+            };
+
+            const updateContent = (language) => {
+                const t = texts[language] || texts.en;
+                Object.keys(t).forEach(key => {
+                    const elementId = key.replace(/([A-Z])/g, '-$1').toLowerCase();
+                    const el = document.getElementById(elementId);
+                    if (el) el.textContent = t[key];
+                });
+            };
+
+            updateContent(savedLang);
+
+            const originalChangeLang = window.changeLang;
+            window.changeLang = function(language) {
+                if (originalChangeLang) originalChangeLang(language);
+                updateContent(language);
+            };
+        });
+    </script>
 </body>
 </html>
