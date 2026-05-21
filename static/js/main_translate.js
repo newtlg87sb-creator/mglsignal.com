@@ -414,7 +414,8 @@ const translations = {
             { title: 'Лааны хээ танигч', description: 'График дээрх нийтлэг лааны хээнүүдийг автоматаар тодорхойлно.', link: 'Candle_patterns.html' },
             { title: 'DEX Эрдэнэс Ангууч', description: 'Honeypot илрүүлэлт зэрэг аюулгүй байдлын шалгалттай шинэ токенуудыг бодит цагт хайгч.', link: 'dex_GEM_hunter.html' },
             { title: 'Футпринт Хяналт', description: 'Скальпинг хийхэд зориулсан бодит цагийн захиалгын урсгал ба футпринт график.', link: 'footprint.html' },
-            { title: 'Захиалгын урсгалын бүтэн график', description: 'Бүтэн дэлгэцийн, нарийвчилсан канваст суурилсан захиалгын урсгалын футпринт график.', link: 'footprint_full.html' }
+            { title: 'Захиалгын урсгалын бүтэн график', description: 'Бүтэн дэлгэцийн, нарийвчилсан канваст суурилсан захиалгын урсгалын футпринт график.', link: 'footprint_full.html' },
+            { title: 'Arbitrage Scanner', description: 'Бирж хоорондын үнийн зөрүүг ашиглан ашиг олох боломжийг бодит цагт хайгч.', link: 'alphasignal/main_arbitrage.html' }
         ]
     },
     en: {
@@ -813,7 +814,8 @@ const translations = {
             { title: 'Candlestick Patterns', description: 'Automatically identify common candlestick patterns on the chart.', link: 'Candle_patterns.html' },
             { title: 'DEX Gem Hunter', description: 'Live scanner for new tokens with safety checks like honeypot detection.', link: 'dex_GEM_hunter.html' },
             { title: 'Footprint Monitor', description: 'Live order flow and footprint chart for scalping.', link: 'footprint.html' },
-            { title: 'Orderflow Full Chart', description: 'A full-screen, detailed canvas-based order flow footprint chart.', link: 'footprint_full.html' }
+            { title: 'Orderflow Full Chart', description: 'A full-screen, detailed canvas-based order flow footprint chart.', link: 'footprint_full.html' },
+            { title: 'Arbitrage Scanner', description: 'Find real-time profit opportunities using price differences between multiple exchanges.', link: 'alphasignal/main_arbitrage.html' }
         ]
     }
 };

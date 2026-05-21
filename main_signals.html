@@ -136,7 +136,7 @@
                 
                 const t = translations[lang];
                 const cards = (t['signal-list'] || [])
-                    .filter(card => card.link === 'future.html' || card.link === 'spot.html');
+                    .filter(card => card.link === 'future.html' || card.link === 'spot.html' || card.link === 'alphasignal/main_arbitrage.html');
                 const comingSoonText = t['sig-coming-soon'] || 'Coming Soon';
                 const readMoreText = t['sig-read-more'] || 'Read More...';
 
