@@ -20,16 +20,25 @@ async function fetchArbitrageData() {
 
     try {
         const response = await fetch('/api/arbitrage');
-        const result = await response.json();
         
-        if (!result || result.error) return;
+        if (!response.ok) {
+            // Хэрэв локал сервер дээр /api/ хаяг олдохгүй бол (404)
+            console.warn("Local API not found. If running locally, please use 'vercel dev'.");
+            return;
+        }
 
-        // Серверээс ирсэн бэлэн opportunities-ийг хадгалах
+        const contentType = response.headers.get("content-type");
+        if (!contentType || !contentType.includes("application/json")) {
+            throw new TypeError("Oops, we haven't got JSON!");
+        }
+
+        const result = await response.json();
+
         lastArbData = result.data || [];
         renderArbTable();
 
     } catch (error) {
-        console.error("Critical Connection Error:", error);
+        console.log("Arbitrage Fetch skipped or failed. This is normal on local Live Server.");
     }
 }
 

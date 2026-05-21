@@ -47,6 +47,9 @@
                 <a href="#" onclick="showTool('arbitrage')" id="link-arbitrage" class="sidebar-item flex items-center p-3 rounded-lg transition-all active-link">
                     <i class="fas fa-exchange-alt mr-3"></i> Arbitrage Scanner
                 </a>
+                <a href="#" onclick="showTool('kucoin_spot')" id="link-kucoin-spot" class="sidebar-item flex items-center p-3 rounded-lg transition-all" data-i18n="nav-kucoin-spot">
+                    <i class="fas fa-chart-line mr-3"></i> KuCoin Spot Data
+                </a>
             </div>
 
             <!-- Referral/Exchange Section -->
@@ -61,7 +64,7 @@
                 <a href="YOUR_BYBIT_LINK" target="_blank" class="sidebar-item flex items-center p-3 rounded-lg transition-all hover:text-brand-gold">
                     <i class="fas fa-layer-group mr-3 text-lg"></i> Bybit
                 </a>
-                <a href="YOUR_KUCOIN_LINK" target="_blank" class="sidebar-item flex items-center p-3 rounded-lg transition-all hover:text-brand-gold">
+                <a href="#" onclick="showTool('kucoin_spot')" class="sidebar-item flex items-center p-3 rounded-lg transition-all hover:text-brand-gold">
                     <i class="fas fa-coins mr-3 text-lg"></i> KuCoin
                 </a>
             </div>
@@ -95,9 +98,7 @@
     </div>
 
     <script src="/static/js/arbitrage-scanner.js"></script>
-    <script src="/static/js/dashboard-engine.js"></script>
-    <script src="/static/lock.js"></script>
-    
+    <script src="/static/js/dashboard-engine.js"></script>    
     <script>
         document.addEventListener('DOMContentLoaded', () => {
             showTool('arbitrage');
