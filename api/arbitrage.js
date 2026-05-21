@@ -10,7 +10,7 @@ export default async function handler(req, res) {
     };
 
     try {
-        // Бүх биржээс датаг зэрэг татах (Parallel fetch)
+        // Fetch all data in parallel with error recovery
         const [bRes, mRes, byRes, kRes] = await Promise.all([
             fetch(EXCHANGES.binance).then(r => r.json()).catch(() => []),
             fetch(EXCHANGES.mexc).then(r => r.json()).catch(() => []),
@@ -18,42 +18,53 @@ export default async function handler(req, res) {
             fetch(EXCHANGES.kucoin).then(r => r.json()).catch(() => ({ data: { ticker: [] } }))
         ]);
 
-        // Форматлах (Чиний frontend-ийн хүлээж авдаг бүтэц)
+        // Ensure we have arrays to prevent .filter/.map crashes if an API returns an error object
+        const bData = Array.isArray(bRes) ? bRes : [];
+        const mData = Array.isArray(mRes) ? mRes : [];
+        const byData = byRes?.result?.list && Array.isArray(byRes.result.list) ? byRes.result.list : [];
+        const kData = kRes?.data?.ticker && Array.isArray(kRes.data.ticker) ? kRes.data.ticker : [];
+
         const marketData = {
-            binance: bRes || [],
-            mexc: mRes || [],
-            bybit: byRes.result?.list || [],
-            kucoin: kRes.data?.ticker || [],
+            binance: bData,
+            mexc: mData,
+            bybit: byData,
+            kucoin: kData,
             lastUpdate: new Date()
         };
 
-        // Binance-ийн USDT хослолууд дээр суурилж жагсаалт үүсгэх
-        const symbols = marketData.binance
-            .filter(t => t.symbol.endsWith('USDT'))
-            .map(t => t.symbol);
+        // Use Maps for O(1) lookups to prevent execution timeouts on Vercel
+        const mPool = new Map(marketData.mexc.map(t => [t.symbol, t]));
+        const byPool = new Map(marketData.bybit.map(t => [t.symbol, t]));
+        const kPool = new Map(marketData.kucoin.map(t => [t.symbol.replace('-', ''), t]));
 
-        const formatted = symbols.map(symbol => {
-            const b = marketData.binance.find(t => t.symbol === symbol);
-            const m = marketData.mexc.find(t => t.symbol === symbol);
-            const by = marketData.bybit.find(t => t.symbol === symbol);
-            const k = marketData.kucoin.find(t => t.symbol === symbol.replace('USDT', '-USDT'));
+        const formatted = marketData.binance
+            .filter(b => b.symbol && b.symbol.endsWith('USDT'))
+            .map(b => {
+                const symbol = b.symbol;
+                const m = mPool.get(symbol);
+                const by = byPool.get(symbol);
+                const k = kPool.get(symbol);
 
             const prices = [];
-            if (b) prices.push(parseFloat(b.lastPrice));
-            if (m) prices.push(parseFloat(m.lastPrice));
-            if (by) prices.push(parseFloat(by.lastPrice));
-            if (k) prices.push(parseFloat(k.last));
+            if (b?.lastPrice) prices.push(parseFloat(b.lastPrice));
+            if (m?.lastPrice) prices.push(parseFloat(m.lastPrice));
+            if (by?.lastPrice) prices.push(parseFloat(by.lastPrice));
+            if (k?.last) prices.push(parseFloat(k.last));
+
+            // Filter out any NaN results
+            const validPrices = prices.filter(p => !isNaN(p) && p > 0);
 
             let diff = 0;
-            if (prices.length > 1) {
-                diff = ((Math.max(...prices) - Math.min(...prices)) / Math.min(...prices)) * 100;
+            if (validPrices.length > 1) {
+                const min = Math.min(...validPrices);
+                diff = ((Math.max(...validPrices) - min) / min) * 100;
             }
 
             const createData = (t, type) => {
                 if (!t) return null;
-                if (type === 'k') return { p: parseFloat(t.last), bp: parseFloat(t.buy), ap: parseFloat(t.sell), v: parseFloat(t.vol), q: parseFloat(t.volValue) };
-                if (type === 'by') return { p: parseFloat(t.lastPrice), bp: parseFloat(t.bid1Price), ap: parseFloat(t.ask1Price), v: parseFloat(t.volume24h), q: parseFloat(t.turnover24h) };
-                return { p: parseFloat(t.lastPrice), bp: parseFloat(t.bidPrice), ap: parseFloat(t.askPrice), v: parseFloat(t.volume), q: parseFloat(t.quoteVolume) };
+                if (type === 'k') return { p: parseFloat(t.last) || 0, bp: parseFloat(t.buy) || 0, ap: parseFloat(t.sell) || 0, v: parseFloat(t.vol) || 0, q: parseFloat(t.volValue) || 0 };
+                if (type === 'by') return { p: parseFloat(t.lastPrice) || 0, bp: parseFloat(t.bid1Price) || 0, ap: parseFloat(t.ask1Price) || 0, v: parseFloat(t.volume24h) || 0, q: parseFloat(t.turnover24h) || 0 };
+                return { p: parseFloat(t.lastPrice) || 0, bp: parseFloat(t.bidPrice) || 0, ap: parseFloat(t.askPrice) || 0, v: parseFloat(t.volume) || 0, q: parseFloat(t.quoteVolume) || 0 };
             };
 
             return {
@@ -64,13 +75,13 @@ export default async function handler(req, res) {
                 k: createData(k, 'k'),
                 diff: diff.toFixed(2)
             };
-        }).filter(item => item.diff > 0); // Зөвхөн үнийн зөрүүтэйг нь харуулах
+        }).filter(item => parseFloat(item.diff) > 0);
 
-        // Эрэмбэлэх: Хамгийн өндөр spread-тэй нь дээрээ
-        formatted.sort((a, b) => b.diff - a.diff);
+        formatted.sort((a, b) => parseFloat(b.diff) - parseFloat(a.diff));
 
         return res.status(200).json({ data: formatted });
     } catch (error) {
+        console.error("Arbitrage API Error:", error);
         return res.status(500).json({ error: error.message });
     }
 }

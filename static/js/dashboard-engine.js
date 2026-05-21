@@ -190,7 +190,7 @@ async function fetchKucoinSpotData() {
 
         if (result && result.data) {
             // api/arbitrage.js-ээс ирж буй өгөгдлийн бүтцэд тааруулж форматлах
-            const newData = result.data.map(item => ({
+            const newData = result.data.filter(item => item.k).map(item => ({
                 symbol: item.symbol,
                 last: item.k.p,
                 bid: item.k.bp,
