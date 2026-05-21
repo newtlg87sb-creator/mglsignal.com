@@ -41,23 +41,25 @@ export default async function handler(req, res) {
             lastUpdate: new Date()
         };
 
-        // Хэрэв Binance-аас дата ирээгүй бол алдаа өгөхгүйгээр хоосон буцаах
-        if (marketData.binance.length === 0) {
-            return res.status(200).json({ data: [], message: "No data from Binance" });
-        }
+        // Бүх биржүүдээс USDT хослолуудыг цуглуулж Unique Set үүсгэх
+        const allSymbols = new Set([
+            ...marketData.binance.filter(t => t.symbol?.endsWith('USDT')).map(t => t.symbol),
+            ...marketData.mexc.filter(t => t.symbol?.endsWith('USDT')).map(t => t.symbol),
+            ...marketData.bybit.filter(t => t.symbol?.endsWith('USDT')).map(t => t.symbol),
+            ...marketData.kucoin.filter(t => t.symbol?.endsWith('-USDT')).map(t => t.symbol.replace('-', ''))
+        ]);
 
         // Use Maps for O(1) lookups to prevent execution timeouts on Vercel
         const mPool = new Map(marketData.mexc.map(t => [t.symbol, t]));
         const byPool = new Map(marketData.bybit.map(t => [t.symbol, t]));
         const kPool = new Map(marketData.kucoin.map(t => [t.symbol.replace('-', ''), t]));
+        const bPool = new Map(marketData.binance.map(t => [t.symbol, t]));
 
-        const formatted = marketData.binance
-            .filter(b => b.symbol && b.symbol.endsWith('USDT'))
-            .map(b => {
-                const symbol = b.symbol;
-                const m = mPool.get(symbol);
-                const by = byPool.get(symbol);
-                const k = kPool.get(symbol);
+        const formatted = Array.from(allSymbols).map(symbol => {
+            const b = bPool.get(symbol);
+            const m = mPool.get(symbol);
+            const by = byPool.get(symbol);
+            const k = kPool.get(symbol);
 
             const prices = [];
             if (b?.lastPrice) prices.push(parseFloat(b.lastPrice));
@@ -89,7 +91,7 @@ export default async function handler(req, res) {
                 k: createData(k, 'k'),
                 diff: diff.toFixed(2)
             };
-        }).filter(item => parseFloat(item.diff) > 0);
+        }).filter(item => item.b || item.m || item.by || item.k); // Аль нэг бирж дээр дата байвал буцаана
 
         formatted.sort((a, b) => parseFloat(b.diff) - parseFloat(a.diff));
 

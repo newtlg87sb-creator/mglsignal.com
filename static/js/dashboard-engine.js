@@ -189,6 +189,8 @@ async function fetchKucoinSpotData() {
         }
 
         const result = await response.json();
+        console.log("API Result:", result); // Дата ирж байгаа эсэхийг хянах
+        
         if (result && Array.isArray(result.data)) {
             // api/arbitrage.js-ээс ирж буй өгөгдлийн бүтцэд тааруулж форматлах
             const newData = result.data.filter(item => item.k).map(item => ({
