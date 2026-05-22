@@ -113,6 +113,7 @@ const headerHTML = `    <style>
                         <div class="hidden dropdown-menu absolute right-0 mt-0 pt-4 w-56 z-[100]">
                             <div class="bg-brand-dark-blue border border-brand-border shadow-2xl overflow-hidden backdrop-blur-xl">
                                 <a href="/main_signals.html" data-i18n="sig-title" class="block px-5 py-3 text-[10px] hover:bg-brand-gold hover:text-black transition border-b border-brand-border/50 font-bold">Сигналууд</a>
+                                <a href="/kucoin_market.html" data-i18n="nav-kucoin-spot" class="block px-5 py-3 text-[10px] hover:bg-brand-gold hover:text-black transition border-b border-brand-border/50 font-bold">KuCoin Live Data</a>
                                 <a href="/main_alpha_signals.html" data-i18n="nav-alpha" class="block px-5 py-3 text-[10px] hover:bg-brand-gold hover:text-black transition border-b border-brand-border/50 font-bold">Alpha Signals</a>
                                 <a href="/main_about.html" data-i18n="foot-about" class="block px-5 py-3 text-[10px] bg-brand-gold text-black border-b border-brand-border/50 font-bold">Бидний тухай</a>
                                 <a href="/main_contact.html" data-i18n="foot-contact" class="block px-5 py-3 text-[10px] hover:bg-brand-gold hover:text-black transition border-b border-brand-border/50 font-bold">Холбоо барих</a>
