@@ -34,33 +34,40 @@ async function updateMarketDataCache() {
         };
 
         if (supabase && state.marketData.binance.length > 0) {
+            // Binance датаг Map болгож хувиргаснаар хайлт O(1) буюу маш хурдан болно
+            const bMap = new Map(state.marketData.binance.map(t => [t.symbol, t]));
+
             // KuCoin Intelligence хүснэгтэд зориулж датаг мөр бүрээр форматлах
-            const records = state.marketData.kucoin.map(k => {
+            const records = state.marketData.kucoin.filter(k => k.symbol.endsWith('-USDT')).map(k => {
                 const symbol = k.symbol.replace('-', '');
-                const b = state.marketData.binance.find(t => t.symbol === symbol);
+                const b = bMap.get(symbol);
                 
                 const bid = parseFloat(k.buy) || 0;
                 const ask = parseFloat(k.sell) || 0;
+                const volume = parseFloat(k.volValue) || 0;
 
                 return {
                     symbol: k.symbol, // Жишээ нь: BTC-USDT
                     bid: bid,
                     ask: ask,
                     spread: bid > 0 ? ((ask - bid) / bid) * 100 : 0,
-                    min_usdt: 1.0,
-                    volume: parseFloat(k.volValue) || 0,
+                    min_usdt: 1.0, // Minimum trade amount
+                    volume: volume,
                     real_change: b ? parseFloat(b.priceChangePercent) : 0,
                     change_24h: (parseFloat(k.changeRate) || 0) * 100,
                     updated_at: new Date()
                 };
-            }).filter(r => r.volume > 1000); // Зөвхөн идэвхтэй арилжааг авах
+            }).filter(r => r.volume > 1000); // $1000-аас дээш волюмтай идэвхтэй арилжааг л авна
 
-            // Датаг Upsert хийх (Байвал шинэчилнэ, байхгүй бол нэмнэ)
-            const { error } = await supabase
-                .from('market_data')
-                .upsert(records, { onConflict: 'symbol' });
+            if (records.length > 0) {
+                // Датаг Upsert хийх (Байвал шинэчилнэ, байхгүй бол нэмнэ)
+                const { error } = await supabase
+                    .from('market_data')
+                    .upsert(records, { onConflict: 'symbol' });
 
-            if (error) console.error("Supabase Sync Error:", error.message);
+                if (error) console.error("Supabase Sync Error:", error.message);
+                else console.log(`Market Service: ${records.length} records synced to Supabase.`);
+            }
         }
     } catch (error) {
         console.error(`Market Service Fetch error: ${error.message}`);

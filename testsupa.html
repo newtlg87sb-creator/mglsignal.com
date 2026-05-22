@@ -1,0 +1,109 @@
+<!DOCTYPE html>
+<html lang="mn">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>KuCoin Live Dashboard</title>
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+    <style>
+        body { background-color: #0f172a; color: white; font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; margin: 0; padding: 20px; }
+        .container { max-width: 1200px; margin: auto; }
+        header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px; border-bottom: 1px solid #1e293b; padding-bottom: 10px; }
+        h1 { color: #38bdf8; font-size: 24px; margin: 0; }
+        .status { font-size: 14px; color: #22c55e; }
+        
+        table { width: 100%; border-collapse: collapse; background: #1e293b; border-radius: 8px; overflow: hidden; }
+        th { background-color: #334155; color: #94a3b8; text-align: left; padding: 12px; font-size: 13px; text-transform: uppercase; }
+        td { padding: 12px; border-bottom: 1px solid #0f172a; font-family: 'Consolas', monospace; }
+        tr:hover { background-color: #334155; }
+        
+        .up { color: #22c55e; }
+        .down { color: #ef4444; }
+        .gold { color: #fbbf24; }
+        .sky { color: #38bdf8; }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1>📡 LIVE MARKET TERMINAL</h1>
+            <div class="status" id="last-sync">Синхрончилж байна...</div>
+        </header>
+
+        <table id="market-table">
+            <thead>
+                <tr>
+                    <th>Coin</th>
+                    <th>Ask Price</th>
+                    <th>Spread</th>
+                    <th>Real%</th>
+                    <th>1h%</th>
+                    <th>24h%</th>
+                    <th>Volume</th>
+                </tr>
+            </thead>
+            <tbody id="market-body">
+                <!-- Өгөгдөл энд орж ирнэ -->
+            </tbody>
+        </table>
+    </div>
+
+    <script>
+        // 1. Өөрийн Supabase мэдээллээ энд оруул
+        const SUPABASE_URL = "https://bsdkbxyjwjljximdxdst.supabase.co/rest/v1/";
+        const SUPABASE_ANON_KEY = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImJzZGtieHlqd2psanhpbWR4ZHN0Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzUzODg1MTQsImV4cCI6MjA5MDk2NDUxNH0.Qwfpd0cEaAKwlv5B-Uh0MlTLR-WH8qt19HHlTxUnUYs";
+        const supabase = supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+
+        async function fetchMarketData() {
+            try {
+                // Supabase-ээс бүх өгөгдлийг татах (Real% -аар эрэмбэлэх жишээ)
+                const { data, error } = await supabase
+                    .from('market_data')
+                    .select('*')
+                    .order('real_change', { ascending: false });
+
+                if (error) throw error;
+
+                const tbody = document.getElementById('market-body');
+                tbody.innerHTML = '';
+
+                data.forEach(coin => {
+                    const row = document.createElement('tr');
+                    
+                    // Өнгөний логик
+                    const realClass = coin.real_change >= 0 ? 'up gold' : 'down';
+                    const h1Class = coin.h1_change >= 0 ? 'up sky' : 'down';
+                    const ch24Class = coin.change_24h >= 0 ? 'up' : 'down';
+                    const sprClass = coin.spread > 0.5 ? 'gold' : '';
+
+                    row.innerHTML = `
+                        <td style="font-weight: bold;">${coin.symbol}</td>
+                        <td>${coin.ask.toFixed(8)}</td>
+                        <td class="${sprClass}">${coin.spread.toFixed(2)}%</td>
+                        <td class="${realClass}">${coin.real_change > 0 ? '+' : ''}${coin.real_change.toFixed(2)}%</td>
+                        <td class="${h1Class}">${coin.h1_change > 0 ? '+' : ''}${coin.h1_change.toFixed(2)}%</td>
+                        <td class="${ch24Class}">${coin.change_24h > 0 ? '+' : ''}${coin.change_24h.toFixed(2)}%</td>
+                        <td style="color: #94a3b8;">${formatVol(coin.volume)}</td>
+                    `;
+                    tbody.appendChild(row);
+                });
+
+                document.getElementById('last-sync').innerText = "Last Sync: " + new Date().toLocaleTimeString();
+
+            } catch (err) {
+                console.error("Error fetching data:", err);
+            }
+        }
+
+        function formatVol(vol) {
+            if (vol >= 1000000) return (vol / 1000000).toFixed(1) + 'M';
+            if (vol >= 1000) return (vol / 1000).toFixed(1) + 'K';
+            return vol.toFixed(0);
+        }
+
+        // 5 секунд тутамд өгөгдлийг шинэчлэх
+        setInterval(fetchMarketData, 5000);
+        fetchMarketData();
+    </script>
+</body>
+</html>
