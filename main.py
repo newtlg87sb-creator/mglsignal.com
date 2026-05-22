@@ -82,6 +82,7 @@ def run_engine():
                 ch_24 = float(t.get('percentage') or 0)
                 min_amount = markets[sym]['limits']['amount']['min'] or 0
                 min_usdt = min_amount * ask
+                min_order_cost = markets[sym]['limits']['cost']['min'] or 0 # Minimum order cost in quote currency (USDT)
 
                 # Supabase-рүү илгээх бэлдэц
                 payload.append({
@@ -92,6 +93,7 @@ def run_engine():
                     "spread": round(spread, 2),
                     "min_usdt": round(min_usdt, 4),
                     "volume": round(vol, 2),
+                    "min_order_cost": round(min_order_cost, 4), # Add this to payload
                     "real_change": round(real_change, 2),
                     "h1_change": round(h1_change, 2),
                     "change_24h": round(ch_24, 2),

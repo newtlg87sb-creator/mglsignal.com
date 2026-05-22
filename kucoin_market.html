@@ -28,22 +28,31 @@
                 <h1 class="text-xl font-black text-[#38bdf8] tracking-tighter uppercase flex items-center">
                     <i class="fas fa-microchip mr-3 animate-pulse"></i> KuCoin Terminal
                 </h1>
-                <div id="sentiment-badge" class="px-3 py-1 rounded bg-[#1e293b] border border-[#334155] text-[10px] font-black uppercase">
-                    📡 Scanning...
+                <div id="sentiment-badge" class="px-3 py-1 rounded bg-[#1e293b] border border-[#334155] text-[10px] font-black uppercase flex items-center gap-1">
+                    <select id="sentiment-type-selector" onchange="onSentimentTypeChange()" class="bg-transparent text-white outline-none cursor-pointer appearance-none pr-4">
+                        <option value="client_real_change">Real%</option>
+                        <option value="h1_change">1H%</option>
+                    </select>
+                    <i class="fas fa-caret-down text-gray-400 text-[8px] -ml-3 pointer-events-none"></i>
+                    <span id="sentiment-text" class="ml-2">📡 Scanning...</span>
                 </div>
             </div>
 
             <div class="flex flex-wrap items-center gap-3">
                 <!-- Search -->
                 <div class="relative">
-                    <i class="fas fa-search absolute left-3 top-1/2 -translate-y-1/2 text-gray-500 text-xs"></i>
-                    <input type="text" id="symbol-search" placeholder="Search Symbols..." class="bg-[#05070a] border border-[#334155] rounded-lg py-1.5 pl-9 pr-4 text-xs focus:border-[#38bdf8] outline-none transition w-44">
+                    <i class="fas fa-search absolute left-3 top-1/2 -translate-y-1/2 text-gray-500 text-xs pointer-events-none"></i>
+                    <input type="text" id="symbol-search" placeholder="Search Symbols..." class="bg-[#05070a] border border-[#334155] rounded-lg py-1.5 pl-9 pr-4 text-xs focus:border-[#38bdf8] outline-none transition w-32 md:w-44 text-white">
                 </div>
 
                 <!-- Hide Filters -->
-                <div class="flex bg-[#05070a] border border-[#334155] rounded-lg p-0.5">
-                    <button onclick="toggleHide('low-vol')" id="btn-low-vol" class="px-3 py-1 rounded text-[9px] font-bold uppercase transition bg-[#334155] text-white">Hide Low Vol</button>
-                    <button onclick="toggleHide('high-spr')" id="btn-high-spr" class="px-3 py-1 rounded text-[9px] font-bold uppercase transition bg-[#334155] text-white ml-1">Hide Spread</button>
+                <div class="flex flex-wrap gap-1 bg-[#05070a] border border-[#334155] rounded-lg p-0.5 mr-2">
+                    <button onclick="toggleHide('blacklist')" id="btn-blacklist" class="px-2 py-1 rounded text-[9px] font-bold uppercase transition bg-[#334155] text-white">Show BL</button>
+                    <button onclick="toggleHide('lowVol')" id="btn-lowVol" class="px-2 py-1 rounded text-[9px] font-bold uppercase transition bg-[#334155] text-white">Show LV</button>
+                    <button onclick="toggleHide('highSpr')" id="btn-highSpr" class="px-2 py-1 rounded text-[9px] font-bold uppercase transition bg-[#334155] text-white">Show HS</button>
+                    <button onclick="toggleHide('minHigh')" id="btn-minHigh" class="px-2 py-1 rounded text-[9px] font-bold uppercase transition bg-[#334155] text-white">Show MH</button>
+                    <button onclick="toggleHide('limitHigh')" id="btn-limitHigh" class="px-2 py-1 rounded text-[9px] font-bold uppercase transition bg-[#334155] text-white">Show LH</button>
+                    <button onclick="resetSessionPrices()" class="px-2 py-1 rounded text-[9px] font-bold uppercase bg-brand-gold text-black ml-1">Reset Real%</button>
                 </div>
 
                 <div id="last-sync" class="text-[10px] font-mono text-gray-500">Initializing...</div>
@@ -57,13 +66,15 @@
                     <tr class="text-[10px] text-gray-400 uppercase font-black tracking-widest">
                         <th class="p-4 w-12 text-center">#</th>
                         <th class="p-4 cursor-pointer hover:text-white" onclick="updateSort('symbol')">Symbol <i class="fas fa-sort ml-1"></i></th>
-                        <th class="p-4">Bid Price</th>
-                        <th class="p-4">Ask Price</th>
+                        <th class="p-4">Bid Price</th> 
+                        <th class="p-4 cursor-pointer hover:text-white" onclick="updateSort('ask')">Ask Price <i class="fas fa-sort ml-1"></i></th>
                         <th class="p-4 cursor-pointer hover:text-white" onclick="updateSort('spread')">Spread <i class="fas fa-sort ml-1"></i></th>
+                        <th class="p-4 cursor-pointer hover:text-white" onclick="updateSort('min_usdt')">Min $ <i class="fas fa-sort ml-1"></i></th>
                         <th class="p-4 cursor-pointer hover:text-white" onclick="updateSort('real_change')">Real% <i class="fas fa-sort ml-1"></i></th>
                         <th class="p-4 cursor-pointer hover:text-white" onclick="updateSort('h1_change')">1H% <i class="fas fa-sort ml-1"></i></th>
                         <th class="p-4 cursor-pointer hover:text-white" onclick="updateSort('change_24h')">24H% <i class="fas fa-sort ml-1"></i></th>
                         <th class="p-4 cursor-pointer hover:text-white" onclick="updateSort('volume')">Volume <i class="fas fa-sort ml-1"></i></th>
+                        <th class="p-4 cursor-pointer hover:text-white" onclick="updateSort('min_order_cost')">Limit $ <i class="fas fa-sort ml-1"></i></th>
                     </tr>
                 </thead>
                 <tbody id="market-body" class="cell-mono">
@@ -239,6 +250,12 @@
             if (vol >= 1000) return (vol / 1000).toFixed(1) + 'K';
             return vol.toFixed(0);
         }
+
+        document.addEventListener('DOMContentLoaded', () => {
+            Object.keys(showCategory).forEach(type => {
+                updateButtonState(`btn-${type}`, showCategory[type]);
+            });
+        });
 
         document.getElementById('symbol-search').addEventListener('input', renderUI);
         
