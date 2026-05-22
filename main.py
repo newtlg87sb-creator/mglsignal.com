@@ -80,13 +80,13 @@ def run_engine():
                 spread = ((ask - bid) / ask * 100) if ask > 0 else 0
                 vol = float(t.get('quoteVolume') or 0)
                 ch_24 = float(t.get('percentage') or 0)
-                min_amount = markets[sym]['limits']['amount']['min'] or 0
-                min_usdt = min_amount * ask
-                min_order_cost = markets[sym]['limits']['cost']['min'] or 0 # Minimum order cost in quote currency (USDT)
+                min_amount = float(markets[sym]['limits']['amount']['min'] or 0)
+                min_usdt = min_amount * ask if ask > 0 else 0
+                min_order_cost = float(markets[sym]['limits']['cost']['min'] or 0) # Minimum order cost in quote currency (USDT)
 
                 # Supabase-рүү илгээх бэлдэц
                 payload.append({
-                    "symbol": sym.replace('/', '-'), # "BTC-USDT" форматтай болгож фронтендтэй нийцүүлнэ
+                    "symbol": sym.replace('/', '-'), # ЭНЭ ЗӨВ: BTC-USDT гэж хадгална
                     "full_symbol": sym,
                     "bid": bid,
                     "ask": ask,

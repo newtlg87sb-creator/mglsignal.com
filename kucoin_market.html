@@ -210,16 +210,16 @@
                     const realColor = d.real_change >= 0 ? 'text-[#fbbf24]' : 'text-[#ef4444]';
                     const h1Color = d.h1_change >= 0 ? 'text-[#38bdf8]' : 'text-[#fb7185]';
                     const chColor = d.change_24h >= 0 ? 'text-[#22c55e]' : 'text-[#ef4444]';
-                    const minUsdtColor = (d.min_usdt || 0) <= 0.11 ? 'text-[#22c55e]' : 'text-gray-400';
-                    const limitColor = (d.min_order_cost || 0) <= 0.1 ? 'text-[#22c55e]' : 'text-gray-400';
+                    const minUsdtColor = (d.min_usdt || 0) <= 0.11 ? 'text-[#22c55e]' : 'text-gray-400'; // Use (d.min_usdt || 0) for safety
+                    const limitColor = (d.min_order_cost || 0) <= 0.1 ? 'text-[#22c55e]' : 'text-gray-400'; // Use (d.min_order_cost || 0) for safety
                     
                     rRow.innerHTML = `
                         <td class="p-3 text-center text-gray-600 text-[10px] border-b border-[#1e293b]">${idx++}</td>
                         <td class="p-3 font-bold text-white border-b border-[#1e293b]">${d.symbol}</td>
                         <td class="p-3 text-gray-400 border-b border-[#1e293b]">${(d.bid || 0).toFixed(8)}</td>
                         <td class="p-3 text-white border-b border-[#1e293b]">${(d.ask || 0).toFixed(8)}</td>
-                        <td class="p-3 ${d.spread > 1.0 ? 'text-[#fbbf24]' : 'text-gray-400'} border-b border-[#1e293b]">${d.spread.toFixed(2)}%</td>
-                        <td class="p-3 ${minUsdtColor} border-b border-[#1e293b]">${(d.min_usdt || 0).toFixed(4)}</td>
+                        <td class="p-3 ${d.spread > 0.3 ? 'text-[#fbbf24]' : 'text-gray-400'} border-b border-[#1e293b]">${(d.spread || 0).toFixed(2)}%</td>
+                        <td class="p-3 ${minUsdtColor} border-b border-[#1e293b]">${(d.min_usdt || 0).toFixed(4)}</td> 
                         <td class="p-3 font-bold ${realColor} border-b border-[#1e293b]">${d.real_change > 0 ? '+' : ''}${d.real_change.toFixed(2)}%</td>
                         <td class="p-3 font-bold ${h1Color} border-b border-[#1e293b]">${d.h1_change > 0 ? '+' : ''}${d.h1_change.toFixed(2)}%</td>
                         <td class="p-3 font-bold ${chColor} border-b border-[#1e293b]">${d.change_24h > 0 ? '+' : ''}${d.change_24h.toFixed(2)}%</td>
@@ -228,12 +228,6 @@
                     `;
                     tbody.appendChild(rRow);
 
-                    // Update totals for footer
-                    totals.real += d.real_change;
-                    totals.h1 += d.h1_change;
-                    totals.c24 += d.change_24h;
-                    if(d.real_change > 0.5) totals.ups++;
-                    if(d.real_change < -0.5) totals.dns++;
                 });
             });
 
@@ -242,16 +236,16 @@
         }
 
         function updateSentiment(t) {
-            const badge = document.getElementById('sentiment-badge');
+            const badge = document.getElementById('sentiment-text');
             let text, color;
             
             if (t.ups > t.dns * 3 && t.ups > 5) { text = "🚀 Strong Bull"; color = "text-[#22c55e] border-[#22c55e]/30 bg-[#22c55e]/10"; }
             else if (t.ups > t.dns * 1.5) { text = "📈 Bullish"; color = "text-[#4ade80] border-[#4ade80]/30 bg-[#4ade80]/10"; }
             else if (t.dns > t.ups * 1.5) { text = "📉 Bearish"; color = "text-[#f87171] border-[#f87171]/30 bg-[#f87171]/10"; }
-            else { text = "⚖️ Flat Market"; color = "text-gray-400 border-gray-400/30 bg-gray-400/10"; }
+            else { text = "⚖️ Flat Market"; color = "text-gray-400"; }
 
-            badge.className = `px-3 py-1 rounded border text-[10px] font-black uppercase transition-all duration-500 ${color}`;
-            badge.innerText = `${text} (U:${t.ups} D:${t.dns})`;
+            badge.className = `ml-2 transition-all duration-500 ${color}`;
+            badge.innerText = `${text} (U:${t.ups} D:${t.dns})`; // Update only the span
         }
 
         function updateFooter(t, count) {
@@ -278,9 +272,9 @@
         }
 
         document.addEventListener('DOMContentLoaded', () => {
-            Object.keys(showCategory).forEach(type => {
-                updateButtonState(`btn-${type}`, showCategory[type]);
-            });
+            Object.keys(hideSettings).forEach(type => { // Initialize button states based on hideSettings
+                updateButtonState(`btn-${type}`, hideSettings[type]);
+            }); 
         });
 
         document.getElementById('symbol-search').addEventListener('input', renderUI);
