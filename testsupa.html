@@ -52,12 +52,12 @@
         // 1. Өөрийн Supabase мэдээллээ энд оруул
         const SUPABASE_URL = "https://bsdkbxyjwjljximdxdst.supabase.co/rest/v1/";
         const SUPABASE_ANON_KEY = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImJzZGtieHlqd2psanhpbWR4ZHN0Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzUzODg1MTQsImV4cCI6MjA5MDk2NDUxNH0.Qwfpd0cEaAKwlv5B-Uh0MlTLR-WH8qt19HHlTxUnUYs";
-        const supabase = supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+        const supabaseClient = supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
 
         async function fetchMarketData() {
             try {
                 // Supabase-ээс бүх өгөгдлийг татах (Real% -аар эрэмбэлэх жишээ)
-                const { data, error } = await supabase
+                const { data, error } = await supabaseClient
                     .from('market_data')
                     .select('*')
                     .order('real_change', { ascending: false });
