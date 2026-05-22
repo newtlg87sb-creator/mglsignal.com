@@ -110,35 +110,35 @@
         const supabaseClient = supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
 
         let allData = [];
+        let sessionInitialPrices = {}; // For client-side Real% calculation, reset by user
         let currentSort = { col: 'real_change', desc: true };
         let hideSettings = { 
-            blacklist: false, 
-            lowVol: false, 
-            highSpr: false, 
-            minHigh: false, 
-            limitHigh: false 
+            blacklist: false, // Default: Blacklist is SHOWN (not hidden)
+            lowVol: false,    // Default: Low Volume is SHOWN
+            highSpr: false,   // Default: High Spread is SHOWN
+            minHigh: false,   // Default: Min High is SHOWN
+            limitHigh: false  // Default: Limit High is SHOWN
         };
-        const blacklist = ['LUNC-USDT', 'USTC-USDT', 'BSV-USDT']; 
+        const blacklist = ['LUNC-USDT', 'USTC-USDT', 'BSV-USDT']; // Example blacklist
+        let sentimentType = 'client_real_change'; // Default sentiment type
+
+        function getButtonText(type, isHidden) { // isHidden is the value of hideSettings[type]
+            const texts = { blacklist: 'BL', lowVol: 'LV', highSpr: 'HS', minHigh: 'MH', limitHigh: 'LH' };
+            return `${isHidden ? 'Show' : 'Hide'} ${texts[type]}`;
+        }
+
+        function updateButtonState(id, isHidden) {
+            const btn = document.getElementById(id);
+            if (btn) {
+                const type = id.replace('btn-', '');
+                btn.textContent = getButtonText(type, isHidden);
+                btn.className = `px-2 py-1 rounded text-[9px] font-bold uppercase transition ${isHidden ? 'bg-[#05070a] text-gray-500 border border-[#334155] hover:bg-[#334155]/50' : 'bg-[#334155] text-white'}`;
+            }
+        }
 
         function toggleHide(type) {
-            hideSettings[type] = !hideSettings[type];
-            const btnId = 'btn-' + type;
-            const btn = document.getElementById(btnId);
-            if (btn) {
-                const labelMap = { blacklist: 'BL', lowVol: 'LV', highSpr: 'HS', minHigh: 'MH', limitHigh: 'LH' };
-                btn.innerText = (hideSettings[type] ? 'Hide ' : 'Show ') + labelMap[type];
-                btn.className = `px-2 py-1 rounded text-[9px] font-bold uppercase transition ${hideSettings[type] ? 'bg-[#334155] text-white' : 'bg-[#05070a] text-gray-500 border border-[#334155]'}`;
-            }
-            renderUI();
-        }
-
-        function resetSessionPrices() {
-            // Real% тооцооллыг сайт дээр дахин эхлүүлэх логик (хэрэв хэрэгтэй бол)
-            window.location.reload();
-        }
-        
-        function onSentimentTypeChange() {
-            // Sentiment төрөл өөрчлөгдөхөд UI-г дахин зурах
+            hideSettings[type] = !hideSettings[type]; // Toggle the hidden state
+            updateButtonState(`btn-${type}`, hideSettings[type]); // Update button appearance
             renderUI();
         }
 
@@ -148,30 +148,81 @@
             renderUI();
         }
 
+        function resetSessionPrices() {
+            sessionInitialPrices = {}; // Clear previous initial prices
+            allData.forEach(d => { // Set current ask price as new initial price for all coins
+                sessionInitialPrices[d.symbol] = d.ask;
+            });
+            renderUI(); // Re-render the UI with new Real% calculations
+        }
+
+        function onSentimentTypeChange() {
+            sentimentType = document.getElementById('sentiment-type-selector').value;
+            renderUI();
+        }
+
         async function fetchMarketData() {
             try {
                 const { data, error } = await supabaseClient.from('market_data').select('*');
                 if (error) throw error;
                 allData = data;
+
+                // Initialize sessionInitialPrices for new symbols
+                allData.forEach(d => {
+                    if (!sessionInitialPrices[d.symbol]) {
+                        sessionInitialPrices[d.symbol] = d.ask;
+                    }
+                });
+
                 renderUI();
                 document.getElementById('last-sync').innerText = "Last Sync: " + new Date().toLocaleTimeString();
             } catch (err) { console.error("Fetch Error:", err); }
         }
 
         function renderUI() {
-            const tbody = document.getElementById('market-body');
-            const search = document.getElementById('symbol-search').value.toUpperCase();
-            
-            // 1. Filter & Sort
-            let filtered = allData.filter(d => d.symbol.includes(search) && d.symbol.includes('-'));
-            
-            // Sort logic
-            filtered.sort((a, b) => {
-                let vA = a[currentSort.col], vB = b[currentSort.col];
-                return currentSort.desc ? (vB > vA ? 1 : -1) : (vA > vB ? 1 : -1);
+            // 0. Pre-process data for client-side Real%
+            allData.forEach(d => {
+                const initialPrice = sessionInitialPrices[d.symbol] || d.ask;
+                d.client_real_change = initialPrice > 0 ? ((d.ask - initialPrice) / initialPrice * 100) : 0;
             });
 
-            // 2. Categorization Logic from coins_market.py
+            const tbody = document.getElementById('market-body');
+            const search = document.getElementById('symbol-search').value.toUpperCase();
+            const sentimentTextSpan = document.getElementById('sentiment-text');
+            
+            // 1. Apply search filter
+            let searchedData = allData.filter(d => d.symbol.includes(search) && d.symbol.includes('-'));
+
+            // 2. Apply visibility filters to get the final set of visible coins
+            let visibleCoins = searchedData.filter(d => {
+                if (hideSettings.blacklist && blacklist.includes(d.symbol)) return false;
+                if (hideSettings.highSpr && d.spread > 0.3) return false;
+                if (hideSettings.lowVol && d.volume < 30000) return false;
+                if (hideSettings.minHigh && d.min_usdt > 0.11) return false;
+                if (hideSettings.limitHigh && d.min_order_cost > 0.1) return false;
+                return true;
+            });
+            
+            // 3. Calculate totals for sentiment and footer from the 'visibleCoins'
+            let totals = { real: 0, h1: 0, c24: 0, ups: 0, dns: 0, count: visibleCoins.length };
+            visibleCoins.forEach(d => {
+                totals.real += d.client_real_change;
+                totals.h1 += d.h1_change;
+                totals.c24 += d.change_24h;
+                
+                const sentVal = d[sentimentType];
+                if(sentVal > 0.5) totals.ups++;
+                if(sentVal < -0.5) totals.dns++;
+            });
+
+            // 4. Sort the visible coins
+            visibleCoins.sort((a, b) => {
+                const valA = a[currentSort.col] !== undefined && a[currentSort.col] !== null ? a[currentSort.col] : (currentSort.desc ? -Infinity : Infinity);
+                const valB = b[currentSort.col] !== undefined && b[currentSort.col] !== null ? b[currentSort.col] : (currentSort.desc ? -Infinity : Infinity);
+                return currentSort.desc ? (valB - valA) : (valA - valB);
+            });
+
+            // 5. Categorization Logic for rendering (using visibleCoins)
             const groups = {
                 ST: { title: "🚫 BLACKLISTED / ST RISK", list: [], color: "bg-[#7f1d1d]" },
                 HIGH_SPR: { title: "⚠️ HIGH SPREAD (>0.3%)", list: [], color: "bg-[#92400e]" },
@@ -181,19 +232,17 @@
                 MARKET: { title: "📊 MARKET LIST", list: [], color: "bg-[#334155]" }
             };
 
-            filtered.forEach(d => {
-                if (blacklist.includes(d.symbol)) { if(!hideSettings.blacklist) groups.ST.list.push(d); }
-                else if (d.spread > 0.3) { if(!hideSettings.highSpr) groups.HIGH_SPR.list.push(d); }
-                else if (d.volume < 30000) { if(!hideSettings.lowVol) groups.LOW_VOL.list.push(d); }
-                else if ((d.min_usdt || 0) > 0.11) { if(!hideSettings.minHigh) groups.MIN_HIGH.list.push(d); }
-                else if ((d.min_order_cost || 0) > 0.1) { if(!hideSettings.limitHigh) groups.LIMIT_HIGH.list.push(d); }
+            visibleCoins.forEach(d => {
+                if (blacklist.includes(d.symbol)) groups.ST.list.push(d);
+                else if (d.spread > 0.3) groups.HIGH_SPR.list.push(d);
+                else if (d.volume < 30000) groups.LOW_VOL.list.push(d);
+                else if (d.min_usdt > 0.11) groups.MIN_HIGH.list.push(d);
+                else if (d.min_order_cost > 0.1) groups.LIMIT_HIGH.list.push(d);
                 else groups.MARKET.list.push(d);
             });
 
-            // 3. Generate HTML
             tbody.innerHTML = '';
             let idx = 1;
-            let totals = { real: 0, h1: 0, c24: 0, ups: 0, dns: 0 };
 
             Object.values(groups).forEach(g => {
                 if (g.list.length === 0) return;
