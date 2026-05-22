@@ -163,7 +163,7 @@
             const search = document.getElementById('symbol-search').value.toUpperCase();
             
             // 1. Filter & Sort
-            let filtered = allData.filter(d => d.symbol.includes(search));
+            let filtered = allData.filter(d => d.symbol.includes(search) && d.symbol.includes('-'));
             
             // Sort logic
             filtered.sort((a, b) => {
