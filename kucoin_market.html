@@ -66,7 +66,7 @@
                     <tr class="text-[10px] text-gray-400 uppercase font-black tracking-widest">
                         <th class="p-4 w-12 text-center">#</th>
                         <th class="p-4 cursor-pointer hover:text-white" onclick="updateSort('symbol')">Symbol <i class="fas fa-sort ml-1"></i></th>
-                        <th class="p-4">Bid Price</th> 
+                        <th class="p-4 cursor-pointer hover:text-white" onclick="updateSort('ask')">Bid Price <i class="fas fa-sort ml-1"></i></th>
                         <th class="p-4 cursor-pointer hover:text-white" onclick="updateSort('ask')">Ask Price <i class="fas fa-sort ml-1"></i></th>
                         <th class="p-4 cursor-pointer hover:text-white" onclick="updateSort('spread')">Spread <i class="fas fa-sort ml-1"></i></th>
                         <th class="p-4 cursor-pointer hover:text-white" onclick="updateSort('min_usdt')">Min $ <i class="fas fa-sort ml-1"></i></th>
@@ -83,25 +83,6 @@
             </table>
         </div>
 
-        <!-- Footer Totals -->
-        <footer class="bg-[#1e293b] border border-[#334155] p-3 rounded-xl grid grid-cols-2 md:grid-cols-4 gap-4 text-center">
-            <div class="border-r border-[#334155]">
-                <p class="text-[9px] text-gray-500 uppercase font-black">Total Market Gain (Real%)</p>
-                <p id="total-real" class="text-lg font-black text-white">0.00%</p>
-            </div>
-            <div class="border-r border-[#334155] hidden md:block">
-                <p class="text-[9px] text-gray-500 uppercase font-black">Avg 1H Change</p>
-                <p id="total-h1" class="text-lg font-black text-white">0.00%</p>
-            </div>
-            <div class="border-r border-[#334155] hidden md:block">
-                <p class="text-[9px] text-gray-500 uppercase font-black">24H Performance</p>
-                <p id="total-24h" class="text-lg font-black text-white">0.00%</p>
-            </div>
-            <div>
-                <p class="text-[9px] text-gray-500 uppercase font-black">Active Terminal Status</p>
-                <p class="text-sm font-black text-[#22c55e] uppercase">Live Sync Online</p>
-            </div>
-        </footer>
     </div>
 
     <script>
@@ -279,8 +260,26 @@
                 });
             });
 
+            // --- Хүснэгтийн доор нийлбэр мөрийг нэмэх (Totals Row) ---
+            const tRow = document.createElement('tr');
+            tRow.className = "bg-[#0f172a] font-black sticky bottom-0 z-20 border-t-2 border-brand-gold/50 shadow-[0_-4px_10px_rgba(0,0,0,0.5)]";
+            
+            const totalRealColor = totals.real >= 0 ? 'text-[#fbbf24]' : 'text-[#ef4444]';
+            const totalH1Color = totals.h1 >= 0 ? 'text-[#38bdf8]' : 'text-[#fb7185]';
+            const totalChColor = totals.c24 >= 0 ? 'text-[#22c55e]' : 'text-[#ef4444]';
+
+            tRow.innerHTML = `
+                <td class="p-3 text-center text-brand-gold text-[10px]">Σ</td>
+                <td class="p-3 text-white uppercase tracking-widest text-[10px]">TOTALS (${totals.count})</td>
+                <td colspan="4"></td>
+                <td class="p-3 font-black text-lg ${totalRealColor}">${totals.real > 0 ? '+' : ''}${totals.real.toFixed(2)}%</td>
+                <td class="p-3 font-black text-lg ${totalH1Color}">${totals.h1 > 0 ? '+' : ''}${totals.h1.toFixed(2)}%</td>
+                <td class="p-3 font-black text-lg ${totalChColor}">${totals.c24 > 0 ? '+' : ''}${totals.c24.toFixed(2)}%</td>
+                <td colspan="2"></td>
+            `;
+            tbody.appendChild(tRow);
+
             updateSentiment(totals);
-            updateFooter(totals, totals.count);
         }
 
         function updateSentiment(t) {
@@ -294,23 +293,6 @@
 
             badge.className = `ml-2 transition-all duration-500 ${color}`;
             badge.innerText = `${text} (U:${t.ups} D:${t.dns})`; // Update only the span
-        }
-
-        function updateFooter(t, count) {
-            if(count === 0) return;
-            const avgReal = t.real / count;
-            const avgH1 = t.h1 / count;
-            const avg24 = t.c24 / count;
-
-            const setVal = (id, val) => {
-                const el = document.getElementById(id);
-                el.innerText = `${val > 0 ? '+' : ''}${val.toFixed(2)}%`;
-                el.className = `text-lg font-black ${val >= 0 ? 'text-[#22c55e]' : 'text-[#ef4444]'}`;
-            };
-
-            setVal('total-real', avgReal);
-            setVal('total-h1', avgH1);
-            setVal('total-24h', avg24);
         }
 
         function formatVol(vol) {
