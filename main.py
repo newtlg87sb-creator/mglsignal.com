@@ -27,6 +27,8 @@ exchange = ccxt.kucoin({
 session_initial_prices = {}
 h1_ago_prices = {}
 last_h1_fetch = 0
+last_market_refresh = 0
+cached_markets = {}
 
 def fetch_h1_data(symbols):
     """Цаг тутамд нэг удаа 1 цагийн өмнөх үнийг кэшлэх"""
@@ -40,16 +42,20 @@ def fetch_h1_data(symbols):
         except: pass
 
 def run_engine():
-    global session_initial_prices, last_h1_fetch
+    global session_initial_prices, last_h1_fetch, last_market_refresh, cached_markets
     print("🚀 Market Data Engine Started (Running as main.py)...")
-    
-    # Market Limits-ийг нэг удаа татах
-    markets = exchange.load_markets()
-    usdt_pairs = [s for s in markets.keys() if s.endswith('/USDT')]
     
     while True:
         try:
             now = time.time()
+            
+            # 1 цаг тутамд Market мэдээллийг (ST статус, Limits) шинэчлэх
+            if now - last_market_refresh > 3600 or not cached_markets:
+                print("🔄 Refreshing market definitions (ST status check)...")
+                cached_markets = exchange.load_markets()
+                last_market_refresh = now
+            
+            usdt_pairs = [s for s in cached_markets.keys() if s.endswith('/USDT')]
             
             # 1 цаг тутамд 1h% тооцох үнийг шинэчлэх
             if now - last_h1_fetch > 3600:
@@ -62,15 +68,21 @@ def run_engine():
             for sym in usdt_pairs:
                 if sym not in tickers: continue
                 
+                # ST (Special Treatment) статус шалгах
+                market_info = cached_markets[sym].get('info', {})
+                is_st = market_info.get('isST', False) or market_info.get('st', False) or (market_info.get('enableTrading') == False)
+
                 t = tickers[sym]
-                ask = float(t.get('ask') or t.get('last') or 0)
+                # Ask үнэ 0 байсан ч ST бол payload-д оруулна
+                ask = float(t.get('ask') or t.get('last') or 0.0)
                 bid = float(t.get('bid') or 0)
-                if ask == 0: continue
 
                 # Real% тооцоолол
-                if sym not in session_initial_prices:
+                if sym not in session_initial_prices and ask > 0:
                     session_initial_prices[sym] = ask
-                real_change = ((ask - session_initial_prices[sym]) / session_initial_prices[sym] * 100)
+                
+                init_p = session_initial_prices.get(sym, ask)
+                real_change = ((ask - init_p) / init_p * 100) if init_p > 0 else 0
 
                 # 1h% тооцоолол
                 h1_price = h1_ago_prices.get(sym, ask)
@@ -80,13 +92,9 @@ def run_engine():
                 spread = ((ask - bid) / ask * 100) if ask > 0 else 0
                 vol = float(t.get('quoteVolume') or 0)
                 ch_24 = float(t.get('percentage') or 0)
-                min_amount = float(markets[sym]['limits']['amount']['min'] or 0)
+                min_amount = float(cached_markets[sym]['limits']['amount']['min'] or 0)
                 min_usdt = min_amount * ask if ask > 0 else 0
-                min_order_cost = float(markets[sym]['limits']['cost']['min'] or 0) # Minimum order cost in quote currency (USDT)
-
-                # ST (Special Treatment) status check
-                market_info = markets[sym].get('info', {})
-                is_st = market_info.get('isST', False) or market_info.get('st', False) or (market_info.get('enableTrading') == False)
+                min_order_cost = float(cached_markets[sym]['limits']['cost']['min'] or 0)
 
                 # Supabase-рүү илгээх бэлдэц
                 payload.append({
