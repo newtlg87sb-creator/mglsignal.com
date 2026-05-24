@@ -100,8 +100,6 @@
             minHigh: false,   // Default: Min High is SHOWN
             limitHigh: false  // Default: Limit High is SHOWN
         };
-        // Desktop-той ижил бодит ST статусыг ашиглана
-        const staticBlacklist = ['LUNC-USDT', 'USTC-USDT', 'BSV-USDT']; 
         let sentimentType = 'real_change'; // Тооцооллыг харагдах Real% баганатай ижил болгов
 
         function getButtonText(type, isHidden) { // isHidden is the value of hideSettings[type]
@@ -177,11 +175,11 @@
 
             // 2. Apply visibility filters to get the final set of visible coins
             let visibleCoins = searchedData.filter(d => {
-                if (hideSettings.blacklist && (d.is_st || staticBlacklist.includes(d.symbol))) return false;
+                if (hideSettings.blacklist && d.is_st) return false;
                 if (hideSettings.highSpr && d.spread > 1.0) return false;
-                if (hideSettings.lowVol && d.volume < 30000) return false;
-                if (hideSettings.minHigh && d.min_usdt > 0.11) return false;
-                if (hideSettings.limitHigh && d.min_order_cost > 0.1) return false;
+                if (hideSettings.lowVol && (d.volume || 0) < 30000) return false;
+                if (hideSettings.limitHigh && (d.min_order_cost || 0) > 0.1) return false;
+                if (hideSettings.minHigh && (d.min_usdt || 0) > 0.11) return false;
                 return true;
             });
             
@@ -208,18 +206,18 @@
             const groups = {
                 ST: { title: "🚫 BLACKLISTED / ST RISK", list: [], color: "bg-[#7f1d1d]" },
                 HIGH_SPR: { title: "⚠️ HIGH SPREAD (>1.0%)", list: [], color: "bg-[#92400e]" },
-                LOW_VOL: { title: "📉 VOLUME LOW (<30K)", list: [], color: "bg-[#4c1d95]" },
-                MIN_HIGH: { title: "⚖️ MINIMUM HIGH (>0.11)", list: [], color: "bg-[#334155]" },
+                LOW_VOL: { title: "📉 VOLUME LOW (<50K)", list: [], color: "bg-[#4c1d95]" },
                 LIMIT_HIGH: { title: "🚧 LIMIT HIGH (>0.1)", list: [], color: "bg-[#4b5563]" },
+                MIN_HIGH: { title: "⚖️ MINIMUM HIGH (>0.11)", list: [], color: "bg-[#334155]" },
                 MARKET: { title: "📊 MARKET LIST", list: [], color: "bg-[#334155]" }
             };
 
             visibleCoins.forEach(d => {
-                if (d.is_st || staticBlacklist.includes(d.symbol)) groups.ST.list.push(d);
+                if (d.is_st) groups.ST.list.push(d);
                 else if (d.spread > 1.0) groups.HIGH_SPR.list.push(d);
-                else if (d.volume < 30000) groups.LOW_VOL.list.push(d);
-                else if (d.min_order_cost > 0.1) groups.LIMIT_HIGH.list.push(d);
-                else if (d.min_usdt > 0.11) groups.MIN_HIGH.list.push(d);
+                else if ((d.volume || 0) < 30000) groups.LOW_VOL.list.push(d);
+                else if ((d.min_order_cost || 0) > 0.1) groups.LIMIT_HIGH.list.push(d);
+                else if ((d.min_usdt || 0) > 0.11) groups.MIN_HIGH.list.push(d);
                 else groups.MARKET.list.push(d);
             });
 
