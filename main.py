@@ -84,6 +84,10 @@ def run_engine():
                 min_usdt = min_amount * ask if ask > 0 else 0
                 min_order_cost = float(markets[sym]['limits']['cost']['min'] or 0) # Minimum order cost in quote currency (USDT)
 
+                # ST (Special Treatment) status check
+                market_info = markets[sym].get('info', {})
+                is_st = market_info.get('isST', False) or market_info.get('st', False) or (market_info.get('enableTrading') == False)
+
                 # Supabase-рүү илгээх бэлдэц
                 payload.append({
                     "symbol": sym.replace('/', '-'), # ЭНЭ ЗӨВ: BTC-USDT гэж хадгална
@@ -97,6 +101,7 @@ def run_engine():
                     "real_change": round(real_change, 2),
                     "h1_change": round(h1_change, 2),
                     "change_24h": round(ch_24, 2),
+                    "is_st": bool(is_st),
                     "updated_at": datetime.now(timezone.utc).isoformat()
                 })
 

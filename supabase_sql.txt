@@ -10,6 +10,7 @@ create table IF NOT EXISTS market_data (
   real_change float8,
   h1_change float8,
   change_24h float8,
+  is_st boolean default false,
   updated_at timestamptz default now()
 );
 

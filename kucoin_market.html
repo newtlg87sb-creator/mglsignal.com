@@ -94,13 +94,14 @@
         let sessionInitialPrices = {}; // For client-side Real% calculation, reset by user
         let currentSort = { col: 'real_change', desc: true };
         let hideSettings = { 
-            blacklist: false, // Default: Blacklist is SHOWN (not hidden)
+            blacklist: true,  // Default: Blacklist is HIDDEN to match Desktop
             lowVol: false,    // Default: Low Volume is SHOWN
             highSpr: false,   // Default: High Spread is SHOWN
             minHigh: false,   // Default: Min High is SHOWN
             limitHigh: false  // Default: Limit High is SHOWN
         };
-        const blacklist = ['LUNC-USDT', 'USTC-USDT', 'BSV-USDT']; // Example blacklist
+        // Desktop-той ижил бодит ST статусыг ашиглана
+        const staticBlacklist = ['LUNC-USDT', 'USTC-USDT', 'BSV-USDT']; 
         let sentimentType = 'real_change'; // Тооцооллыг харагдах Real% баганатай ижил болгов
 
         function getButtonText(type, isHidden) { // isHidden is the value of hideSettings[type]
@@ -176,8 +177,8 @@
 
             // 2. Apply visibility filters to get the final set of visible coins
             let visibleCoins = searchedData.filter(d => {
-                if (hideSettings.blacklist && blacklist.includes(d.symbol)) return false;
-                if (hideSettings.highSpr && d.spread > 0.3) return false;
+                if (hideSettings.blacklist && (d.is_st || staticBlacklist.includes(d.symbol))) return false;
+                if (hideSettings.highSpr && d.spread > 1.0) return false;
                 if (hideSettings.lowVol && d.volume < 30000) return false;
                 if (hideSettings.minHigh && d.min_usdt > 0.11) return false;
                 if (hideSettings.limitHigh && d.min_order_cost > 0.1) return false;
@@ -206,7 +207,7 @@
             // 5. Categorization Logic for rendering (using visibleCoins)
             const groups = {
                 ST: { title: "🚫 BLACKLISTED / ST RISK", list: [], color: "bg-[#7f1d1d]" },
-                HIGH_SPR: { title: "⚠️ HIGH SPREAD (>0.3%)", list: [], color: "bg-[#92400e]" },
+                HIGH_SPR: { title: "⚠️ HIGH SPREAD (>1.0%)", list: [], color: "bg-[#92400e]" },
                 LOW_VOL: { title: "📉 VOLUME LOW (<30K)", list: [], color: "bg-[#4c1d95]" },
                 MIN_HIGH: { title: "⚖️ MINIMUM HIGH (>0.11)", list: [], color: "bg-[#334155]" },
                 LIMIT_HIGH: { title: "🚧 LIMIT HIGH (>0.1)", list: [], color: "bg-[#4b5563]" },
@@ -214,11 +215,11 @@
             };
 
             visibleCoins.forEach(d => {
-                if (blacklist.includes(d.symbol)) groups.ST.list.push(d);
-                else if (d.spread > 0.3) groups.HIGH_SPR.list.push(d);
+                if (d.is_st || staticBlacklist.includes(d.symbol)) groups.ST.list.push(d);
+                else if (d.spread > 1.0) groups.HIGH_SPR.list.push(d);
                 else if (d.volume < 30000) groups.LOW_VOL.list.push(d);
-                else if (d.min_usdt > 0.11) groups.MIN_HIGH.list.push(d);
                 else if (d.min_order_cost > 0.1) groups.LIMIT_HIGH.list.push(d);
+                else if (d.min_usdt > 0.11) groups.MIN_HIGH.list.push(d);
                 else groups.MARKET.list.push(d);
             });
 
@@ -240,15 +241,16 @@
                     const realColor = (d.real_change || 0) >= 0 ? 'text-[#fbbf24]' : 'text-[#ef4444]';
                     const h1Color = (d.h1_change || 0) >= 0 ? 'text-[#38bdf8]' : 'text-[#fb7185]';
                     const chColor = (d.change_24h || 0) >= 0 ? 'text-[#22c55e]' : 'text-[#ef4444]';
-                    const minUsdtColor = (d.min_usdt || 0) <= 0.11 ? 'text-[#22c55e]' : 'text-gray-400'; // Use (d.min_usdt || 0) for safety
-                    const limitColor = (d.min_order_cost || 0) <= 0.1 ? 'text-[#22c55e]' : 'text-gray-400'; // Use (d.min_order_cost || 0) for safety
+                    const minUsdtColor = (d.min_usdt || 0) <= 0.11 ? 'text-[#10b981]' : 'text-white'; 
+                    const limitColor = (d.min_order_cost || 0) <= 0.1 ? 'text-[#22c55e]' : 'text-gray-400';
+                    const symName = d.is_st ? `${d.symbol} [ST]` : d.symbol;
                     
                     rRow.innerHTML = `
                         <td class="p-3 text-center text-gray-600 text-[10px] border-b border-[#1e293b]">${idx++}</td>
-                        <td class="p-3 font-bold text-white border-b border-[#1e293b]">${d.symbol}</td>
+                        <td class="p-3 font-bold ${d.is_st ? 'text-[#f87171]' : 'text-white'} border-b border-[#1e293b]">${symName}</td>
                         <td class="p-3 text-gray-400 border-b border-[#1e293b]">${(d.bid || 0).toFixed(8)}</td>
                         <td class="p-3 text-white border-b border-[#1e293b]">${(d.ask || 0).toFixed(8)}</td>
-                        <td class="p-3 ${(d.spread || 0) > 0.3 ? 'text-[#fbbf24]' : 'text-gray-400'} border-b border-[#1e293b]">${(d.spread || 0).toFixed(2)}%</td>
+                        <td class="p-3 ${(d.spread || 0) > 1.0 ? 'text-[#fbbf24]' : 'text-gray-400'} border-b border-[#1e293b]">${(d.spread || 0).toFixed(2)}%</td>
                         <td class="p-3 ${minUsdtColor} border-b border-[#1e293b]">${(d.min_usdt || 0).toFixed(4)}</td> 
                         <td class="p-3 font-bold ${realColor} border-b border-[#1e293b]">${(d.real_change || 0) > 0 ? '+' : ''}${(d.real_change || 0).toFixed(2)}%</td>
                         <td class="p-3 font-bold ${h1Color} border-b border-[#1e293b]">${(d.h1_change || 0) > 0 ? '+' : ''}${(d.h1_change || 0).toFixed(2)}%</td>
@@ -284,15 +286,16 @@
 
         function updateSentiment(t) {
             const badge = document.getElementById('sentiment-text');
-            let text, color;
+            let text, color, icon;
             
-            if (t.ups > t.dns * 3 && t.ups > 5) { text = "🚀 Strong Bull"; color = "text-[#22c55e] border-[#22c55e]/30 bg-[#22c55e]/10"; }
-            else if (t.ups > t.dns * 1.5) { text = "📈 Bullish"; color = "text-[#4ade80] border-[#4ade80]/30 bg-[#4ade80]/10"; }
-            else if (t.dns > t.ups * 1.5) { text = "📉 Bearish"; color = "text-[#f87171] border-[#f87171]/30 bg-[#f87171]/10"; }
-            else { text = "⚖️ Flat Market"; color = "text-gray-400"; }
+            if (t.ups > t.dns * 3 && t.ups > 5) { text = "STRONG BULL ↑↑"; color = "text-[#22c55e]"; icon = "🚀"; }
+            else if (t.ups > t.dns * 1.5) { text = "BULL ↑"; color = "text-[#4ade80]"; icon = "📈"; }
+            else if (t.dns > t.ups * 3 && t.dns > 5) { text = "STRONG BEAR ↓↓"; color = "text-[#ef4444]"; icon = "🩸"; }
+            else if (t.dns > t.ups * 1.5) { text = "BEAR ↓"; color = "text-[#f87171]"; icon = "📉"; }
+            else { text = "FLAT ↔"; color = "text-gray-400"; icon = "⚖️"; }
 
             badge.className = `ml-2 transition-all duration-500 ${color}`;
-            badge.innerText = `${text} (U:${t.ups} D:${t.dns})`; // Update only the span
+            badge.innerText = `${icon} ${text} | Up: ${t.ups} | Down: ${t.dns}`;
         }
 
         function formatVol(vol) {
