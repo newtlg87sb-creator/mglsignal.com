@@ -11,11 +11,13 @@ create table IF NOT EXISTS market_data (
   h1_change float8,
   change_24h float8,
   is_st boolean default false,
+  min_order_cost float8,
   updated_at timestamptz default now()
 );
 
--- min_order_cost баганыг нэмэх (хэрэв байхгүй бол)
+-- Дутуу багана нэмэх хамгаалалт (Хүснэгт аль хэдийн үүссэн үед хэрэгтэй)
 ALTER TABLE market_data ADD COLUMN IF NOT EXISTS min_order_cost float8;
+ALTER TABLE market_data ADD COLUMN IF NOT EXISTS is_st boolean DEFAULT false;
 
 -- Realtime-ийг идэвхжүүлэх (Сайт дээр шууд харагдахад хэрэгтэй)
 -- Хэрэв аль хэдийн нэмэгдсэн бол алгасах логик
