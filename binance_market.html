@@ -149,12 +149,12 @@
             const search = document.getElementById('symbol-search').value.toUpperCase();
             
             // 1. Шүүлтүүр
-            let searchedData = allData.filter(d => d.symbol.includes(search) && d.symbol.includes('-'));
+            let searchedData = allData.filter(d => d.symbol.includes(search));
 
             let visibleCoins = searchedData.filter(d => {
                 if (hideSettings.blacklist && d.is_st) return false;
                 if (hideSettings.highSpr && d.spread > 1.0) return false;
-                if (hideSettings.lowVol && (d.volume || 0) < 30000) return false;
+                if (hideSettings.lowVol && (d.volume || 0) < 100000) return false; // Binance-д 100K босго арай тохиромжтой
                 return true;
             });
 
@@ -163,14 +163,14 @@
             visibleCoins.forEach(d => {
                 totals.real += d.client_real_change;
                 totals.h1 += d.h1_change;
-                if(d[sentimentType] > 0.5) totals.ups++;
-                if(d[sentimentType] < -0.5) totals.dns++;
+                if(d[sentimentType] > 0.5) totals.ups++; // 0.5%-иас дээш өссөн
+                if(d[sentimentType] < -0.5) totals.dns++; // -0.5%-иас доош унасан
             });
 
             // 3. Эрэмбэлэх
             visibleCoins.sort((a, b) => {
-                const valA = a[currentSort.col] !== undefined ? a[currentSort.col] : (currentSort.desc ? -Infinity : Infinity);
-                const valB = b[currentSort.col] !== undefined ? b[currentSort.col] : (currentSort.desc ? -Infinity : Infinity);
+                const valA = (a[currentSort.col] !== undefined && a[currentSort.col] !== null) ? a[currentSort.col] : (currentSort.desc ? -Infinity : Infinity);
+                const valB = (b[currentSort.col] !== undefined && b[currentSort.col] !== null) ? b[currentSort.col] : (currentSort.desc ? -Infinity : Infinity);
                 return currentSort.desc ? (valB - valA) : (valA - valB);
             });
 
@@ -178,14 +178,14 @@
             const groups = {
                 ST: { title: "🚫 BLACKLISTED / ST RISK", list: [], color: "bg-[#7f1d1d]" },
                 HIGH_SPR: { title: "⚠️ HIGH SPREAD (>1.0%)", list: [], color: "bg-[#92400e]" },
-                LOW_VOL: { title: "📉 VOLUME LOW (<30K)", list: [], color: "bg-[#4c1d95]" },
+                LOW_VOL: { title: "📉 VOLUME LOW (<100K)", list: [], color: "bg-[#4c1d95]" },
                 MARKET: { title: "📊 MARKET LIST", list: [], color: "bg-[#334155]" }
             };
 
             visibleCoins.forEach(d => {
                 if (d.is_st) groups.ST.list.push(d);
                 else if (d.spread > 1.0) groups.HIGH_SPR.list.push(d);
-                else if ((d.volume || 0) < 30000) groups.LOW_VOL.list.push(d);
+                else if ((d.volume || 0) < 100000) groups.LOW_VOL.list.push(d);
                 else groups.MARKET.list.push(d);
             });
 
@@ -237,6 +237,7 @@
 
         function updateSentiment(t) {
             const badge = document.getElementById('sentiment-text');
+            if (!badge) return;
             let text, color, icon;
             
             if (t.ups > t.dns * 3 && t.ups > 5) { text = "STRONG BULL ↑↑"; color = "text-[#22c55e]"; icon = "🚀"; }

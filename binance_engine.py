@@ -79,8 +79,7 @@ def run_engine():
                 # Binance-ийн хувьд is_st-ийг өөрөөр шалгана (Monitoring, Delisting, etc.)
                 market_info = cached_markets[sym].get('info', {})
                 is_st = market_info.get('isSpotTradingAllowed', True) == False or \
-                        market_info.get('status') != 'TRADING' or \
-                        market_info.get('permissions', []) == [] # Жишээ нь: 'permissions': [] бол арилжаа хийх боломжгүй
+                        market_info.get('status') != 'TRADING'
 
                 t = tickers[sym]
                 ask = float(t.get('ask') or t.get('last') or 0.0)
