@@ -1,0 +1,42 @@
+-- binance_market_data хүснэгтийг үүсгэх
+CREATE TABLE IF NOT EXISTS binance_market_data (
+  symbol text PRIMARY KEY,
+  full_symbol text,
+  bid float8,
+  ask float8,
+  spread float8,
+  min_usdt float8,
+  volume float8,
+  real_change float8,
+  h1_change float8,
+  change_24h float8,
+  is_st boolean DEFAULT false,
+  min_order_cost float8,
+  updated_at timestamptz DEFAULT now()
+);
+
+-- Realtime-ийг идэвхжүүлэх (Binance Terminal дээр шууд шинэчлэгдэхэд хэрэгтэй)
+DO $$
+BEGIN
+  IF NOT EXISTS (
+    SELECT 1 FROM pg_publication_tables 
+    WHERE pubname = 'supabase_realtime' 
+    AND schemaname = 'public' 
+    AND tablename = 'binance_market_data'
+  ) THEN
+    ALTER PUBLICATION supabase_realtime ADD TABLE binance_market_data;
+  END IF;
+END $$;
+
+-- Фронтенд дээр өгөгдөл унших эрх нэмэх (Select Policy)
+DO $$
+BEGIN
+  IF NOT EXISTS (
+    SELECT 1 FROM pg_policy 
+    WHERE polname = 'Enable read access for all users on binance' 
+    AND polrelid = 'binance_market_data'::regclass
+  ) THEN
+    ALTER TABLE binance_market_data ENABLE ROW LEVEL SECURITY;
+    CREATE POLICY "Enable read access for all users on binance" ON binance_market_data FOR SELECT USING (true);
+  END IF;
+END $$;
