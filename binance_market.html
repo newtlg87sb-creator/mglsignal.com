@@ -129,6 +129,7 @@
             try {
                 const { data, error } = await supabaseClient.from('binance_market_data').select('*');
                 if (error) throw error;
+                console.log("Supabase raw data:", data); // Энд дата ирж байгааг шалгана
                 
                 console.log(`Fetched ${data.length} Binance rows`); // Дата ирж байгааг хянах
                 allData = data;
