@@ -116,6 +116,49 @@
                     </tbody>
                 </table>
             </div>
+
+            <!-- Terminal Usage Guide Section -->
+            <div class="mt-20 border-t border-brand-border pt-12">
+                <div class="bg-brand-dark-blue/50 border border-brand-border rounded-2xl p-8 md:p-10 shadow-2xl relative overflow-hidden">
+                    <div class="absolute top-0 right-0 w-64 h-64 bg-brand-gold/5 blur-[100px] -mr-32 -mt-32"></div>
+                    <div class="relative z-10">
+                        <h2 data-i18n="guide-title" class="text-2xl font-black text-white uppercase tracking-tighter mb-6 flex items-center">
+                            <i class="fas fa-book-open text-brand-gold mr-3"></i> Биржүүдийн Терминал ашиглах заавар
+                        </h2>
+                        <div class="space-y-6 text-gray-400 text-sm leading-relaxed">
+                            <div class="bg-brand-gold/10 border-l-4 border-brand-gold p-6 rounded-r-xl">
+                                <p data-i18n="guide-intro" class="text-white font-medium italic"></p>
+                            </div>
+                            <div class="grid grid-cols-1 md:grid-cols-2 gap-x-12 gap-y-8 mt-10">
+                                <div class="space-y-4">
+                                    <h3 data-i18n="guide-item-1-title" class="text-brand-gold font-bold uppercase text-xs tracking-widest"></h3>
+                                    <p data-i18n="guide-item-1-desc" class="text-xs"></p>
+                                </div>
+                                <div class="space-y-4">
+                                    <h3 data-i18n="guide-item-2-title" class="text-brand-gold font-bold uppercase text-xs tracking-widest"></h3>
+                                    <p data-i18n="guide-item-2-desc" class="text-xs"></p>
+                                </div>
+                                <div class="space-y-4">
+                                    <h3 data-i18n="guide-item-3-title" class="text-brand-gold font-bold uppercase text-xs tracking-widest"></h3>
+                                    <p data-i18n="guide-item-3-desc" class="text-xs"></p>
+                                </div>
+                                <div class="space-y-4">
+                                    <h3 data-i18n="guide-item-4-title" class="text-brand-gold font-bold uppercase text-xs tracking-widest"></h3>
+                                    <p data-i18n="guide-item-4-desc" class="text-xs"></p>
+                                </div>
+                                <div class="space-y-4">
+                                    <h3 data-i18n="guide-item-5-title" class="text-brand-gold font-bold uppercase text-xs tracking-widest"></h3>
+                                    <p data-i18n="guide-item-5-desc" class="text-xs"></p>
+                                </div>
+                                <div class="space-y-4">
+                                    <h3 data-i18n="guide-item-6-title" class="text-brand-gold font-bold uppercase text-xs tracking-widest"></h3>
+                                    <p data-i18n="guide-item-6-desc" class="text-xs"></p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
         </div>
     </main>
 
@@ -130,11 +173,39 @@
         const pageTranslations = {
             mn: {
                 "terminal-reminder": "💡 Санамж: 'Hide' шүүлтүүрүүдийг ашиглан эрсдэлтэй болон арилжаанд шаардлагагүй зооснуудыг жагсаалтаас хасаж, өөрийн арилжааны тактикт тохирох оновчтой зоосыг сонгон арилжаагаа хийгээрэй.",
-                "back-to-home": '<svg class="w-4 h-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 19l-7-7m0 0l7-7m-7 7h18"></path></svg>Терминалууд руу буцах'
+                "back-to-home": '<svg class="w-4 h-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 19l-7-7m0 0l7-7m-7 7h18"></path></svg>Терминалууд руу буцах',
+                "guide-title": '<i class="fas fa-book-open text-brand-gold mr-3"></i> Биржүүдийн Терминал ашиглах заавар',
+                "guide-intro": "Энэхүү биржүүдийн дата нь маш онцгой зүйлсийг агуулдаг бөгөөд үүнийг ойлгож мэдсэнээр аль ч бирж дээр арилжаа хийж байсан авах ёсгүй койнуудыг авахгүй байх чадвартай болох юм...",
+                "guide-item-1-title": "1. BLACKLISTED / ST RISK (SHOW BL)",
+                "guide-item-1-desc": "ST (Special Treatment) буюу биржийн гэрээний зөрчилтэй, арилжаанаас хасагдах өндөр эрсдэлтэй койнууд. Систем эдгээрийг автоматаар улаанаар тэмдэглэж анхааруулна.",
+                "guide-item-2-title": "2. SPREAD MONITOR (HIDE HS)",
+                "guide-item-2-desc": "Худалдах, худалдан авах үнийн зөрүү ихтэй койнууд. Халимнуудын өгөөш болох магадлал өндөр, занга ихтэй байдаг тул арилжаанд орох нь эрсдэлтэй.",
+                "guide-item-3-title": "3. LOW VOL COINS (HIDE LV)",
+                "guide-item-3-desc": "Сүүлийн нэг өдрийн зах зээлийн эргэлт багатай койнууд. Хөрвөх чадвар муу тул арилжааны явцад үнийн гэнэтийн савлагаа үүсэх аюултай.",
+                "guide-item-4-title": "4. HIDE MIN (SHOW MH)",
+                "guide-item-4-desc": "Өндөр өртөгөөр арилжаа хийгддэг койнуудыг нууж, хамгийн бага дүнгээр (жишээ нь 0.1$) арилжаанд орох боломжийг харуулах болно.",
+                "guide-item-5-title": "5. LIMIT (SHOW LH)",
+                "guide-item-5-desc": "Лимит нь тийм ч чухал холбогдолгүй ч та хамгийн бага USDT-ээр оролцох боломжтой койнуудыг харж болно.",
+                "guide-item-6-title": "6. RESET REAL% (RESET REAL%)",
+                "guide-item-6-desc": "Бүх цаг үеийн арилжааны хамгийн чухал хэрэгсэл. Үүнийг дарснаар үнийг одоо цагаас хойш reset хийж, хэрхэн өсөж унаж байгааг бодитоор харна."
             },
             en: {
                 "terminal-reminder": "💡 Tip: Use the 'Hide' filters to remove risky or irrelevant coins from the list, allowing you to focus on the most suitable assets for your trading strategy.",
-                "back-to-home": '<svg class="w-4 h-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 19l-7-7m0 0l7-7m-7 7h18"></path></svg>Back to Terminals'
+                "back-to-home": '<svg class="w-4 h-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 19l-7-7m0 0l7-7m-7 7h18"></path></svg>Back to Terminals',
+                "guide-title": '<i class="fas fa-book-open text-brand-gold mr-3"></i> Exchange Terminal Usage Guide',
+                "guide-intro": "This exchange data contains very unique insights. By understanding this, you will be able to avoid purchasing high-risk coins on any exchange you trade on...",
+                "guide-item-1-title": "1. BLACKLISTED / ST RISK (SHOW BL)",
+                "guide-item-1-desc": "Coins with ST (Special Treatment) status or contract violations. High risk of delisting; system highlights these in red.",
+                "guide-item-2-title": "2. SPREAD MONITOR (HIDE HS)",
+                "guide-item-2-desc": "Assets with wide bid-ask spreads. These are likely whale bait or manipulative traps; entry is highly risky.",
+                "guide-item-3-title": "3. LOW VOL COINS (HIDE LV)",
+                "guide-item-3-desc": "Coins with low market turnover in the last 24 hours. Poor liquidity often leads to extreme volatility.",
+                "guide-item-4-title": "4. HIDE MIN (SHOW MH)",
+                "guide-item-4-desc": "Hides coins with high entry requirements to highlight low-cost opportunities (e.g., $0.1 entry).",
+                "guide-item-5-title": "5. LIMIT (SHOW LH)",
+                "guide-item-5-desc": "Filters assets with high order cost limits. Allows you to see coins accessible with minimum USDT balance.",
+                "guide-item-6-title": "6. RESET REAL% (RESET REAL%)",
+                "guide-item-6-desc": "A vital tool for all trading. Resets price tracking to the current moment to monitor live gains or losses from this point forward."
             }
         };
 

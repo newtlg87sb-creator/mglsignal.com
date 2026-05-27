@@ -104,6 +104,41 @@
                     </tbody>
                 </table>
             </div>
+
+            <!-- Terminal Usage Guide Section -->
+            <div class="mt-20 border-t border-brand-border pt-12">
+                <div class="bg-brand-dark-blue/50 border border-brand-border rounded-2xl p-8 md:p-10 shadow-2xl relative overflow-hidden">
+                    <div class="absolute top-0 right-0 w-64 h-64 bg-brand-gold/5 blur-[100px] -mr-32 -mt-32"></div>
+                    <div class="relative z-10">
+                        <h2 data-i18n="guide-title" class="text-2xl font-black text-white uppercase tracking-tighter mb-6 flex items-center">
+                            <i class="fas fa-book-open text-brand-gold mr-3"></i> Биржүүдийн Терминал ашиглах заавар
+                        </h2>
+                        <div class="space-y-6 text-gray-400 text-sm leading-relaxed">
+                            <div class="bg-brand-gold/10 border-l-4 border-brand-gold p-6 rounded-r-xl">
+                                <p data-i18n="guide-intro" class="text-white font-medium italic"></p>
+                            </div>
+                            <div class="grid grid-cols-1 md:grid-cols-2 gap-x-12 gap-y-8 mt-10">
+                                <div class="space-y-4">
+                                    <h3 data-i18n="guide-item-1-title" class="text-brand-gold font-bold uppercase text-xs tracking-widest"></h3>
+                                    <p data-i18n="guide-item-1-desc" class="text-xs"></p>
+                                </div>
+                                <div class="space-y-4">
+                                    <h3 data-i18n="guide-item-2-title" class="text-brand-gold font-bold uppercase text-xs tracking-widest"></h3>
+                                    <p data-i18n="guide-item-2-desc" class="text-xs"></p>
+                                </div>
+                                <div class="space-y-4">
+                                    <h3 data-i18n="guide-item-3-title" class="text-brand-gold font-bold uppercase text-xs tracking-widest"></h3>
+                                    <p data-i18n="guide-item-3-desc" class="text-xs"></p>
+                                </div>
+                                <div class="space-y-4">
+                                    <h3 data-i18n="guide-item-6-title" class="text-brand-gold font-bold uppercase text-xs tracking-widest"></h3>
+                                    <p data-i18n="guide-item-6-desc" class="text-xs"></p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
         </div>
     </main>
 
@@ -121,6 +156,37 @@
             highSpr: false 
         };
         let sentimentType = 'client_real_change';
+
+        const pageTranslations = {
+            mn: {
+                "terminal-reminder": "💡 Санамж: 'Hide' шүүлтүүрүүдийг ашиглан эрсдэлтэй болон арилжаанд шаардлагагүй зооснуудыг жагсаалтаас хасаж, өөрийн арилжааны тактикт тохирох оновчтой зоосыг сонгон арилжаагаа хийгээрэй.",
+                "back-to-home": '<svg class="w-4 h-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 19l-7-7m0 0l7-7m-7 7h18"></path></svg>Терминалууд руу буцах',
+                "guide-title": '<i class="fas fa-book-open text-brand-gold mr-3"></i> Биржүүдийн Терминал ашиглах заавар',
+                "guide-intro": "Энэхүү биржүүдийн дата нь маш онцгой зүйлсийг агуулдаг бөгөөд үүнийг ойлгож мэдсэнээр аль ч бирж дээр арилжаа хийж байсан авах ёсгүй койнуудыг авахгүй байх чадвартай болох юм...",
+                "guide-item-1-title": "1. BLACKLISTED / ST RISK (SHOW BL)",
+                "guide-item-1-desc": "ST (Special Treatment) буюу биржийн гэрээний зөрчилтэй, арилжаанаас хасагдах өндөр эрсдэлтэй койнууд. Систем эдгээрийг автоматаар улаанаар тэмдэглэж анхааруулна.",
+                "guide-item-2-title": "2. SPREAD MONITOR (HIDE HS)",
+                "guide-item-2-desc": "Худалдах, худалдан авах үнийн зөрүү ихтэй койнууд. Халимнуудын өгөөш болох магадлал өндөр, занга ихтэй байдаг тул арилжаанд орох нь эрсдэлтэй.",
+                "guide-item-3-title": "3. LOW VOL COINS (HIDE LV)",
+                "guide-item-3-desc": "Сүүлийн нэг өдрийн зах зээлийн эргэлт багатай койнууд. Хөрвөх чадвар муу тул арилжааны явцад үнийн гэнэтийн савлагаа үүсэх аюултай.",
+                "guide-item-6-title": "6. RESET REAL% (RESET REAL%)",
+                "guide-item-6-desc": "Бүх цаг үеийн арилжааны хамгийн чухал хэрэгсэл. Үүнийг дарснаар үнийг одоо цагаас хойш reset хийж, хэрхэн өсөж унаж байгааг бодитоор харна."
+            },
+            en: {
+                "terminal-reminder": "💡 Tip: Use the 'Hide' filters to remove risky or irrelevant coins from the list, allowing you to focus on the most suitable assets for your trading strategy.",
+                "back-to-home": '<svg class="w-4 h-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 19l-7-7m0 0l7-7m-7 7h18"></path></svg>Back to Terminals',
+                "guide-title": '<i class="fas fa-book-open text-brand-gold mr-3"></i> Exchange Terminal Usage Guide',
+                "guide-intro": "This exchange data contains very unique insights. By understanding this, you will be able to avoid purchasing high-risk coins on any exchange you trade on...",
+                "guide-item-1-title": "1. BLACKLISTED / ST RISK (SHOW BL)",
+                "guide-item-1-desc": "Coins with ST (Special Treatment) status or contract violations. High risk of delisting; system highlights these in red.",
+                "guide-item-2-title": "2. SPREAD MONITOR (HIDE HS)",
+                "guide-item-2-desc": "Assets with wide bid-ask spreads. These are likely whale bait or manipulative traps; entry is highly risky.",
+                "guide-item-3-title": "3. LOW VOL COINS (HIDE LV)",
+                "guide-item-3-desc": "Coins with low market turnover in the last 24 hours. Poor liquidity often leads to extreme volatility.",
+                "guide-item-6-title": "6. RESET REAL% (RESET REAL%)",
+                "guide-item-6-desc": "A vital tool for all trading. Resets price tracking to the current moment to monitor live gains or losses from this point forward."
+            }
+        };
 
         function onSentimentTypeChange() {
             sentimentType = document.getElementById('sentiment-type-selector').value;
@@ -162,13 +228,13 @@
             });
 
             // 2. Нийлбэр тооцоолох
-            let totals = { real: 0, h1: 0, count: visibleCoins.length, ups: 0, dns: 0 };
+            let totals = { real: 0, h1: 0, c24: 0, count: visibleCoins.length, ups: 0, dns: 0 };
             visibleCoins.forEach(d => {
                 totals.real += d.client_real_change;
-                totals.c24 += d.change_24h; // 24H% нийлбэрт нэмэх
+                totals.c24 += d.change_24h || 0; 
                 totals.h1 += d.h1_change;
-                if(d[sentimentType] > 0.5) totals.ups++; // 0.5%-иас дээш өссөн
-                if(d[sentimentType] < -0.5) totals.dns++; // -0.5%-иас доош унасан
+                if((d[sentimentType] || 0) > 0.5) totals.ups++; 
+                if((d[sentimentType] || 0) < -0.5) totals.dns++;
             });
 
             // 3. Эрэмбэлэх
@@ -233,7 +299,7 @@
             tRow.innerHTML = `
                 <td class="p-3 text-center text-[#f3ba2f] text-[10px]">Σ</td>
                 <td class="p-3 text-white uppercase tracking-widest text-[10px]">BINANCE TOTALS (${totals.count})</td>
-                <td colspan="3"></td>
+                <td colspan="4"></td>
                 <td class="p-3 font-black text-lg ${totals.real >= 0 ? 'text-[#f3ba2f]' : 'text-red-500'}">${totals.real > 0 ? '+' : ''}${totals.real.toFixed(2)}%</td>
                 <td class="p-3 font-black text-lg ${totals.h1 >= 0 ? 'text-[#38bdf8]' : 'text-rose-500'}">${totals.h1 > 0 ? '+' : ''}${totals.h1.toFixed(2)}%</td>
                 <td class="p-3 font-black text-lg ${totals.c24 >= 0 ? 'text-[#22c55e]' : 'text-red-500'}">${totals.c24 > 0 ? '+' : ''}${totals.c24.toFixed(2)}%</td>
@@ -259,10 +325,23 @@
             badge.innerText = `${icon} ${text} | Up: ${t.ups} | Down: ${t.dns}`;
         }
 
+        function getButtonText(type, isHidden) {
+            const texts = { blacklist: 'BL', lowVol: 'LV', highSpr: 'HS' };
+            return `${isHidden ? 'Show' : 'Hide'} ${texts[type]}`;
+        }
+
+        function updateButtonState(id, isHidden) {
+            const btn = document.getElementById(id);
+            if (btn) {
+                const type = id.replace('btn-', '');
+                btn.textContent = getButtonText(type, isHidden);
+                btn.className = `px-2 py-1 rounded text-[9px] font-bold uppercase transition ${isHidden ? 'bg-black text-gray-500' : 'bg-[#334155] text-white'}`;
+            }
+        }
+
         function toggleHide(type) {
             hideSettings[type] = !hideSettings[type];
-            const btn = document.getElementById(`btn-${type}`);
-            btn.className = `px-2 py-1 rounded text-[9px] font-bold uppercase transition ${hideSettings[type] ? 'bg-black text-gray-500' : 'bg-[#334155] text-white'}`;
+            updateButtonState(`btn-${type}`, hideSettings[type]);
             renderUI();
         }
 
@@ -279,7 +358,16 @@
         }
 
         setInterval(fetchMarketData, 5000);
-        fetchMarketData();
+        
+        document.addEventListener('DOMContentLoaded', () => {
+            const lang = localStorage.getItem('lang') || 'mn';
+            if (typeof translations !== 'undefined') {
+                Object.keys(pageTranslations).forEach(l => Object.assign(translations[l], pageTranslations[l]));
+            }
+            if (typeof changeLang === 'function') changeLang(lang);
+            fetchMarketData();
+            Object.keys(hideSettings).forEach(type => updateButtonState(`btn-${type}`, hideSettings[type]));
+        });
         
         document.getElementById('symbol-search').addEventListener('input', renderUI);
     </script>
