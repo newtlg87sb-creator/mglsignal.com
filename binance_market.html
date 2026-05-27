@@ -106,12 +106,10 @@
     </main>
 
     <script src="/static/js/footer.js"></script>
-    <script src="/static/lock.js"></script>
 
     <script>
-        const SB_URL = "https://bsdkbxyjwjljximdxdst.supabase.co";
-        const SB_KEY = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImJzZGtieHlqd2psanhpbWR4ZHN0Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzUzODg1MTQsImV4cCI6MjA5MDk2NDUxNH0.Qwfpd0cEaAKwlv5B-Uh0MlTLR-WH8qt19HHlTxUnUYs";
-        const supabaseClient = supabase.createClient(SB_URL, SB_KEY);
+        // header.js дотор үүсгэгдсэн 'sb' client-ийг шууд ашиглана
+        const supabaseClient = sb;
 
         let allData = [];
         let sessionInitialPrices = {};
