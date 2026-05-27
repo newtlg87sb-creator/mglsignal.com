@@ -22,7 +22,14 @@ supabase: Client = create_client(SUPABASE_URL, SUPABASE_KEY)
 # Binance Exchange-ийг тохируулах
 exchange = ccxt.binance({
     'enableRateLimit': True,
-    'options': {'defaultType': 'spot', 'adjustForTimeDifference': True}
+    'options': {'defaultType': 'spot', 'adjustForTimeDifference': True},
+    # api1, api2, эсвэл api3 кластеруудыг туршиж үзэх
+    'urls': {
+        'api': {
+            'public': 'https://api3.binance.com/api/v3',
+            'private': 'https://api3.binance.com/api/v3',
+        }
+    }
 })
 
 session_initial_prices = {}
@@ -123,6 +130,12 @@ def run_engine():
 
             time.sleep(5)
 
+        except ccxt.ExchangeNotAvailable as e:
+            if "451" in str(e):
+                print("❌ Binance Region Block (451 Error): Таны сервер хориотой бүсэд байна. Railway-ийн Region-ийг (Европ эсвэл Ази) болгож солино уу.")
+            else:
+                print(f"❌ Exchange Not Available: {e}")
+            time.sleep(30)
         except Exception as e:
             print(f"❌ Binance Loop Error: {e}")
             time.sleep(10)
