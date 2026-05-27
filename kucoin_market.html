@@ -6,9 +6,22 @@
     <title>KuCoin Pro Terminal - MGL Signal</title>
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
     <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        brand: { 'dark': '#05070a', 'dark-blue': '#0f1217', 'gold': '#c5a059', 'border': '#1f242d' }
+                    },
+                    fontFamily: { 'inter': ['Inter', 'sans-serif'] }
+                }
+            }
+        }
+    </script>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="stylesheet" href="/static/main_style.css">
     <style>
-        body { background-color: #05070a; color: #e2e8f0; font-family: 'Inter', sans-serif; }
+        body { background-color: #05070a; color: #e2e8f0; }
         .terminal-table { border-collapse: separate; border-spacing: 0; width: 100%; }
         .terminal-table th { position: sticky; top: 0; background: #1e293b; z-index: 40; border-bottom: 2px solid #0f172a; }
         .group-header { background: #1e293b; color: #fbbf24; font-weight: 900; font-size: 11px; text-transform: uppercase; letter-spacing: 0.1em; }
@@ -19,80 +32,115 @@
         .cell-mono { font-family: 'JetBrains Mono', 'Consolas', monospace; font-size: 13px; }
     </style>
 </head>
-<body class="p-4 md:p-6">
-    <div class="max-w-[1400px] mx-auto space-y-4">
-        
-        <!-- Top Control Bar -->
-        <header class="bg-[#0f172a] border border-[#1e293b] p-4 rounded-xl flex flex-col md:flex-row justify-between items-center gap-4 shadow-2xl">
-            <div class="flex items-center space-x-4">
-                <h1 class="text-xl font-black text-[#38bdf8] tracking-tighter uppercase flex items-center">
-                    <i class="fas fa-microchip mr-3 animate-pulse"></i> KuCoin Terminal
-                </h1>
-                <div id="sentiment-badge" class="px-3 py-1 rounded bg-[#1e293b] border border-[#334155] text-[10px] font-black uppercase flex items-center gap-1">
-                    <select id="sentiment-type-selector" onchange="onSentimentTypeChange()" class="bg-transparent text-white outline-none cursor-pointer appearance-none pr-4">
-                        <option value="client_real_change">Real%</option>
-                        <option value="h1_change">1H%</option>
-                    </select>
-                    <i class="fas fa-caret-down text-gray-400 text-[8px] -ml-3 pointer-events-none"></i>
-                    <span id="sentiment-text" class="ml-2">📡 Scanning...</span>
+<body class="bg-brand-dark text-white font-inter flex flex-col min-h-screen">
+
+    <script src="/static/js/main_translate.js"></script>
+    <script src="/static/js/header.js"></script>
+
+    <main class="flex-grow pt-32 pb-12 px-4 md:px-6">
+        <div class="max-w-[1400px] mx-auto space-y-4">
+            
+            <!-- Back to Exchanges Button -->
+            <div class="flex flex-col gap-4 mb-6">
+                <a href="exchanges.html" data-i18n="back-to-home" class="w-fit inline-flex items-center text-brand-gold hover:text-white transition text-xs font-bold uppercase tracking-widest">
+                    <svg class="w-4 h-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 19l-7-7m0 0l7-7m-7 7h18"></path></svg>
+                    Back to Terminals
+                </a>
+                <div class="bg-brand-gold/5 border border-brand-gold/10 rounded-lg p-3 flex items-start gap-3 max-w-2xl shadow-sm">
+                    <i class="fas fa-lightbulb text-brand-gold mt-0.5 text-xs"></i>
+                    <p data-i18n="terminal-reminder" class="text-[11px] text-gray-400 font-medium leading-relaxed italic"></p>
                 </div>
             </div>
 
-            <div class="flex flex-wrap items-center gap-3">
-                <!-- Search -->
-                <div class="relative">
-                    <i class="fas fa-search absolute left-3 top-1/2 -translate-y-1/2 text-gray-500 text-xs pointer-events-none"></i>
-                    <input type="text" id="symbol-search" placeholder="Search Symbols..." class="bg-[#05070a] border border-[#334155] rounded-lg py-1.5 pl-9 pr-4 text-xs focus:border-[#38bdf8] outline-none transition w-32 md:w-44 text-white">
+            <!-- Top Control Bar -->
+            <header class="bg-[#0f172a] border border-[#1e293b] p-4 rounded-xl flex flex-col md:flex-row justify-between items-center gap-4 shadow-2xl">
+                <div class="flex items-center space-x-4">
+                    <h1 class="text-xl font-black text-[#38bdf8] tracking-tighter uppercase flex items-center">
+                        <i class="fas fa-bolt mr-3 animate-pulse text-[#24ae8f]"></i> KuCoin Pro
+                    </h1>
+                    <div id="sentiment-badge" class="px-3 py-1 rounded bg-[#1e293b] border border-[#334155] text-[10px] font-black uppercase flex items-center gap-1">
+                        <select id="sentiment-type-selector" onchange="onSentimentTypeChange()" class="bg-transparent text-white outline-none cursor-pointer appearance-none pr-4">
+                            <option value="client_real_change">Real%</option>
+                            <option value="h1_change">1H%</option>
+                        </select>
+                        <i class="fas fa-caret-down text-gray-400 text-[8px] -ml-3 pointer-events-none"></i>
+                        <span id="sentiment-text" class="ml-2">📡 Scanning...</span>
+                    </div>
                 </div>
 
-                <!-- Hide Filters -->
-                <div class="flex flex-wrap gap-1 bg-[#05070a] border border-[#334155] rounded-lg p-0.5 mr-2">
-                    <button onclick="toggleHide('blacklist')" id="btn-blacklist" class="px-2 py-1 rounded text-[9px] font-bold uppercase transition bg-[#334155] text-white">Show BL</button>
-                    <button onclick="toggleHide('lowVol')" id="btn-lowVol" class="px-2 py-1 rounded text-[9px] font-bold uppercase transition bg-[#334155] text-white">Show LV</button>
-                    <button onclick="toggleHide('highSpr')" id="btn-highSpr" class="px-2 py-1 rounded text-[9px] font-bold uppercase transition bg-[#334155] text-white">Show HS</button>
-                    <button onclick="toggleHide('minHigh')" id="btn-minHigh" class="px-2 py-1 rounded text-[9px] font-bold uppercase transition bg-[#334155] text-white">Show MH</button>
-                    <button onclick="toggleHide('limitHigh')" id="btn-limitHigh" class="px-2 py-1 rounded text-[9px] font-bold uppercase transition bg-[#334155] text-white">Show LH</button>
-                    <button onclick="resetSessionPrices()" class="px-2 py-1 rounded text-[9px] font-bold uppercase bg-brand-gold text-black ml-1">Reset Real%</button>
-                </div>
+                <div class="flex flex-wrap items-center gap-3">
+                    <!-- Search -->
+                    <div class="relative">
+                        <i class="fas fa-search absolute left-3 top-1/2 -translate-y-1/2 text-gray-500 text-xs pointer-events-none"></i>
+                        <input type="text" id="symbol-search" placeholder="Search Symbols..." class="bg-[#05070a] border border-[#334155] rounded-lg py-2 pl-9 pr-4 text-xs focus:border-[#38bdf8] outline-none transition w-32 md:w-44 text-white">
+                    </div>
 
-                <div id="last-sync" class="text-[10px] font-mono text-gray-500">Initializing...</div>
+                    <!-- Hide Filters -->
+                    <div class="flex flex-wrap gap-1 bg-[#05070a] border border-[#334155] rounded-lg p-0.5 mr-2">
+                        <button onclick="toggleHide('blacklist')" id="btn-blacklist" class="px-2 py-1 rounded text-[9px] font-bold uppercase transition bg-[#334155] text-white">Show BL</button>
+                        <button onclick="toggleHide('lowVol')" id="btn-lowVol" class="px-2 py-1 rounded text-[9px] font-bold uppercase transition bg-[#334155] text-white">Show LV</button>
+                        <button onclick="toggleHide('highSpr')" id="btn-highSpr" class="px-2 py-1 rounded text-[9px] font-bold uppercase transition bg-[#334155] text-white">Show HS</button>
+                        <button onclick="toggleHide('minHigh')" id="btn-minHigh" class="px-2 py-1 rounded text-[9px] font-bold uppercase transition bg-[#334155] text-white">Show MH</button>
+                        <button onclick="toggleHide('limitHigh')" id="btn-limitHigh" class="px-2 py-1 rounded text-[9px] font-bold uppercase transition bg-[#334155] text-white">Show LH</button>
+                    </div>
+
+                    <!-- Distinct Reset Button -->
+                    <button onclick="resetSessionPrices()" class="px-4 py-2 rounded-lg text-[10px] font-black uppercase bg-[#fbbf24] text-black hover:bg-white hover:shadow-yellow-500/50 transition-all shadow-xl shadow-yellow-500/20 flex items-center gap-2 active:scale-95 border-2 border-white/10">
+                        <i class="fas fa-sync-alt"></i> Reset Real%
+                    </button>
+
+                    <div id="last-sync" class="text-[10px] font-mono text-gray-500">Initializing...</div>
+                </div>
+            </header>
+
+            <!-- Main Table Area -->
+            <div class="bg-[#0f172a] border border-[#1e293b] rounded-xl overflow-hidden shadow-2xl overflow-x-auto overflow-y-auto news-scroll" style="max-height: calc(100vh - 280px);">
+                <table class="terminal-table text-left">
+                    <thead>
+                        <tr class="text-[10px] text-gray-400 uppercase font-black tracking-widest">
+                            <th class="p-4 w-12 text-center">#</th>
+                            <th class="p-4 cursor-pointer hover:text-white" onclick="updateSort('symbol')">Symbols <i class="fas fa-sort ml-1"></i></th>
+                            <th class="p-4 cursor-pointer hover:text-white" onclick="updateSort('ask')">Bid Price <i class="fas fa-sort ml-1"></i></th>
+                            <th class="p-4 cursor-pointer hover:text-white" onclick="updateSort('ask')">Ask Price <i class="fas fa-sort ml-1"></i></th>
+                            <th class="p-4 cursor-pointer hover:text-white" onclick="updateSort('spread')">Spread <i class="fas fa-sort ml-1"></i></th>
+                            <th class="p-4 cursor-pointer hover:text-white" onclick="updateSort('min_usdt')">Min $ <i class="fas fa-sort ml-1"></i></th>
+                            <th class="p-4 cursor-pointer hover:text-white" onclick="updateSort('client_real_change')">Real% <i class="fas fa-sort ml-1"></i></th>
+                            <th class="p-4 cursor-pointer hover:text-white" onclick="updateSort('h1_change')">1H% <i class="fas fa-sort ml-1"></i></th>
+                            <th class="p-4 cursor-pointer hover:text-white" onclick="updateSort('change_24h')">24H% <i class="fas fa-sort ml-1"></i></th>
+                            <th class="p-4 cursor-pointer hover:text-white" onclick="updateSort('volume')">Volume <i class="fas fa-sort ml-1"></i></th>
+                            <th class="p-4 cursor-pointer hover:text-white" onclick="updateSort('min_order_cost')">Limit $ <i class="fas fa-sort ml-1"></i></th>
+                        </tr>
+                    </thead>
+                    <tbody id="market-body" class="cell-mono">
+                        <!-- Data rows injected by JS -->
+                    </tbody>
+                </table>
             </div>
-        </header>
-
-        <!-- Main Table Area -->
-        <div class="bg-[#0f172a] border border-[#1e293b] rounded-xl overflow-hidden shadow-2xl overflow-x-auto overflow-y-auto news-scroll" style="max-height: calc(100vh - 220px);">
-            <table class="terminal-table text-left">
-                <thead>
-                    <tr class="text-[10px] text-gray-400 uppercase font-black tracking-widest">
-                        <th class="p-4 w-12 text-center">#</th>
-                        <th class="p-4 cursor-pointer hover:text-white" onclick="updateSort('symbol')">Symbols <i class="fas fa-sort ml-1"></i></th>
-                        <th class="p-4 cursor-pointer hover:text-white" onclick="updateSort('ask')">Bid Price <i class="fas fa-sort ml-1"></i></th>
-                        <th class="p-4 cursor-pointer hover:text-white" onclick="updateSort('ask')">Ask Price <i class="fas fa-sort ml-1"></i></th>
-                        <th class="p-4 cursor-pointer hover:text-white" onclick="updateSort('spread')">Spread <i class="fas fa-sort ml-1"></i></th>
-                        <th class="p-4 cursor-pointer hover:text-white" onclick="updateSort('min_usdt')">Min $ <i class="fas fa-sort ml-1"></i></th>
-                        <th class="p-4 cursor-pointer hover:text-white" onclick="updateSort('real_change')">Real% <i class="fas fa-sort ml-1"></i></th>
-                        <th class="p-4 cursor-pointer hover:text-white" onclick="updateSort('h1_change')">1H% <i class="fas fa-sort ml-1"></i></th>
-                        <th class="p-4 cursor-pointer hover:text-white" onclick="updateSort('change_24h')">24H% <i class="fas fa-sort ml-1"></i></th>
-                        <th class="p-4 cursor-pointer hover:text-white" onclick="updateSort('volume')">Volume <i class="fas fa-sort ml-1"></i></th>
-                        <th class="p-4 cursor-pointer hover:text-white" onclick="updateSort('min_order_cost')">Limit $ <i class="fas fa-sort ml-1"></i></th>
-                    </tr>
-                </thead>
-                <tbody id="market-body" class="cell-mono">
-                    <!-- Data rows injected by JS -->
-                </tbody>
-            </table>
         </div>
+    </main>
 
-    </div>
+    <script src="/static/js/footer.js"></script>
+    <script src="/static/lock.js"></script>
 
     <script>
         const SUPABASE_URL = "https://bsdkbxyjwjljximdxdst.supabase.co";
         const SUPABASE_ANON_KEY = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImJzZGtieHlqd2psanhpbWR4ZHN0Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzUzODg1MTQsImV4cCI6MjA5MDk2NDUxNH0.Qwfpd0cEaAKwlv5B-Uh0MlTLR-WH8qt19HHlTxUnUYs";
         const supabaseClient = supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
 
+        const pageTranslations = {
+            mn: {
+                "terminal-reminder": "💡 Санамж: 'Hide' шүүлтүүрүүдийг ашиглан эрсдэлтэй болон арилжаанд шаардлагагүй зооснуудыг жагсаалтаас хасаж, өөрийн арилжааны тактикт тохирох оновчтой зоосыг сонгон арилжаагаа хийгээрэй.",
+                "back-to-home": '<svg class="w-4 h-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 19l-7-7m0 0l7-7m-7 7h18"></path></svg>Терминалууд руу буцах'
+            },
+            en: {
+                "terminal-reminder": "💡 Tip: Use the 'Hide' filters to remove risky or irrelevant coins from the list, allowing you to focus on the most suitable assets for your trading strategy.",
+                "back-to-home": '<svg class="w-4 h-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 19l-7-7m0 0l7-7m-7 7h18"></path></svg>Back to Terminals'
+            }
+        };
+
         let allData = [];
         let sessionInitialPrices = {}; // For client-side Real% calculation, reset by user
-        let currentSort = { col: 'real_change', desc: true };
+        let currentSort = { col: 'client_real_change', desc: true };
         let hideSettings = { 
             blacklist: true,  // Default: Blacklist is HIDDEN to match Desktop
             lowVol: false,    // Default: Low Volume is SHOWN
@@ -100,7 +148,7 @@
             minHigh: false,   // Default: Min High is SHOWN
             limitHigh: false  // Default: Limit High is SHOWN
         };
-        let sentimentType = 'real_change'; // Тооцооллыг харагдах Real% баганатай ижил болгов
+        let sentimentType = 'client_real_change'; // Тооцооллыг харагдах Real% баганатай ижил болгов
 
         function getButtonText(type, isHidden) { // isHidden is the value of hideSettings[type]
             const texts = { blacklist: 'BL', lowVol: 'LV', highSpr: 'HS', minHigh: 'MH', limitHigh: 'LH' };
@@ -236,7 +284,7 @@
                     const rRow = document.createElement('tr');
                     rRow.className = "hover:bg-[#1e293b] transition duration-150";
                     
-                    const realColor = (d.real_change || 0) >= 0 ? 'text-[#fbbf24]' : 'text-[#ef4444]';
+                    const realColor = (d.client_real_change || 0) >= 0 ? 'text-[#fbbf24]' : 'text-[#ef4444]';
                     const h1Color = (d.h1_change || 0) >= 0 ? 'text-[#38bdf8]' : 'text-[#fb7185]';
                     const chColor = (d.change_24h || 0) >= 0 ? 'text-[#22c55e]' : 'text-[#ef4444]';
                     const minUsdtColor = (d.min_usdt || 0) <= 0.11 ? 'text-[#10b981]' : 'text-white'; 
@@ -250,7 +298,7 @@
                         <td class="p-3 text-white border-b border-[#1e293b]">${(d.ask || 0).toFixed(8)}</td>
                         <td class="p-3 ${(d.spread || 0) > 1.0 ? 'text-[#fbbf24]' : 'text-gray-400'} border-b border-[#1e293b]">${(d.spread || 0).toFixed(2)}%</td>
                         <td class="p-3 ${minUsdtColor} border-b border-[#1e293b]">${(d.min_usdt || 0).toFixed(4)}</td> 
-                        <td class="p-3 font-bold ${realColor} border-b border-[#1e293b]">${(d.real_change || 0) > 0 ? '+' : ''}${(d.real_change || 0).toFixed(2)}%</td>
+                        <td class="p-3 font-bold ${realColor} border-b border-[#1e293b]">${(d.client_real_change || 0) > 0 ? '+' : ''}${(d.client_real_change || 0).toFixed(2)}%</td>
                         <td class="p-3 font-bold ${h1Color} border-b border-[#1e293b]">${(d.h1_change || 0) > 0 ? '+' : ''}${(d.h1_change || 0).toFixed(2)}%</td>
                         <td class="p-3 font-bold ${chColor} border-b border-[#1e293b]">${(d.change_24h || 0) > 0 ? '+' : ''}${(d.change_24h || 0).toFixed(2)}%</td>
                         <td class="p-3 text-gray-500 border-b border-[#1e293b]">${formatVol(d.volume || 0)}</td>
@@ -303,6 +351,12 @@
         }
 
         document.addEventListener('DOMContentLoaded', () => {
+            const lang = localStorage.getItem('lang') || 'mn';
+            if (typeof translations !== 'undefined') {
+                Object.keys(pageTranslations).forEach(l => Object.assign(translations[l], pageTranslations[l]));
+            }
+            if (typeof changeLang === 'function') changeLang(lang);
+
             Object.keys(hideSettings).forEach(type => { // Initialize button states based on hideSettings
                 updateButtonState(`btn-${type}`, hideSettings[type]);
             }); 
