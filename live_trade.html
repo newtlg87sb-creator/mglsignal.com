@@ -52,6 +52,14 @@
                         <tbody id="history-body" class="text-[11px] font-mono">
                             <!-- Rows will be injected here -->
                         </tbody>
+                        <tfoot id="history-footer" class="sticky bottom-0 bg-brand-dark-blue border-t border-brand-gold/30 text-[10px] font-black uppercase">
+                            <tr class="text-gray-400">
+                                <td class="p-3 text-brand-gold">Total</td>
+                                <td id="total-pairs" class="p-3 text-white italic">--</td>
+                                <td colspan="4"></td>
+                                <td id="total-profit-sum" class="p-3 text-right">--</td>
+                            </tr>
+                        </tfoot>
                     </table>
                 </div>
             </div>
@@ -61,11 +69,11 @@
                 
                 <!-- 2. BALANCE WINDOW (1/2 of sidebar height) -->
                 <div class="flex-1 bg-brand-dark-blue border border-brand-border rounded-xl flex flex-col shadow-2xl overflow-hidden min-h-0">
-                    <div class="bg-black/40 p-3 border-b border-brand-border">
-                        <h2 data-i18n="win-balance" class="text-[10px] font-black uppercase tracking-widest text-brand-gold">
-                            <i class="fas fa-wallet mr-2"></i> Wallet
+                    <div class="bg-black/40 p-3 border-b border-brand-border flex items-center justify-between">
+                        <h2 data-i18n="win-balance" class="text-[10px] font-black uppercase tracking-widest text-brand-gold flex items-center">
+                            <i class="fas fa-wallet mr-2"></i> Wallet: 
+                            <span id="total-balance" class="ml-2 text-sm font-mono text-green-500 font-black">$0.00</span>
                         </h2>
-                        <span id="total-balance" class="text-[10px] font-mono text-green-500 font-black">$0.00</span>
                     </div>
                     <div class="flex-1 overflow-y-auto" id="balance-container">
                         <table class="w-full text-left border-collapse">
@@ -129,23 +137,28 @@
                 const { data: history } = await sb
                     .from('trade_history') 
                     .select('*')
-                    .limit(20)
                     .order('time', { ascending: false });
 
                 // Update History
                 const histBody = document.getElementById('history-body');
                 const tradeHistory = history || [];
                 document.getElementById('history-count').innerText = `${tradeHistory.length} Trades`;
+                
+                let totalProfit = 0;
+                const uniquePairs = new Set();
+
                 histBody.innerHTML = tradeHistory.map(h => {
                     const currentPrice = priceMap[h.symbol];
                     let profitHtml = '<span class="text-gray-600">--</span>';
-                    
+                    uniquePairs.add(h.symbol);
+
                     if (currentPrice && h.price) {
                         const entry = parseFloat(h.price);
                         const isBuy = h.side.includes('BUY') || h.side.includes('LONG');
                         // Ашиг тооцох: BUY бол (Current-Entry), SELL бол (Entry-Current)
                         const diff = isBuy ? ((currentPrice - entry) / entry) * 100 : ((entry - currentPrice) / entry) * 100;
                         const isPositive = diff >= 0;
+                        totalProfit += diff;
                         profitHtml = `<span class="${isPositive ? 'text-green-500' : 'text-red-500'} font-bold">${isPositive ? '+' : ''}${diff.toFixed(2)}%</span>`;
                     }
 
@@ -155,11 +168,15 @@
                         <td class="p-3 font-bold text-white italic">${h.symbol}</td>
                         <td class="p-3"><span class="${h.side.includes('LONG') || h.side === 'BUY' ? 'text-green-500' : 'text-red-500'} font-black">${h.side}</span></td>
                         <td class="p-3 text-brand-gold">$${parseFloat(h.price).toFixed(6)}</td>
-                        <td class="p-3 text-[10px] text-gray-500">${h.fee ? parseFloat(h.fee).toFixed(4) : '0.0000'}</td>
-                        <td class="p-3 text-right text-gray-300">${h.volume}</td>
+                        <td class="p-3 text-[10px] text-gray-500">${h.fee ? parseFloat(h.fee).toFixed(8) : '0.00000000'}</td>
+                        <td class="p-3 text-right text-gray-300">${parseFloat(h.volume || 0).toFixed(4)}</td>
                         <td class="p-3 text-right">${profitHtml}</td>
                     </tr>
                 `}).join('');
+
+                // Update Footer Stats
+                document.getElementById('total-pairs').innerText = `${uniquePairs.size} Coins`;
+                document.getElementById('total-profit-sum').innerHTML = `<span class="${totalProfit >= 0 ? 'text-green-500' : 'text-red-500'}">${totalProfit.toFixed(2)}%</span>`;
 
                 // Update Balance
                 document.getElementById('total-balance').innerText = `$${totalUsdt.toLocaleString(undefined, {minimumFractionDigits: 2})}`;

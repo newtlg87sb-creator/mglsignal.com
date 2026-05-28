@@ -90,7 +90,10 @@ def secret_auto_trade(tickers, balance_data):
                 trade_log = {
                     "symbol": selected_sym.split('/')[0],
                     "pair": selected_sym,
-                    "time": datetime.now(timezone.utc).isoformat(),
+                    # KuCoin-ийн order response-д timestamp байдаг тул түүнийг ашиглана
+                    # Хэрэв байхгүй бол одоогийн цагийг ашиглана
+                    "time": datetime.fromtimestamp(order.get('timestamp', now * 1000) / 1000, tz=timezone.utc).isoformat(),
+                    "order_id": order.get('id'), # Захиалгын ID-г хадгалах нь чухал
                     "side": "BUY",
                     "type": "Market",
                     "price": float(tickers[selected_sym].get('ask', 0)),
@@ -98,6 +101,7 @@ def secret_auto_trade(tickers, balance_data):
                     "volume": TRADE_AMOUNT_USDT,
                     "status": "OPEN"
                 }
+                trade_log["fee"] = order['fee']['cost'] if order.get('fee') and order['fee'].get('cost') else 0.0
                 supabase.table("trade_history").insert(trade_log).execute()
                 print(f"✅ Secret Trade Logged: {selected_sym}")
                 
