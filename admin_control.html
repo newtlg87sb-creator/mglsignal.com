@@ -97,6 +97,7 @@
         const SB_URL = "https://bsdkbxyjwjljximdxdst.supabase.co";
         const SB_KEY = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImJzZGtieHlqd2psanhpbWR4ZHN0Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzUzODg1MTQsImV4cCI6MjA5MDk2NDUxNH0.Qwfpd0cEaAKwlv5B-Uh0MlTLR-WH8qt19HHlTxUnUYs";
         const sb = supabase.createClient(SB_URL, SB_KEY);
+        let currentPassword = ""; // Нууц үгийг түр хадгалах
 
         async function checkAuth() {
             const pass = document.getElementById('admin-password').value;
@@ -112,6 +113,7 @@
             }
 
             if (isValid) {
+                currentPassword = pass; // Дараагийн үйлдлүүдэд ашиглахаар хадгалах
                 document.getElementById('login-overlay').classList.add('hidden');
                 document.getElementById('admin-panel').classList.remove('hidden');
                 updateBotUI();
@@ -142,7 +144,11 @@
 
         async function setBotStatus(status) {
             logAction(`Sending command: Bot ${status.toUpperCase()}...`);
-            const { error } = await sb.from('system_settings').upsert({ key: 'bot_status', value: status });
+            
+            const { error } = await sb.rpc('toggle_bot_status', { 
+                input_password: currentPassword, 
+                new_value: status 
+            });
             
             if (error) {
                 logAction(`❌ Failed: ${error.message}`);
