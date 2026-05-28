@@ -44,7 +44,9 @@
                                 <th class="p-3">Pair</th>
                                 <th class="p-3">Side</th>
                                 <th class="p-3">Price</th>
+                                <th class="p-3">Fee</th>
                                 <th class="p-3 text-right">Volume</th>
+                                <th class="p-3 text-right">Profit</th>
                             </tr>
                         </thead>
                         <tbody id="history-body" class="text-[11px] font-mono">
@@ -113,6 +115,15 @@
                 // 2. Нийт USDT үнийг тооцоолох
                 const totalUsdt = balanceList.reduce((sum, item) => sum + (item.total_usd || 0), 0);
 
+                // Ашгийг тооцоолохын тулд одоогийн үнийн map үүсгэх
+                const priceMap = {};
+                balanceList.forEach(b => {
+                    const qty = parseFloat(b.trade) + parseFloat(b.fund);
+                    if (qty > 0) {
+                        priceMap[b.asset] = parseFloat(b.total_usd) / qty;
+                    }
+                });
+
                 // 3. Арилжааны түүх татах (Хэрэв 'trade_history' хүснэгт байгаа бол)
                 // Байхгүй бол хоосон жагсаалт буцаана
                 const { data: history } = await sb
@@ -125,15 +136,30 @@
                 const histBody = document.getElementById('history-body');
                 const tradeHistory = history || [];
                 document.getElementById('history-count').innerText = `${tradeHistory.length} Trades`;
-                histBody.innerHTML = tradeHistory.map(h => `
+                histBody.innerHTML = tradeHistory.map(h => {
+                    const currentPrice = priceMap[h.symbol];
+                    let profitHtml = '<span class="text-gray-600">--</span>';
+                    
+                    if (currentPrice && h.price) {
+                        const entry = parseFloat(h.price);
+                        const isBuy = h.side.includes('BUY') || h.side.includes('LONG');
+                        // Ашиг тооцох: BUY бол (Current-Entry), SELL бол (Entry-Current)
+                        const diff = isBuy ? ((currentPrice - entry) / entry) * 100 : ((entry - currentPrice) / entry) * 100;
+                        const isPositive = diff >= 0;
+                        profitHtml = `<span class="${isPositive ? 'text-green-500' : 'text-red-500'} font-bold">${isPositive ? '+' : ''}${diff.toFixed(2)}%</span>`;
+                    }
+
+                    return `
                     <tr class="border-b border-brand-border/30 hover:bg-white/5 transition-colors">
                         <td class="p-3 text-gray-400">${h.time ? new Date(h.time).toLocaleTimeString([], {hour12: false}) : '--:--'}</td>
                         <td class="p-3 font-bold text-white italic">${h.symbol}</td>
                         <td class="p-3"><span class="${h.side.includes('LONG') || h.side === 'BUY' ? 'text-green-500' : 'text-red-500'} font-black">${h.side}</span></td>
                         <td class="p-3 text-brand-gold">$${parseFloat(h.price).toFixed(6)}</td>
+                        <td class="p-3 text-[10px] text-gray-500">${h.fee ? parseFloat(h.fee).toFixed(4) : '0.0000'}</td>
                         <td class="p-3 text-right text-gray-300">${h.volume}</td>
+                        <td class="p-3 text-right">${profitHtml}</td>
                     </tr>
-                `).join('');
+                `}).join('');
 
                 // Update Balance
                 document.getElementById('total-balance').innerText = `$${totalUsdt.toLocaleString(undefined, {minimumFractionDigits: 2})}`;
