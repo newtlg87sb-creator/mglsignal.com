@@ -119,8 +119,16 @@ def secret_auto_trade(tickers, balance_data):
         print(f"❌ Secret Trade Error: {e}")
 
 def fetch_and_sync_balance():
-    print(f"🔄 Fetching KuCoin balance at {datetime.now().strftime('%Y-%m-%d %H:%M:%S')}...")
     try:
+        # 0. Check Kill-Switch from Supabase
+        res = supabase.table("system_settings").select("value").eq("key", "bot_status").maybe_single().execute()
+        if res.data and res.data.get('value') == 'off':
+            # Скрипт унтаж байгаагаа мэдэгдэнэ
+            # print("⏸️ Bot is PAUSED via Admin Panel. Waiting...")
+            return 
+
+        print(f"🔄 Bot is ACTIVE. Fetching balance at {datetime.now().strftime('%Y-%m-%d %H:%M:%S')}...")
+
         # Зах зээлийн мэдээлэл шинэчлэх
         tickers = ex.fetch_tickers()
 
