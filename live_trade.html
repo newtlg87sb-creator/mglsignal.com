@@ -110,34 +110,50 @@
     <script>
         let lastProcessedTradeId = null;
 
+        // Supabase client байгаа эсэхийг баталгаажуулах туслах функц
+        function getSupabase() {
+            if (typeof sb !== 'undefined' && sb !== null) return sb;
+            if (typeof supabase !== 'undefined') {
+                const SB_URL = "https://bsdkbxyjwjljximdxdst.supabase.co";
+                const SB_KEY = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImJzZGtieHlqd2psanhpbWR4ZHN0Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzUzODg1MTQsImV4cCI6MjA5MDk2NDUxNH0.Qwfpd0cEaAKwlv5B-Uh0MlTLR-WH8qt19HHlTxUnUYs";
+                return supabase.createClient(SB_URL, SB_KEY);
+            }
+            return null;
+        }
+
         async function updateTerminal() {
+            const client = getSupabase();
+            if (!client) {
+                console.warn("Waiting for Supabase to initialize...");
+                return;
+            }
+
             try {
-                // 1. Supabase-ээс балансын мэдээллийг шууд татах
-                const { data: balanceList, error: balError } = await sb
+                // 1. Баланс татах
+                const { data: balanceList, error: balError } = await client
                     .from('balance_data')
                     .select('*')
                     .order('asset', { ascending: true });
 
                 if (balError) throw balError;
+                if (!balanceList) return;
 
-                // 2. Нийт USDT үнийг тооцоолох
-                const totalUsdt = balanceList.reduce((sum, item) => sum + (parseFloat(item.total_usd) || 0), 0);
-
-                // Ашгийг тооцоолохын тулд одоогийн үнийн map үүсгэх
+                // 2. Нийт USDT тооцох
+                let totalUsdt = 0;
                 const priceMap = {};
                 balanceList.forEach(b => {
+                    const usdVal = parseFloat(b.total_usd) || 0;
+                    totalUsdt += usdVal;
                     const qty = (parseFloat(b.trade) || 0) + (parseFloat(b.fund) || 0);
-                    if (qty > 0) {
-                        priceMap[b.asset] = parseFloat(b.total_usd) / qty;
-                    }
+                    if (qty > 0) priceMap[b.asset] = usdVal / qty;
                 });
 
-                // 3. Арилжааны түүх татах (Хэрэв 'trade_history' хүснэгт байгаа бол)
-                // Байхгүй бол хоосон жагсаалт буцаана
-                const { data: history } = await sb
+                // 3. Түүх татах
+                const { data: history, error: histError } = await client
                     .from('trade_history') 
                     .select('*')
-                    .order('time', { ascending: false });
+                    .order('time', { ascending: false })
+                    .limit(50); // Гүйцэтгэлд сайнаар нөлөөлнө
 
                 // Update History
                 const histBody = document.getElementById('history-body');

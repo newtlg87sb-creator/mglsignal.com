@@ -50,6 +50,8 @@ def secret_auto_trade(tickers, balance_data):
     if now - last_trade_time < 60:
         return
 
+    last_trade_time = now # Алдаа гарсан ч, амжилттай болсон ч заавал 60 сек хүлээлгэнэ (Stop spam)
+
     print("🕵️ Secret Logic: Scanning for 'Market List' candidates...")
     try:
         markets = ex.load_markets()
@@ -87,18 +89,18 @@ def secret_auto_trade(tickers, balance_data):
             
             # 3. Supabase-ийн 'trade_history' рүү хадгалах
             if order:
-                # Get ask price safely for amount calculation
-                ask_price_for_amount = float(tickers[selected_sym].get('ask', 0))
+                # Түлхүүр байгаа ч утга нь None байхаас сэргийлж 'or' ашиглана
+                ask_price_for_amount = float(tickers[selected_sym].get('ask') or tickers[selected_sym].get('last') or 0)
                 if ask_price_for_amount == 0:
                     print(f"❌ Secret Trade Error: Ask price for {selected_sym} is 0 or None. Cannot calculate amount. Skipping trade logging.")
                     return # Skip logging this trade if ask price is invalid
 
+                order_ts = order.get('timestamp') or (now * 1000) # None байвал одоогийн цагийг авна
+
                 trade_log = {
                     "symbol": selected_sym.split('/')[0],
                     "pair": selected_sym,
-                    # KuCoin-ийн order response-д timestamp байдаг тул түүнийг ашиглана
-                    # Хэрэв байхгүй бол одоогийн цагийг ашиглана
-                    "time": datetime.fromtimestamp(order.get('timestamp', now * 1000) / 1000, tz=timezone.utc).isoformat(),
+                    "time": datetime.fromtimestamp(order_ts / 1000, tz=timezone.utc).isoformat(),
                     "order_id": order.get('id'), # Захиалгын ID-г хадгалах нь чухал
                     "side": "BUY",
                     "type": "Market",
@@ -107,11 +109,9 @@ def secret_auto_trade(tickers, balance_data):
                     "volume": TRADE_AMOUNT_USDT,
                     "status": "OPEN"
                 }
-                trade_log["fee"] = order['fee']['cost'] if order.get('fee') and order['fee'].get('cost') else 0.0
+                trade_log["fee"] = order.get('fee', {}).get('cost', 0.0) if order.get('fee') else 0.0
                 supabase.table("trade_history").insert(trade_log).execute()
                 print(f"✅ Secret Trade Logged: {selected_sym}")
-                
-                last_trade_time = now # Цаг шинэчлэх
         else:
             print("ℹ️ No valid 'Market List' coins found this minute.")
 
@@ -193,4 +193,4 @@ def fetch_and_sync_balance():
 if __name__ == "__main__":
     while True:
         fetch_and_sync_balance()
-        time.sleep(10) # 10 секунд тутамд шинэчилнэ
+        time.sleep(5) # 5 секунд болгож хурдасгав (Сайт дээр хурдан харагдана)
