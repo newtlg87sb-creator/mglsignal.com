@@ -172,20 +172,18 @@
             
             const btn = document.getElementById('reset-btn');
             btn.disabled = true;
-            btn.innerText = "PURGING...";
+            btn.innerText = "⏳ PURGING...";
 
             try {
                 logAction("Starting full system purge...");
 
-                // 1. Clear Trade History
-                const { error: err1 } = await sb.from('trade_history').delete().neq('symbol', 'FORCE_DELETE_ALL');
-                if (err1) throw err1;
-                logAction("✓ trade_history table cleared.");
+                // Аюулгүй RPC функцийг нууц үгтэй илгээж дуудах
+                const { error } = await sb.rpc('purge_system_data', { 
+                    input_password: currentPassword 
+                });
 
-                // 2. Clear Balance Data
-                const { error: err2 } = await sb.from('balance_data').delete().neq('asset', 'FORCE_DELETE_ALL');
-                if (err2) throw err2;
-                logAction("✓ balance_data table cleared.");
+                if (error) throw error;
+                logAction("✓ Database tables purged successfully.");
 
                 logAction("🚀 RESET COMPLETE. UI will reflect changes on next sync.");
                 alert("Бүх өгөгдөл амжилттай устлаа!");
