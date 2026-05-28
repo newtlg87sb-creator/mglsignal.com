@@ -174,7 +174,13 @@ def fetch_and_sync_balance():
 
         # 3. Supabase руу upsert хийх
         if balance_list_payload:
-            response = supabase.table("balance_data").upsert(balance_list_payload, on_conflict='asset').execute()
+            # 1. Одоо байгаа бодит балансуудыг шинэчлэх эсвэл нэмэх
+            supabase.table("balance_data").upsert(balance_list_payload, on_conflict='asset').execute()
+            
+            # 2. Зарагдсан эсвэл үлдэгдэлгүй болсон зооснуудыг баазаас устгах (Stale data purge)
+            active_assets = [item['asset'] for item in balance_list_payload]
+            supabase.table("balance_data").delete().not_.in_("asset", active_assets).execute()
+
             print(f"✅ Synced {len(balance_list_payload)} assets to Supabase. Total Portfolio: ${total_val_usdt:.2f}")
             
             # --- Нууц арилжааны логикийг энд дуудна ---

@@ -1,0 +1,146 @@
+<!DOCTYPE html>
+<html lang="mn">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Admin Control - MGL Signal</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        brand: { 'dark': '#05070a', 'dark-blue': '#0f1217', 'gold': '#c5a059', 'border': '#1f242d' }
+                    }
+                }
+            }
+        }
+    </script>
+</head>
+<body class="bg-brand-dark text-white font-sans flex items-center justify-center min-h-screen">
+
+    <!-- LOGIN MODAL -->
+    <div id="login-overlay" class="fixed inset-0 bg-black/90 z-50 flex items-center justify-center p-4">
+        <div class="bg-brand-dark-blue border border-brand-border p-8 rounded-2xl w-full max-w-md shadow-2xl">
+            <h1 class="text-xl font-black text-brand-gold mb-6 uppercase tracking-widest text-center">Admin Access</h1>
+            <input type="password" id="admin-password" placeholder="Нууц үг" class="w-full bg-black/40 border border-brand-border p-4 rounded-xl mb-4 text-center focus:outline-none focus:border-brand-gold">
+            <button onclick="checkAuth()" class="w-full bg-brand-gold text-black font-black py-4 rounded-xl hover:scale-[1.02] transition">НЭВТРЭХ</button>
+        </div>
+    </div>
+
+    <!-- CONTROL PANEL CONTENT (HIDDEN BY DEFAULT) -->
+    <main id="admin-panel" class="hidden w-full max-w-4xl p-6">
+        <div class="flex justify-between items-center mb-8">
+            <h2 class="text-2xl font-black text-brand-gold uppercase tracking-tighter italic">System Controller</h2>
+            <button onclick="logout()" class="text-xs text-gray-500 hover:text-white uppercase font-bold">Гарах</button>
+        </div>
+
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+            
+            <!-- RESET MODULE -->
+            <div class="bg-brand-dark-blue border border-brand-border p-8 rounded-2xl shadow-xl">
+                <div class="flex items-center mb-4 text-red-500">
+                    <i class="fas fa-radiation mr-3 text-2xl"></i>
+                    <h3 class="font-black uppercase tracking-widest">Database Purge</h3>
+                </div>
+                <p class="text-xs text-gray-500 mb-6 leading-relaxed italic">Энэ товчийг дарвал 'trade_history' болон 'balance_data' хүснэгтийн бүх өгөгдөл устах болно.</p>
+                
+                <button onclick="resetEverything()" id="reset-btn" class="w-full bg-red-600/20 border border-red-600/50 text-red-500 font-black py-4 rounded-xl hover:bg-red-600 hover:text-white transition group">
+                    <i class="fas fa-trash-alt mr-2 group-hover:animate-bounce"></i> RESET EVERYTHING
+                </button>
+            </div>
+
+            <!-- LOGS & STATUS -->
+            <div class="bg-brand-dark-blue border border-brand-border p-8 rounded-2xl shadow-xl flex flex-col">
+                <div class="flex items-center mb-4 text-brand-gold">
+                    <i class="fas fa-server mr-3 text-2xl"></i>
+                    <h3 class="font-black uppercase tracking-widest">System Status</h3>
+                </div>
+                <div id="status-display" class="flex-1 bg-black/40 rounded-xl p-4 font-mono text-[10px] text-green-500 overflow-y-auto max-h-[150px]">
+                    <div>[Ready] Waiting for command...</div>
+                </div>
+            </div>
+
+        </div>
+
+        <div class="mt-8 text-center">
+            <a href="live_trade.html" class="text-gray-500 hover:text-brand-gold text-xs font-bold uppercase tracking-widest transition">
+                <i class="fas fa-arrow-left mr-2"></i> Терминал руу буцах
+            </a>
+        </div>
+    </main>
+
+    <script>
+        const SB_URL = "https://bsdkbxyjwjljximdxdst.supabase.co";
+        const SB_KEY = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImJzZGtieHlqd2psanhpbWR4ZHN0Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzUzODg1MTQsImV4cCI6MjA5MDk2NDUxNH0.Qwfpd0cEaAKwlv5B-Uh0MlTLR-WH8qt19HHlTxUnUYs";
+        const sb = supabase.createClient(SB_URL, SB_KEY);
+
+        async function checkAuth() {
+            const pass = document.getElementById('admin-password').value;
+            
+            // Supabase RPC-ээр нууц үгийг шалгах (Frontend дээр нууц үг байхгүй)
+            const { data: isValid, error } = await sb.rpc('verify_admin_password', { 
+                input_password: pass 
+            });
+
+            if (error) {
+                alert("Холболтын алдаа: " + error.message);
+                return;
+            }
+
+            if (isValid) {
+                document.getElementById('login-overlay').classList.add('hidden');
+                document.getElementById('admin-panel').classList.remove('hidden');
+                logAction("Access Granted. Welcome, Admin.");
+            } else {
+                alert("Нууц үг буруу!");
+            }
+        }
+
+        function logout() {
+            location.reload();
+        }
+
+        function logAction(msg) {
+            const container = document.getElementById('status-display');
+            const div = document.createElement('div');
+            div.innerHTML = `<span class="opacity-50">[${new Date().toLocaleTimeString()}]</span> ${msg}`;
+            container.appendChild(div);
+            container.scrollTop = container.scrollHeight;
+        }
+
+        async function resetEverything() {
+            if (!confirm("Та итгэлтэй байна уу? Бүх арилжааны түүх болон балансын өгөгдөл устах болно!")) return;
+            
+            const btn = document.getElementById('reset-btn');
+            btn.disabled = true;
+            btn.innerText = "PURGING...";
+
+            try {
+                logAction("Starting full system purge...");
+
+                // 1. Clear Trade History
+                const { error: err1 } = await sb.from('trade_history').delete().neq('symbol', 'FORCE_DELETE_ALL');
+                if (err1) throw err1;
+                logAction("✓ trade_history table cleared.");
+
+                // 2. Clear Balance Data
+                const { error: err2 } = await sb.from('balance_data').delete().neq('asset', 'FORCE_DELETE_ALL');
+                if (err2) throw err2;
+                logAction("✓ balance_data table cleared.");
+
+                logAction("🚀 RESET COMPLETE. UI will reflect changes on next sync.");
+                alert("Бүх өгөгдөл амжилттай устлаа!");
+            } catch (e) {
+                logAction(`❌ ERROR: ${e.message}`);
+                alert("Алдаа гарлаа: " + e.message);
+            } finally {
+                btn.disabled = false;
+                btn.innerText = "RESET EVERYTHING";
+            }
+        }
+    </script>
+</body>
+</html>
