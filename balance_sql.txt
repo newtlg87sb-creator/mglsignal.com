@@ -1,0 +1,19 @@
+-- Энэ кодыг Supabase SQL Editor дээр ажиллуулна уу:
+
+CREATE TABLE IF NOT EXISTS public.balance_data (
+    asset TEXT PRIMARY KEY,
+    trade FLOAT8 DEFAULT 0,
+    fund FLOAT8 DEFAULT 0,
+    exceed FLOAT8 DEFAULT 0,
+    total_usd FLOAT8 DEFAULT 0,
+    updated_at TIMESTAMPTZ DEFAULT NOW()
+);
+
+-- Аюулгүй байдлын тохиргоо (Policies)
+ALTER TABLE public.balance_data ENABLE ROW LEVEL SECURITY;
+
+-- Вэб сайтаас харахад зориулсан эрх
+CREATE POLICY "Enable read access for all users" ON public.balance_data FOR SELECT USING (true);
+
+-- Railway-д зориулсан эрх
+CREATE POLICY "Enable full access for service_role" ON public.balance_data FOR ALL TO service_role USING (true) WITH CHECK (true);
