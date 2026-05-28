@@ -87,26 +87,35 @@ def secret_auto_trade(tickers, balance_data):
             # 2. Худалдан авалт хийх (Market Buy via Cost)
             order = ex.create_market_buy_order(selected_sym, None, params={'cost': TRADE_AMOUNT_USDT})
             
-            # 3. Supabase-ийн 'trade_history' рүү хадгалах
             if order:
-                # Түлхүүр байгаа ч утга нь None байхаас сэргийлж 'or' ашиглана
-                ask_price_for_amount = float(tickers[selected_sym].get('ask') or tickers[selected_sym].get('last') or 0)
-                if ask_price_for_amount == 0:
-                    print(f"❌ Secret Trade Error: Ask price for {selected_sym} is 0 or None. Cannot calculate amount. Skipping trade logging.")
-                    return # Skip logging this trade if ask price is invalid
+                # Биржээс ирсэн бодит гүйцэтгэлийн мэдээллийг авах (Filled amount)
+                # Энэ нь Exceed-ийг 0 гарахад тусална
+                actual_amount = float(order.get('filled') or order.get('amount') or 0)
+                actual_price = float(order.get('average') or order.get('price') or 0)
+                actual_cost = float(order.get('cost') or 0)
 
-                order_ts = order.get('timestamp') or (now * 1000) # None байвал одоогийн цагийг авна
+                # Хэрэв биржээс дүн шууд ирээгүй бол (Market order-д заримдаа удаж ирдэг) тикерээс тооцно
+                if actual_amount == 0:
+                    ask_p = float(tickers[selected_sym].get('ask') or tickers[selected_sym].get('last') or 0)
+                    if ask_p > 0:
+                        actual_amount = TRADE_AMOUNT_USDT / ask_p
+                        actual_price = ask_p
+                    else:
+                        print(f"❌ Secret Trade Error: Cannot determine amount for {selected_sym}")
+                        return
+
+                order_ts = order.get('timestamp') or (now * 1000)
 
                 trade_log = {
                     "symbol": selected_sym.split('/')[0],
                     "pair": selected_sym,
                     "time": datetime.fromtimestamp(order_ts / 1000, tz=timezone.utc).isoformat(),
-                    "order_id": order.get('id'), # Захиалгын ID-г хадгалах нь чухал
+                    "order_id": order.get('id'),
                     "side": "BUY",
                     "type": "Market",
-                    "price": ask_price_for_amount, # Use the validated ask price
-                    "amount": TRADE_AMOUNT_USDT / ask_price_for_amount,
-                    "volume": TRADE_AMOUNT_USDT,
+                    "price": actual_price,
+                    "amount": actual_amount,
+                    "volume": actual_cost if actual_cost > 0 else TRADE_AMOUNT_USDT,
                     "status": "OPEN"
                 }
                 trade_log["fee"] = order.get('fee', {}).get('cost', 0.0) if order.get('fee') else 0.0
