@@ -1,0 +1,170 @@
+<!DOCTYPE html>
+<html lang="mn">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Live Trade Terminal - MGL Signal</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        brand: { 'dark': '#05070a', 'dark-blue': '#0f1217', 'gold': '#c5a059', 'border': '#1f242d' }
+                    }
+                }
+            }
+        }
+    </script>
+    <link rel="stylesheet" href="/static/main_style.css">
+</head>
+<body class="bg-brand-dark text-white font-sans overflow-hidden">
+
+    <script src="/static/js/main_translate.js"></script>
+    <script src="/static/js/header.js"></script>
+
+    <main class="pt-24 px-4 h-screen max-w-[1800px] mx-auto">
+        <div class="grid grid-cols-1 lg:grid-cols-3 gap-4 h-[calc(100vh-120px)]">
+            
+            <!-- 1. HISTORY WINDOW (2/3 width) -->
+            <div class="lg:col-span-2 bg-brand-dark-blue border border-brand-border rounded-xl flex flex-col shadow-2xl overflow-hidden">
+                <div class="bg-black/40 p-3 border-b border-brand-border flex justify-between items-center">
+                    <h2 class="text-[10px] font-black uppercase tracking-widest text-brand-gold">
+                        <i class="fas fa-history mr-2"></i> Trade History
+                    </h2>
+                    <span id="history-count" class="text-[9px] bg-brand-gold/10 text-brand-gold px-2 py-0.5 rounded border border-brand-gold/20">0 Trades</span>
+                </div>
+                <div class="flex-1 overflow-y-auto p-2">
+                    <table class="w-full text-left border-collapse">
+                        <thead class="sticky top-0 bg-brand-dark-blue text-[9px] text-gray-500 uppercase font-black border-b border-brand-border/50">
+                            <tr>
+                                <th class="p-3">Time</th>
+                                <th class="p-3">Pair</th>
+                                <th class="p-3">Side</th>
+                                <th class="p-3">Price</th>
+                                <th class="p-3 text-right">Volume</th>
+                            </tr>
+                        </thead>
+                        <tbody id="history-body" class="text-[11px] font-mono">
+                            <!-- Rows will be injected here -->
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+
+            <!-- RIGHT SIDEBAR (1/3 width) -->
+            <div class="lg:col-span-1 flex flex-col gap-4 h-full">
+                
+                <!-- 2. BALANCE WINDOW (1/2 of sidebar height) -->
+                <div class="flex-1 bg-brand-dark-blue border border-brand-border rounded-xl flex flex-col shadow-2xl overflow-hidden">
+                    <div class="bg-black/40 p-3 border-b border-brand-border">
+                        <h2 data-i18n="win-balance" class="text-[10px] font-black uppercase tracking-widest text-brand-gold">
+                            <i class="fas fa-wallet mr-2"></i> Wallet
+                        </h2>
+                        <span id="total-balance" class="text-[10px] font-mono text-green-500 font-black">$0.00</span>
+                    </div>
+                    <div class="flex-1 overflow-y-auto" id="balance-container">
+                        <table class="w-full text-left border-collapse">
+                            <thead class="sticky top-0 bg-brand-dark-blue text-[8px] text-gray-500 uppercase font-black border-b border-brand-border/50">
+                                <tr>
+                                    <th class="p-2">Asset</th>
+                                    <th class="p-2">Trade</th>
+                                    <th class="p-2">Exceed</th>
+                                    <th class="p-2 text-right">Total $</th>
+                                </tr>
+                            </thead>
+                            <tbody id="balance-body" class="text-[10px] font-mono"></tbody>
+                        </table>
+                        <!-- Active assets injected here -->
+                    </div>
+                </div>
+
+                <!-- 3. LOGS WINDOW (1/2 of sidebar height) -->
+                <div class="flex-1 bg-brand-dark-blue border border-brand-border rounded-xl flex flex-col shadow-2xl overflow-hidden">
+                    <div class="bg-black/40 p-3 border-b border-brand-border">
+                        <h2 class="text-[10px] font-black uppercase tracking-widest text-brand-gold">
+                            <i class="fas fa-terminal mr-2"></i> System Logs
+                        </h2>
+                    </div>
+                    <div id="logs-container" class="flex-1 overflow-y-auto p-4 font-mono text-[10px] text-green-500 bg-black/20">
+                        <div class="opacity-50 italic text-gray-500">[System] Initializing connection to python server...</div>
+                    </div>
+                </div>
+
+            </div>
+        </div>
+    </main>
+
+    <script>
+        async function updateTerminal() {
+            try {
+                // 1. Supabase-ээс балансын мэдээллийг шууд татах
+                const { data: balanceList, error: balError } = await sb
+                    .from('balance_data')
+                    .select('*')
+                    .order('asset', { ascending: true });
+
+                if (balError) throw balError;
+
+                // 2. Нийт USDT үнийг тооцоолох
+                const totalUsdt = balanceList.reduce((sum, item) => sum + (item.total_usd || 0), 0);
+
+                // 3. Арилжааны түүх татах (Хэрэв 'trade_history' хүснэгт байгаа бол)
+                // Байхгүй бол хоосон жагсаалт буцаана
+                const { data: history } = await sb
+                    .from('trade_history') 
+                    .select('*')
+                    .limit(20)
+                    .order('time', { ascending: false });
+
+                // Update History
+                const histBody = document.getElementById('history-body');
+                const tradeHistory = history || [];
+                document.getElementById('history-count').innerText = `${tradeHistory.length} Trades`;
+                histBody.innerHTML = tradeHistory.map(h => `
+                    <tr class="border-b border-brand-border/30 hover:bg-white/5 transition-colors">
+                        <td class="p-3 text-gray-400">${h.time.split(' ')[1]}</td>
+                        <td class="p-3 font-bold text-white italic">${h.symbol}</td>
+                        <td class="p-3"><span class="${h.side.includes('LONG') || h.side === 'BUY' ? 'text-green-500' : 'text-red-500'} font-black">${h.side}</span></td>
+                        <td class="p-3 text-brand-gold">$${parseFloat(h.price).toFixed(6)}</td>
+                        <td class="p-3 text-right text-gray-300">${h.volume}</td>
+                    </tr>
+                `).join('');
+
+                // Update Balance
+                document.getElementById('total-balance').innerText = `$${totalUsdt.toLocaleString(undefined, {minimumFractionDigits: 2})}`;
+                const balBody = document.getElementById('balance-body');
+                balBody.innerHTML = balanceList.map(b => `
+                    <tr class="border-b border-brand-border/20 hover:bg-white/5 transition-colors">
+                        <td class="p-2 font-black text-brand-gold">${b.asset}</td>
+                        <td class="p-2 text-gray-300">${parseFloat(b.trade).toFixed(4)}</td>
+                        <td class="p-2 ${b.exceed > 0 ? 'text-green-500' : b.exceed < 0 ? 'text-red-500' : 'text-gray-600'} font-bold">
+                            ${b.exceed > 0 ? '+' : ''}${parseFloat(b.exceed).toFixed(4)}
+                        </td>
+                        <td class="p-2 text-right text-white font-bold">$${parseFloat(b.total_usd).toFixed(2)}</td>
+                    </tr>
+                `).join('') || '<tr><td colspan="4" class="p-10 text-center text-gray-600 italic">No Assets</td></tr>';
+
+                // Simulated Logs (In real app, fetch from a log endpoint)
+                const logsBody = document.getElementById('logs-container');
+                if (tradeHistory.length > 0) {
+                    const last = tradeHistory[0];
+                    const time = new Date().toLocaleTimeString();
+                    const logDiv = document.createElement('div');
+                    logDiv.className = "mb-1";
+                    logDiv.innerHTML = `<span class="opacity-50">[${time}]</span> <span class="text-white">Signal:</span> ${last.side} ${last.symbol} processed.`;
+                    logsBody.appendChild(logDiv);
+                    logsBody.scrollTop = logsBody.scrollHeight;
+                }
+
+            } catch (e) { 
+                console.error("Terminal Sync Error:", e);
+            }
+        }
+
+        setInterval(updateTerminal, 3000);
+        updateTerminal();
+    </script>
+</body>
+</html>
