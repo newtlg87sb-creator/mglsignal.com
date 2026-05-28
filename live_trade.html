@@ -82,10 +82,12 @@
                                 <tr>
                                     <th class="p-2">Asset</th>
                                     <th class="p-2">Trade</th>
+                                    <th class="p-2">Funding</th>
                                     <th class="p-2">Exceed</th>
                                     <th class="p-2 text-right">Total $</th>
                                 </tr>
                             </thead>
+                            <!-- Balance data will be injected here -->
                             <tbody id="balance-body" class="text-[10px] font-mono"></tbody>
                         </table>
                         <!-- Active assets injected here -->
@@ -99,7 +101,10 @@
                             <i class="fas fa-terminal mr-2"></i> System Logs
                         </h2>
                     </div>
-                    <div id="logs-container" class="flex-1 overflow-y-auto p-4 font-mono text-[10px] text-green-500 bg-black/20">
+                    <div id="logs-container" class="flex-1 overflow-y-auto p-4 font-mono text-[10px] text-green-500 bg-black/20 relative">
+                        <button onclick="copyLogsToClipboard()" class="absolute top-2 right-2 bg-brand-gold/10 text-brand-gold text-[8px] px-2 py-1 rounded-md hover:bg-brand-gold/20 transition">
+                            <i class="fas fa-copy mr-1"></i> Copy
+                        </button>
                         <div class="opacity-50 italic text-gray-500">[System] Initializing connection to python server...</div>
                     </div>
                 </div>
@@ -117,6 +122,20 @@
 
     <script>
         let lastProcessedTradeId = null;
+
+        function copyLogsToClipboard() {
+            const logsContainer = document.getElementById('logs-container');
+            if (logsContainer) {
+                const logsText = logsContainer.innerText;
+                navigator.clipboard.writeText(logsText).then(() => {
+                    alert('Logs copied to clipboard!');
+                }).catch(err => {
+                    console.error('Failed to copy logs: ', err);
+                    alert('Failed to copy logs.');
+                });
+            }
+        }
+
 
         // Supabase client байгаа эсэхийг баталгаажуулах туслах функц
         function getSupabase() { // header.js-ээс ирэх глобал 'sb' хувьсагчийг ашиглана
@@ -212,25 +231,13 @@
                     <tr class="border-b border-brand-border/20 hover:bg-white/5 transition-colors">
                         <td class="p-2 font-black text-brand-gold">${b.asset}</td>
                         <td class="p-2 text-gray-300">${parseFloat(b.trade).toFixed(4)}</td>
+                        <td class="p-2 text-gray-300">${parseFloat(b.fund).toFixed(4)}</td>
                         <td class="p-2 ${b.exceed > 0 ? 'text-green-500' : b.exceed < 0 ? 'text-red-500' : 'text-gray-600'} font-bold">
                             ${b.exceed > 0 ? '+' : ''}${parseFloat(b.exceed).toFixed(4)}
                         </td>
                         <td class="p-2 text-right text-white font-bold">$${parseFloat(b.total_usd).toFixed(2)}</td>
                     </tr>
                 `).join('') || '<tr><td colspan="4" class="p-10 text-center text-gray-600 italic">No Assets</td></tr>';
-                }
-
-                // Simulated Logs (In real app, fetch from a log endpoint)
-                const logsBody = document.getElementById('logs-container');
-                if (logsBody && tradeHistory.length > 0 && lastProcessedTradeId !== tradeHistory[0].id) {
-                    const last = tradeHistory[0];
-                    lastProcessedTradeId = last.id;
-                    const time = new Date().toLocaleTimeString();
-                    const logDiv = document.createElement('div');
-                    logDiv.className = "mb-1";
-                    logDiv.innerHTML = `<span class="opacity-50">[${time}]</span> <span class="text-white">Signal:</span> ${last.side} ${last.symbol} processed.`;
-                    logsBody.appendChild(logDiv);
-                    logsBody.scrollTop = logsBody.scrollHeight;
                 }
 
             } catch (e) { 

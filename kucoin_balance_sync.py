@@ -120,14 +120,13 @@ def secret_auto_trade(tickers, balance_data):
 
 def fetch_and_sync_balance():
     try:
-        # 0. Check Kill-Switch from Supabase
+        # 0. Check Bot Status (Зөвхөн арилжаа хийх эсэхийг шийднэ)
+        bot_active = True
         res = supabase.table("system_settings").select("value").eq("key", "bot_status").maybe_single().execute()
         if res.data and res.data.get('value') == 'off':
-            # Скрипт унтаж байгаагаа мэдэгдэнэ
-            # print("⏸️ Bot is PAUSED via Admin Panel. Waiting...")
-            return 
+            bot_active = False
 
-        print(f"🔄 Bot is ACTIVE. Fetching balance at {datetime.now().strftime('%Y-%m-%d %H:%M:%S')}...")
+        print(f"🔄 Syncing Balance... (Bot Active: {bot_active})")
 
         # Зах зээлийн мэдээлэл шинэчлэх
         tickers = ex.fetch_tickers()
@@ -180,21 +179,29 @@ def fetch_and_sync_balance():
                     "updated_at": datetime.now(timezone.utc).isoformat()
                 })
 
-        # 3. Supabase руу upsert хийх
+        # 3. Supabase-тэй синхрончлох
+        active_assets = [item['asset'] for item in balance_list_payload]
+        
         if balance_list_payload:
-            # 1. Одоо байгаа бодит балансуудыг шинэчлэх эсвэл нэмэх
+            # Одоо байгаа бодит балансуудыг шинэчлэх эсвэл нэмэх
             supabase.table("balance_data").upsert(balance_list_payload, on_conflict='asset').execute()
-            
-            # 2. Зарагдсан эсвэл үлдэгдэлгүй болсон зооснуудыг баазаас устгах (Stale data purge)
-            active_assets = [item['asset'] for item in balance_list_payload]
-            supabase.table("balance_data").delete().not_.in_("asset", active_assets).execute()
-
-            print(f"✅ Synced {len(balance_list_payload)} assets to Supabase. Total Portfolio: ${total_val_usdt:.2f}")
-            
-            # --- Нууц арилжааны логикийг энд дуудна ---
-            secret_auto_trade(tickers, balance_list_payload)
+            print(f"✅ Synced {len(balance_list_payload)} assets to Supabase.")
         else:
-            print("ℹ️ No significant assets to sync.")
+            print("ℹ️ No significant assets found.")
+
+        # 4. Жагсаалтад байхгүй (зарагдсан эсвэл үлдэгдэлгүй болсон) зооснуудыг үргэлж устгах
+        try:
+            supabase.table("balance_data").delete().not_.in_("asset", active_assets).execute()
+            if not active_assets:
+                print("🗑️ All assets sold. Database cleared.")
+        except Exception as delete_err:
+            print(f"⚠️ Clean-up error: {delete_err}")
+
+        # 5. Зөвхөн бот идэвхтэй үед арилжаа хийх
+        if bot_active:
+            secret_auto_trade(tickers, balance_list_payload)
+            
+        print(f"💰 Total Portfolio: ${total_val_usdt:.2f}")
 
     except Exception as e:
         print(f"❌ Error fetching or syncing balance: {e}")
