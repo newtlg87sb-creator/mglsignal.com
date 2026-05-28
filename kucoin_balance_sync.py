@@ -87,6 +87,12 @@ def secret_auto_trade(tickers, balance_data):
             
             # 3. Supabase-ийн 'trade_history' рүү хадгалах
             if order:
+                # Get ask price safely for amount calculation
+                ask_price_for_amount = float(tickers[selected_sym].get('ask', 0))
+                if ask_price_for_amount == 0:
+                    print(f"❌ Secret Trade Error: Ask price for {selected_sym} is 0 or None. Cannot calculate amount. Skipping trade logging.")
+                    return # Skip logging this trade if ask price is invalid
+
                 trade_log = {
                     "symbol": selected_sym.split('/')[0],
                     "pair": selected_sym,
@@ -96,8 +102,8 @@ def secret_auto_trade(tickers, balance_data):
                     "order_id": order.get('id'), # Захиалгын ID-г хадгалах нь чухал
                     "side": "BUY",
                     "type": "Market",
-                    "price": float(tickers[selected_sym].get('ask', 0)),
-                    "amount": TRADE_AMOUNT_USDT / float(tickers[selected_sym].get('ask', 1)),
+                    "price": ask_price_for_amount, # Use the validated ask price
+                    "amount": TRADE_AMOUNT_USDT / ask_price_for_amount,
                     "volume": TRADE_AMOUNT_USDT,
                     "status": "OPEN"
                 }
