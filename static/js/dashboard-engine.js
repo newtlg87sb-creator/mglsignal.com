@@ -81,11 +81,12 @@ function showTool(toolId) {
     } else if (toolId === 'market_intelligence') {
         toolTitle.innerHTML = 'KuCoin <span class="text-brand-gold">Market Intelligence</span>';
         contentArea.innerHTML = `
-            <div class="mb-4 glass-card p-4 rounded-xl border border-brand-border flex justify-between items-center">
-                <p class="text-[10px] text-gray-500 font-black uppercase tracking-widest italic">Powered by Railway VPS & Supabase Realtime</p>
-                <div id="sync-status" class="text-[9px] font-bold text-green-400 uppercase flex items-center">
-                    <span class="w-1.5 h-1.5 bg-green-400 rounded-full mr-2 animate-pulse"></span> Synchronized
-                </div>
+            <div class="mb-4 glass-card p-6 rounded-xl border border-blue-500/30 bg-blue-500/5 flex flex-col items-center text-center">
+                <i class="fas fa-tools text-blue-400 text-3xl mb-4 animate-bounce"></i>
+                <h3 class="text-sm font-black text-white uppercase tracking-widest mb-2">Data Feed Under Maintenance</h3>
+                <p class="text-[10px] text-blue-300 font-bold uppercase tracking-tighter opacity-80 leading-relaxed">
+                    Системийн хурдыг сайжруулах шинэчлэлт хийгдэж байна. <br> Түр хүлээцтэй хандана уу.
+                </p>
             </div>
             <div class="glass-card rounded-2xl overflow-hidden shadow-2xl">
                 <div class="overflow-x-auto">
@@ -112,18 +113,9 @@ function showTool(toolId) {
             </div>
         `;
         
-        fetchMarketIntelligenceData();
-        
-        // Setup Realtime if Supabase (sb) is available
-        if (typeof sb !== 'undefined' && sb) {
-            window.marketIntelChannel = sb.channel('market_changes')
-                .on('postgres_changes', { event: '*', schema: 'public', table: 'market_data' }, (payload) => {
-                    fetchMarketIntelligenceData();
-                })
-                .subscribe();
-        }
-        
-        window.marketIntelInterval = setInterval(fetchMarketIntelligenceData, 10000);
+        // Шинэчлэлтийн үед дата татахыг түр зогсоов
+        // fetchMarketIntelligenceData();
+        // window.marketIntelInterval = setInterval(fetchMarketIntelligenceData, 10000);
     } else if (toolId.endsWith('_spot')) {
         const exchangeId = toolId.replace('_spot', '');
         currentExchange = exchangeId;

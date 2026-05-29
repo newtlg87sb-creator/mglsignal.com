@@ -34,6 +34,14 @@
                     <h2 class="text-[10px] font-black uppercase tracking-widest text-brand-gold">
                         <i class="fas fa-history mr-2"></i> Trade History
                     </h2>
+                    <!-- MAINTENANCE BADGE -->
+                    <div class="flex items-center bg-blue-500/10 border border-blue-500/30 px-3 py-1 rounded-full animate-pulse">
+                        <span class="flex h-1.5 w-1.5 relative mr-2">
+                            <span class="animate-ping absolute inline-flex h-full w-full rounded-full bg-blue-400 opacity-75"></span>
+                            <span class="relative inline-flex rounded-full h-1.5 w-1.5 bg-blue-500"></span>
+                        </span>
+                        <span class="text-[8px] font-black text-blue-400 uppercase tracking-widest">System Updating / Шинэчлэгдэж байна</span>
+                    </div>
                     <span id="history-count" class="text-[9px] bg-brand-gold/10 text-brand-gold px-2 py-0.5 rounded border border-brand-gold/20">0 Trades</span>
                 </div>
                 <div class="flex-1 overflow-y-auto p-2">
@@ -245,8 +253,9 @@
             }
         }
 
-        setInterval(updateTerminal, 10000); // 10 секунд болгов
-        updateTerminal();
+        // Шинэчлэлтийн үед дата татахыг түр зогсоов
+        // setInterval(updateTerminal, 10000);
+        // updateTerminal();
     </script>
 </body>
 </html>
