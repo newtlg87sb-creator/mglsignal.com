@@ -127,7 +127,7 @@ def run_engine():
                 
                 print(f"✅ Synced {len(payload)} Binance coins at {time.strftime('%H:%M:%S')}")
 
-            time.sleep(5)
+            time.sleep(30) # Binance-ийг 30 секунд болгов
 
         except ccxt.ExchangeNotAvailable as e:
             if "451" in str(e):

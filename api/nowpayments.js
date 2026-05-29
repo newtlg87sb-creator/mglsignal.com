@@ -1,15 +1,17 @@
-const crypto = require('crypto');
-const { createClient } = require('@supabase/supabase-js');
+// api/nowpayments.js
+// Чиний "User control" хүснэгтийн бүтцэд 100% тааруулсан ES Module бэкенд код
 
-// 1. Supabase бэкенд клайент (Vercel Dashboard дээрх Environment ашиглана)
+import crypto from 'crypto';
+import { createClient } from '@supabase/supabase-js';
+
+// 1. Supabase бэкенд клайент (SERVICE_ROLE_KEY ашиглаж байгаа тул RLS-ийг алгасна)
 const supabase = createClient(
   process.env.SUPABASE_URL,
   process.env.SUPABASE_SERVICE_ROLE_KEY
 );
 
-// Vercel Serverless функцын үндсэн ажиллах хэсэг
-module.exports = async (req, res) => {
-  // Зөвхөн POST хүсэлт хүлээж авна (NOWPayments зөвхөн POST шиддэг)
+export default async function handler(req, res) {
+  // Зөвхөн POST хүсэлт хүлээж авна
   if (req.method !== 'POST') {
     return res.status(405).json({ error: 'Method not allowed' });
   }
@@ -47,11 +49,14 @@ module.exports = async (req, res) => {
 
     // 5. Төлбөр амжилттай 'finished' болсон үед Supabase-ийг шинэчлэх
     if (payment_status === 'finished') {
+      
+      // 🚨 ШИНЭЧЛЭЛТ: Чиний "User control" хүснэгт болон баганын нэрнүүдтэй яг таг нийцүүлсэн хэсэг
       const { error } = await supabase
-        .from('profiles') // Чиний Supabase дээрх хэрэглэгчийн хүснэгтийн нэр
+        .from('User control') // Чиний хүснэгтийн нэр
         .update({ 
-          role: 'alpha', // Хэрэглэгчийг Alpha эрхтэй болгох
-          premium_until: new Date(Date.now() + 30 * 24 * 60 * 60 * 1000) // 30 хоног нэмэх
+          membership_type: 'alpha', // Эрхийг нь 'alpha' болгох
+          membership_expires_at: new Date(Date.now() + 30 * 24 * 60 * 60 * 1000).toISOString(), // 30 хоног нэмэх (ISO формат)
+          updated_at: new Date().toISOString()
         }) 
         .eq('id', order_id); // Төлбөр үүсгэхдээ шидсэн Хэрэглэгчийн ID (UUID)
 
@@ -60,7 +65,7 @@ module.exports = async (req, res) => {
         return res.status(500).send('Database update failed');
       }
 
-      console.log(`🎉 Хэрэглэгч ${order_id}-ийн Alpha эрх амжилттай идэвхжлээ!`);
+      console.log(`🎉 Хэрэглэгч ${order_id}-ийн Alpha эрх Supabase дээр амжилттай идэвхжлээ!`);
       return res.status(200).send('OK');
     }
 
@@ -71,4 +76,4 @@ module.exports = async (req, res) => {
     console.error('Webhook алдаа:', err.message);
     return res.status(500).send('Internal Server Error');
   }
-};
+}

@@ -128,7 +128,7 @@ def run_engine():
                     time.sleep(10)
                     continue
 
-            time.sleep(5) # 5 секунд тутамд шинэчлэх
+            time.sleep(20) # Хурдыг сааруулж Supabase-ийг амраана
 
         except Exception as e:
             print(f"❌ Loop Error: {e}")

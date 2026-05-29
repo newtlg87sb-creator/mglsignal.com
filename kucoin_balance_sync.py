@@ -218,4 +218,4 @@ def fetch_and_sync_balance():
 if __name__ == "__main__":
     while True:
         fetch_and_sync_balance()
-        time.sleep(5) # 5 секунд болгож хурдасгав (Сайт дээр хурдан харагдана)
+        time.sleep(10) # 10 секунд болгож ачааллыг 2 дахин бууруулна
