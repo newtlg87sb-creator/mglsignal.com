@@ -222,12 +222,24 @@ if (document.currentScript) {
 
 // Global function for Logout
 window.handleLogout = async function() {
-    // Supabase сессийг бүрэн хаах
-    if (sb) {
-        await sb.auth.signOut();
+    try {
+        if (sb) {
+            await sb.auth.signOut();
+        }
+    } catch (err) {
+        console.warn("Logout request failed, clearing local data anyway", err);
+    } finally {
+        // Түрэмгий цэвэрлэгээ: Бүх зүйлийг устгах
+        const keysToRemove = [];
+        for (let i = 0; i < localStorage.length; i++) {
+            const key = localStorage.key(i);
+            if (key.includes('supabase.auth.token') || key === 'user') keysToRemove.push(key);
+        }
+        keysToRemove.forEach(k => localStorage.removeItem(k));
+
+        // Хэрэв админ хуудас эсвэл хамгаалалттай хуудас бол reload хийхэд access_control түгжинэ
+        window.location.reload();
     }
-    localStorage.removeItem('user');
-    window.location.href = '/main_login.html';
 };
 
 function changeLang(lang) {
@@ -294,13 +306,26 @@ async function checkUserLogin() {
                 
                 localStorage.setItem('user', JSON.stringify(userData));
                 userStr = JSON.stringify(userData);
-            } else {
-                // Сесс байхгүй бол цэвэрлэнэ
-                if (userStr) localStorage.removeItem('user');
-                userStr = null;
-            }
+
+                // 2. Бот нэвтэрсэн байхад нэвтрэх/бүртгүүлэх хуудсанд байвал шууд Нүүр рүү
+                const path = window.location.pathname;
+                if (path.includes('main_login.html') || path.includes('main_register.html')) {
+                    window.location.href = 'index.html';
+                    return;
+                }
+
+                // 3. Хэрэв access_control-оос болж дэлгэц түгжигдсэн байвал суллах (Mismatch-ийг засах)
+                const lockOverlay = document.getElementById('lock-overlay');
+                if (lockOverlay) {
+                    lockOverlay.remove();
+                    document.body.style.overflow = '';
+                }
+
+            } else { throw new Error("No session"); }
         } catch (err) {
-            console.warn("Supabase sync failed, using cached data", err);
+            // Сесс байхгүй эсвэл алдаа гарвал заавал цэвэрлэнэ
+            localStorage.removeItem('user');
+            userStr = null;
         }
     }
 
@@ -405,5 +430,18 @@ document.addEventListener('DOMContentLoaded', () => {
     // ----------------------------------
 
     // Check login status on page load
-    checkUserLogin();
+    setTimeout(checkUserLogin, 100); // Бага зэрэг хүлээлт хийж Supabase-д сессээ таних хугацаа олгоно
+
+    // Auth өөрчлөлтийг байнга сонсох (Өөр таб дээр гарахад эсвэл сесс дуусахад UI шинэчлэгдэнэ)
+    if (sb) {
+        sb.auth.onAuthStateChange((event, session) => {
+            console.log("Auth Event:", event);
+            if (event === 'SIGNED_OUT') {
+                localStorage.removeItem('user');
+                checkUserLogin();
+            } else if (event === 'SIGNED_IN' || event === 'TOKEN_REFRESHED') {
+                checkUserLogin();
+            }
+        });
+    }
 });

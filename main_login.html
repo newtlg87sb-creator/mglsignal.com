@@ -35,6 +35,13 @@
 </head>
 <body class="bg-brand-dark text-white font-inter flex flex-col min-h-screen">
 
+    <script>
+        // Хэрэв localStorage дээр хэрэглэгч байгаа бол нэвтрэх хуудсыг алгасаад шууд Нүүр рүү
+        if (localStorage.getItem('user')) {
+            window.location.href = 'index.html';
+        }
+    </script>
+
     <script src="/static/js/main_translate.js"></script>
     <script src="/static/js/header.js"></script>
 
@@ -125,34 +132,18 @@
                     .eq('id', data.user.id)
                     .maybeSingle();
 
-                // LocalStorage-д хэрэглэгчийн хамгийн сүүлийн мэдээллийг хадгалах
-                const userData = {
+                // Өгөгдлийг түр хадгалах, 5 секундын дараа localStorage-д хийнэ
+                const pendingUserData = {
                     id: data.user.id,
                     username: profile?.username || data.user.user_metadata.display_name || data.user.email.split('@')[0],
                     email: data.user.email,
                     membership_type: profile?.membership_type || data.user.user_metadata.membership_type || 'free',
                     membership_expires_at: profile?.membership_expires_at || data.user.user_metadata.membership_expires_at || null
                 };
-                localStorage.setItem('user', JSON.stringify(userData));
 
                 // Амжилттай болсон үед харагдах байдал
-                errorDiv.className = "text-green-500 text-xs text-center bg-green-500/10 p-2 rounded border border-green-500/20";
-                errorDiv.classList.remove('hidden');
-                submitBtn.classList.add('hidden'); // Товчийг нуух
-
-                let timeLeft = 5;
-                errorDiv.innerHTML = `Амжилттай нэвтэрлээ! <span id="countdown">${timeLeft}</span> секундын дараа шилжинэ.`;
-
-                const timer = setInterval(() => {
-                    timeLeft--;
-                    const cd = document.getElementById('countdown');
-                    if(cd) cd.innerText = timeLeft;
-
-                    if (timeLeft <= 0) {
-                        clearInterval(timer);
-                        window.location.href = "index.html";
-                    }
-                }, 1000);
+                localStorage.setItem('user', JSON.stringify(pendingUserData));
+                window.location.href = "index.html";
 
             } catch (err) {
                 // Алдааны мэдээлэл харуулах

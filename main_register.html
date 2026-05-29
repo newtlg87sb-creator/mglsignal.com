@@ -163,15 +163,8 @@
 
                     if (error) throw error;
 
-                    showStatus(t['msg-reg-success'], 'success');
-                    submitBtn.classList.add('hidden');
-
-                    let seconds = 5;
-                    const countdown = setInterval(() => {
-                        errorDiv.innerHTML = t['msg-reg-success'].replace('{seconds}', seconds);
-                        seconds--;
-                        if (seconds <= 0) { clearInterval(countdown); window.location.href = 'main_login.html'; }
-                    }, 1000);
+                    // Хүлээхгүйгээр шууд нэвтрэх хуудас руу
+                    window.location.href = 'main_login.html';
 
                 } catch (error) {
                     showStatus(error.message, 'error');

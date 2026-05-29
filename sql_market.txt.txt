@@ -1,4 +1,9 @@
 -- market_data хүснэгтийг үүсгэх
+-- =========================================================
+-- 2. MARKET DATA MANAGEMENT (Зах зээлийн өгөгдөл)
+-- =========================================================
+
+-- market_data хүснэгтийг үүсгэх
 create table IF NOT EXISTS market_data (
   symbol text primary key,
   full_symbol text,
