@@ -1,0 +1,202 @@
+-- =========================================================
+-- ############################################################################
+-- #                     MGL SIGNAL - SQL MASTER CONFIG FILE                  #
+-- ############################################################################
+
+-- ============================================================================
+-- 1. USER & PROFILE MANAGEMENT (Хэрэглэгчийн удирдлага)
+-- ============================================================================
+
+-- 'User control' хүснэгт: Хэрэглэгчийн профайл, гишүүнчлэл
+CREATE TABLE IF NOT EXISTS public."User control" (
+  id uuid PRIMARY KEY REFERENCES auth.users ON DELETE CASCADE,
+  username text,
+  email text,
+  membership_type text DEFAULT 'free',
+  membership_expires_at timestamptz,
+  updated_at timestamptz DEFAULT now()
+);
+
+-- Автоматаар профайл үүсгэх функц (Auth Trigger)
+CREATE OR REPLACE FUNCTION public.handle_new_user()
+RETURNS TRIGGER AS $$
+BEGIN
+  INSERT INTO public."User control" (id, username, email, membership_type)
+  VALUES (
+    new.id, 
+    COALESCE(new.raw_user_meta_data->>'display_name', SPLIT_PART(new.email, '@', 1)), 
+    new.email, 
+    'free'
+  );
+  RETURN NEW;
+END;
+$$ LANGUAGE plpgsql SECURITY DEFINER;
+
+-- Триггер идэвхжүүлэх
+DROP TRIGGER IF EXISTS on_auth_user_created ON auth.users;
+CREATE TRIGGER on_auth_user_created
+  AFTER INSERT ON auth.users
+  FOR EACH ROW EXECUTE PROCEDURE public.handle_new_user();
+
+ALTER TABLE public."User control" ENABLE ROW LEVEL SECURITY;
+DROP POLICY IF EXISTS "Allow individual read" ON public."User control";
+CREATE POLICY "Allow individual read" ON public."User control" FOR SELECT USING (auth.uid() = id);
+
+-- ============================================================================
+-- 2. SYSTEM SETTINGS & ADMIN CONTROL (Системийн тохиргоо)
+-- ============================================================================
+
+-- Тохиргооны хүснэгт (Админ нууц үг, Ботын статус)
+CREATE TABLE IF NOT EXISTS system_settings (
+    key TEXT PRIMARY KEY,
+    value TEXT
+);
+
+-- Админ нууц үг тохируулах (Default: Admin1352)
+INSERT INTO system_settings (key, value) VALUES ('admin_password', 'Admin1352') ON CONFLICT (key) DO NOTHING;
+INSERT INTO system_settings (key, value) VALUES ('bot_status', 'on') ON CONFLICT (key) DO NOTHING;
+
+-- RPC: Нууц үг шалгах
+CREATE OR REPLACE FUNCTION verify_admin_password(input_password TEXT)
+RETURNS BOOLEAN AS $$
+BEGIN
+    RETURN EXISTS (SELECT 1 FROM system_settings WHERE key = 'admin_password' AND value = input_password);
+END;
+$$ LANGUAGE plpgsql SECURITY DEFINER;
+
+-- RPC: Ботын статус солих (Аюулгүй)
+CREATE OR REPLACE FUNCTION toggle_bot_status(input_password TEXT, new_value TEXT)
+RETURNS void AS $$
+BEGIN
+    IF EXISTS (SELECT 1 FROM system_settings WHERE key = 'admin_password' AND value = input_password) THEN
+        INSERT INTO system_settings (key, value) VALUES ('bot_status', new_value)
+        ON CONFLICT (key) DO UPDATE SET value = new_value;
+    ELSE
+        RAISE EXCEPTION 'Unauthorized: Буруу нууц үг';
+    END IF;
+END;
+$$ LANGUAGE plpgsql SECURITY DEFINER;
+
+-- ============================================================================
+-- 3. MARKET DATA FEEDS (Биржүүдийн өгөгдөл)
+-- ============================================================================
+
+-- Kucoin Market Data
+CREATE TABLE IF NOT EXISTS market_data (
+  symbol text PRIMARY KEY,
+  full_symbol text,
+  bid float8,
+  ask float8,
+  spread float8,
+  min_usdt float8,
+  volume float8,
+  real_change float8,
+  h1_change float8,
+  change_24h float8,
+  is_st boolean DEFAULT false,
+  min_order_cost float8,
+  updated_at timestamptz DEFAULT now()
+);
+
+-- Binance Market Data
+CREATE TABLE IF NOT EXISTS binance_market_data (
+  symbol text PRIMARY KEY,
+  full_symbol text,
+  bid float8,
+  ask float8,
+  spread float8,
+  min_usdt float8,
+  volume float8,
+  real_change float8,
+  h1_change float8,
+  change_24h float8,
+  is_st boolean DEFAULT false,
+  min_order_cost float8,
+  updated_at timestamptz DEFAULT now()
+);
+
+ALTER TABLE market_data ENABLE ROW LEVEL SECURITY;
+DROP POLICY IF EXISTS "Enable read access for all users" ON market_data;
+CREATE POLICY "Enable read access for all users" ON market_data FOR SELECT USING (true);
+
+ALTER TABLE binance_market_data ENABLE ROW LEVEL SECURITY;
+DROP POLICY IF EXISTS "Enable read access for all users on binance" ON binance_market_data;
+CREATE POLICY "Enable read access for all users on binance" ON binance_market_data FOR SELECT USING (true);
+
+-- ЧУХАЛ: Realtime-ийг унтраах (Limit хэтрэхээс сэргийлнэ)
+DO $$
+BEGIN
+  -- market_data-г хасах (байвал)
+  IF EXISTS (SELECT 1 FROM pg_publication_tables WHERE pubname = 'supabase_realtime' AND tablename = 'market_data') THEN
+    ALTER PUBLICATION supabase_realtime DROP TABLE market_data;
+  END IF;
+
+  -- binance_market_data-г хасах (байвал)
+  IF EXISTS (SELECT 1 FROM pg_publication_tables WHERE pubname = 'supabase_realtime' AND tablename = 'binance_market_data') THEN
+    ALTER PUBLICATION supabase_realtime DROP TABLE binance_market_data;
+  END IF;
+END $$;
+
+-- ============================================================================
+-- 4. TRADING & BALANCE (Арилжаа ба Баланс)
+-- ============================================================================
+
+-- Арилжааны түүх
+CREATE TABLE IF NOT EXISTS public.trade_history (
+    id UUID DEFAULT gen_random_uuid() PRIMARY KEY,
+    symbol TEXT NOT NULL,
+    pair TEXT,
+    time TIMESTAMPTZ DEFAULT NOW(),
+    type TEXT,
+    side TEXT,
+    price FLOAT8,
+    amount FLOAT8,
+    volume FLOAT8,
+    fee FLOAT8 DEFAULT 0,
+    status TEXT,
+    closed_buy_id UUID,
+    live_pct FLOAT8 DEFAULT 0,
+    created_at TIMESTAMPTZ DEFAULT NOW()
+);
+
+-- Хэтэвчний үлдэгдэл
+CREATE TABLE IF NOT EXISTS public.balance_data (
+    asset TEXT PRIMARY KEY,
+    trade FLOAT8 DEFAULT 0,
+    fund FLOAT8 DEFAULT 0,
+    exceed FLOAT8 DEFAULT 0,
+    total_usd FLOAT8 DEFAULT 0,
+    updated_at TIMESTAMPTZ DEFAULT NOW()
+);
+
+ALTER TABLE public.trade_history ENABLE ROW LEVEL SECURITY;
+DROP POLICY IF EXISTS "Enable read access for all users" ON public.trade_history;
+CREATE POLICY "Enable read access for all users" ON public.trade_history FOR SELECT USING (true);
+DROP POLICY IF EXISTS "Enable full access for service_role" ON public.trade_history;
+CREATE POLICY "Enable full access for service_role" ON public.trade_history FOR ALL TO service_role USING (true) WITH CHECK (true);
+
+ALTER TABLE public.balance_data ENABLE ROW LEVEL SECURITY;
+DROP POLICY IF EXISTS "Enable read access for all users" ON public.balance_data;
+CREATE POLICY "Enable read access for all users" ON public.balance_data FOR SELECT USING (true);
+DROP POLICY IF EXISTS "Enable full access for service_role" ON public.balance_data;
+CREATE POLICY "Enable full access for service_role" ON public.balance_data FOR ALL TO service_role USING (true) WITH CHECK (true);
+
+-- ============================================================================
+-- 5. MAINTENANCE & HELPERS (Засвар үйлчилгээ)
+-- ============================================================================
+
+-- RPC: Системийг бүрэн цэвэрлэх (Аюултай!)
+CREATE OR REPLACE FUNCTION purge_system_data(input_password TEXT)
+RETURNS void AS $$
+BEGIN
+    IF EXISTS (SELECT 1 FROM system_settings WHERE key = 'admin_password' AND value = input_password) THEN
+        DELETE FROM public.trade_history;
+        DELETE FROM public.balance_data;
+    ELSE
+        RAISE EXCEPTION 'Unauthorized: Буруу нууц үг';
+    END IF;
+END;
+$$ LANGUAGE plpgsql SECURITY DEFINER;
+
+-- Гишүүнчлэлийн эрх гар аргаар сунгах жишээ (Postgres Format):
+-- UPDATE "User control" SET membership_type = 'alpha', membership_expires_at = NOW() + interval '30 days' WHERE email = 'example@gmail.com';

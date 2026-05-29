@@ -1,0 +1,215 @@
+<!DOCTYPE html>
+<html lang="mn">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>MGL Signal - Pure Futures Chart</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: { brand: { 'dark': '#05070a', 'dark-blue': '#0f1217', 'gold': '#c5a059', 'border': '#1f242d' } }
+                }
+            }
+        }
+    </script>
+</head>
+<body class="bg-brand-dark text-white p-6 min-h-screen">
+
+    <div class="max-w-7xl mx-auto flex flex-col gap-4">
+        <div class="flex items-center gap-4 p-4 bg-brand-dark-blue border border-brand-border rounded-xl">
+            <div class="flex items-center space-x-2">
+                <span class="text-xs font-bold text-gray-400 uppercase">Binance Market:</span>
+                <span class="bg-yellow-500/10 text-yellow-500 border border-yellow-500/20 px-3 py-1 rounded text-xs font-black uppercase">USDⓈ-M Futures</span>
+            </div>
+
+            <div class="flex items-center space-x-2">
+                <label for="coin" class="text-gray-500 font-bold uppercase text-[10px]">Pair:</label>
+                <input type="text" id="coin" value="BTCUSDT" placeholder="BTCUSDT" class="bg-brand-dark border border-brand-border text-white rounded px-3 py-1.5 w-32 uppercase font-bold text-xs" />
+            </div>
+
+            <div id="ws-status" class="ml-auto flex items-center space-x-2 bg-black/40 px-3 py-1.5 rounded-lg border border-brand-border">
+                <span class="w-1.5 h-1.5 rounded-full bg-red-500 animate-pulse" id="ws-dot"></span>
+                <span class="text-[9px] font-black uppercase text-gray-500" id="ws-text">Disconnected</span>
+            </div>
+        </div>
+
+        <div id="chart-wrapper" class="relative w-full h-[600px] bg-[#05070a] border border-brand-border rounded-xl overflow-hidden">
+            <canvas id="chart" class="block w-full h-full cursor-crosshair"></canvas>
+        </div>
+    </div>
+
+    <script>
+    document.addEventListener('DOMContentLoaded', () => {
+        const canvas = document.getElementById("chart");
+        if (!canvas) return;
+        const ctx = canvas.getContext("2d");
+        
+        let socket;
+        const coinEl = document.getElementById("coin");
+        const dot = document.getElementById('ws-dot');
+        const text = document.getElementById('ws-text');
+
+        let symbol = "BTCUSDT";
+        let allData = [];
+        let visibleCount = 80;
+        let offset = 0;
+        let dragging = false;
+        let lastX = 0; let lastY = 0;
+        let priceOffset = 0;
+        let mouse = { x: null, y: null };
+
+        function resize() {
+            if (canvas.parentElement) {
+                canvas.width = canvas.parentElement.clientWidth;
+                canvas.height = canvas.parentElement.clientHeight;
+            }
+            draw();
+        }
+        window.addEventListener("resize", resize);
+        setTimeout(resize, 100);
+
+        // 1. ТҮҮХЭН ЛАА ТАТАХ (ЗӨВХӨН ФЬЮЧЕРС)
+        async function fetchFuturesCandles() {
+            symbol = coinEl.value.toUpperCase().replace(/[^A-Z0-9]/g, '') || "BTCUSDT";
+            const url = `https://fapi.binance.com/fapi/v1/klines?symbol=${symbol}&interval=1m&limit=500`;
+
+            try {
+                const res = await fetch(url);
+                const rawData = await res.json();
+                // [Time, Open, High, Low, Close, Volume]
+                allData = rawData.map(d => [+d[0], +d[1], +d[2], +d[3], +d[4], +d[5]]);
+                draw();
+                startPureFuturesSocket();
+            } catch (e) {
+                console.error("API Error:", e);
+            }
+        }
+
+        // 2. ЦЭВЭР ФЬЮЧЕРС ШУУД ХОЛБОЛТ (ДАНГААРАА)
+        function startPureFuturesSocket() {
+            if (socket) { socket.close(); }
+
+            // 🚨 ФЬЮЧЕРСИЙН СЕКУНД ТУТАМД ХӨДӨЛДӨГ ШУУД СТРИМ
+            // 1m лаа шиг хүлээлгэхгүй, шууд секунд бүрийн үнийн өөрчлөлтийг авна
+            const wsUrl = `wss://fstream.binance.com/ws/${symbol.toLowerCase()}@kline_1m`;
+            
+            console.log(`[Pure Futures WS] Connecting to: ${wsUrl}`);
+            socket = new WebSocket(wsUrl);
+
+            socket.onopen = () => {
+                if (dot) dot.className = "w-1.5 h-1.5 rounded-full bg-green-500 animate-pulse";
+                if (text) { text.innerText = "FUTURES LIVE"; text.className = "text-[9px] font-black uppercase text-green-500"; }
+            };
+
+            socket.onmessage = e => {
+                const msg = JSON.parse(e.data);
+                
+                // Дан урсгалын үед БҮТЭЦ НЬ ШУУД ИНГЭЖ ИРНЭ: msg.k
+                if (msg.k) {
+                    const k = msg.k;
+                    
+                    // Бүх утгыг ТОДОРХОЙ тоо руу хөрвүүлж авах
+                    const c = [k.t, Number(k.o), Number(k.h), Number(k.l), Number(k.c), Number(k.v)];
+                    const lastCandle = allData[allData.length - 1];
+
+                    if (lastCandle && lastCandle[0] === c[0]) {
+                        // Одоогийн лааг секунд тутамд шинэчлэх (БҮЖИГЛЭХ ХЭСЭГ!)
+                        allData[allData.length - 1] = c;
+                    } else {
+                        // Минут дуусвал шинэ лаа нэмэх
+                        allData.push(c);
+                        if (allData.length > 500) allData.shift();
+                    }
+                    
+                    // СЕКУНД ТУТАМД ЗУРАХЫГ ШАХАХ
+                    draw();
+                }
+            };
+
+            socket.onclose = () => {
+                if (dot) dot.className = "w-1.5 h-1.5 rounded-full bg-red-500";
+                if (text) text.innerText = "OFFLINE";
+            };
+        }
+
+        // 3. ЗУРАХ ЛОГИК
+        function draw() {
+            if (!allData || !allData.length) return;
+            ctx.clearRect(0, 0, canvas.width, canvas.height);
+
+            const padding = 40; const priceScaleWidth = 80; const timeScaleHeight = 30;
+            const chartHeight = canvas.height - padding * 2 - timeScaleHeight;
+            const chartWidth = canvas.width - padding * 2 - priceScaleWidth;
+
+            const end = allData.length - offset;
+            const start = Math.max(0, end - visibleCount);
+            const data = allData.slice(start, end);
+
+            const prices = data.flatMap(d => [d[2], d[3]]);
+            let maxPrice = Math.max(...prices);
+            let minPrice = Math.min(...prices);
+
+            // Фьючерсийн үнийг секунд бүр дэлгэцэнд шахаж харуулах динамик лимит
+            const priceRange = maxPrice - minPrice;
+            maxPrice += priceRange * 0.05 + priceOffset;
+            minPrice -= priceRange * 0.05 - priceOffset;
+
+            const priceToY = p => padding + (maxPrice - p) / (maxPrice - minPrice) * chartHeight;
+            const candleWidth = chartWidth / data.length;
+
+            // Үнийн мөрүүд
+            ctx.font = "12px monospace"; ctx.strokeStyle = "#1f242d"; ctx.fillStyle = "#666";
+            for (let i = 0; i <= 5; i++) {
+                const price = minPrice + (i / 5) * (maxPrice - minPrice);
+                const y = priceToY(price);
+                ctx.beginPath(); ctx.moveTo(padding, y); ctx.lineTo(padding + chartWidth, y); ctx.stroke();
+                ctx.fillText(price.toFixed(2), padding + chartWidth + 5, y + 4);
+            }
+
+            // Лаануудыг зурах
+            data.forEach((d, i) => {
+                const open = d[1], high = d[2], low = d[3], close = d[4];
+                const x = padding + i * candleWidth;
+                const yO = priceToY(open); const yC = priceToY(close);
+                const yH = priceToY(high); const yL = priceToY(low);
+                const bull = close >= open;
+
+                ctx.strokeStyle = bull ? "#0ecb81" : "#ff3b30";
+                ctx.fillStyle = bull ? "#0ecb81" : "#ff3b30";
+
+                ctx.beginPath(); ctx.moveTo(x + candleWidth / 2, yH); ctx.lineTo(x + candleWidth / 2, yL); ctx.stroke();
+                ctx.fillRect(x + candleWidth * 0.2, Math.min(yO, yC), candleWidth * 0.6, Math.max(1, Math.abs(yO - yC)));
+            });
+
+            // Шар шугам (Live Price Line)
+            const lastClose = allData[allData.length - 1][4];
+            const yLast = priceToY(lastClose);
+            ctx.setLineDash([4, 4]); ctx.strokeStyle = "#f0b90b";
+            ctx.beginPath(); ctx.moveTo(padding, yLast); ctx.lineTo(padding + chartWidth, yLast); ctx.stroke();
+            ctx.setLineDash([]); ctx.fillStyle = "#f0b90b";
+            ctx.fillText(lastClose.toFixed(2), padding + chartWidth + 5, yLast - 4);
+        }
+
+        coinEl.addEventListener("change", fetchFuturesCandles);
+        canvas.addEventListener("mousemove", e => {
+            const rect = canvas.getBoundingClientRect();
+            mouse.x = e.clientX - rect.left; mouse.y = e.clientY - rect.top;
+            if (dragging) {
+                const dx = e.clientX - lastX;
+                offset = Math.max(0, Math.min(allData.length - visibleCount, offset + Math.round(dx / 10)));
+                lastX = e.clientX;
+            }
+            draw();
+        });
+        canvas.addEventListener("mousedown", e => { dragging = true; lastX = e.clientX; });
+        canvas.addEventListener("mouseup", () => { dragging = false; });
+        canvas.addEventListener("mouseleave", () => { dragging = false; });
+
+        // Анхны асаалт
+        fetchFuturesCandles();
+    });
+    </script>
+</body>
+</html>

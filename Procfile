@@ -1,1 +1,0 @@
-worker: python3 kucoin_balance_sync.py
