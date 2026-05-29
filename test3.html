@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>MGL Signal - Immortal Futures Chart</title>
+    <title>MGL Signal - Stable Supabase Chart</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <script>
         tailwind.config = {
@@ -18,21 +18,23 @@
 <body class="bg-brand-dark text-white p-6 min-h-screen">
 
     <div class="max-w-7xl mx-auto flex flex-col gap-4">
-        <div class="flex items-center gap-4 p-4 bg-brand-dark-blue border border-brand-border rounded-xl">
+        <!-- Удирдлага -->
+        <div class="flex items-center gap-4 p-4 bg-brand-dark-blue border border-brand-border rounded-xl shadow-lg">
             <div class="flex items-center space-x-2">
-                <span class="text-xs font-bold text-gray-400 uppercase">Market Engine:</span>
-                <span class="bg-green-500/10 text-green-500 border border-green-500/20 px-3 py-1 rounded text-xs font-black uppercase">Crypto Futures Live</span>
+                <span class="text-xs font-bold text-gray-400 uppercase">Engine:</span>
+                <span class="bg-blue-500/10 text-blue-500 border border-blue-500/20 px-3 py-1 rounded text-xs font-black uppercase">Supabase Stable Live</span>
             </div>
             <div class="flex items-center space-x-2">
                 <label for="coin" class="text-gray-500 font-bold uppercase text-[10px]">Pair:</label>
-                <input type="text" id="coin" value="BINANCE:BTCUSDT.P" placeholder="BINANCE:BTCUSDT.P" class="bg-brand-dark border border-brand-border text-white rounded px-3 py-1.5 w-48 uppercase font-bold text-xs" />
+                <input type="text" id="coin" value="BTCUSDT" class="bg-brand-dark border border-brand-border text-white rounded px-3 py-1.5 w-32 uppercase font-bold text-xs" />
             </div>
-            <div id="ws-status" class="ml-auto flex items-center space-x-2 bg-black/40 px-3 py-1.5 rounded-lg border border-brand-border">
-                <span class="w-1.5 h-1.5 rounded-full bg-green-500 animate-pulse" id="ws-dot"></span>
-                <span class="text-[9px] font-black uppercase text-green-500" id="ws-text">BYPASS LIVE</span>
+            <div class="ml-auto flex items-center space-x-2 bg-black/40 px-3 py-1.5 rounded-lg border border-brand-border">
+                <span class="w-1.5 h-1.5 rounded-full bg-green-500 animate-pulse"></span>
+                <span class="text-[9px] font-black uppercase text-green-500">SYNCED</span>
             </div>
         </div>
 
+        <!-- Canvas Чарт -->
         <div id="chart-wrapper" class="relative w-full h-[600px] bg-[#05070a] border border-brand-border rounded-xl overflow-hidden">
             <canvas id="chart" class="block w-full h-full cursor-crosshair"></canvas>
         </div>
@@ -44,15 +46,18 @@
         if (!canvas) return;
         const ctx = canvas.getContext("2d");
         
-        let socket;
         const coinEl = document.getElementById("coin");
-        let symbol = "BINANCE:BTCUSDT.P"; // TradingView Futures формат
+        let symbol = "BTCUSDT";
         let allData = [];
         let visibleCount = 80;
         let offset = 0;
         let dragging = false;
         let lastX = 0;
         let priceOffset = 0;
+
+        // 🚨 ЧИНИЙ SUPABASE ТОХИРГОО (Үүнийг өөрийнхөөрөө солиорой)
+        const SUPABASE_URL = "https://bsdkbxyjwjljximdxdst.supabase.co"; 
+        const SUPABASE_KEY = "чиний_нийтийн_anon_key"; // Түрүүн хуулж авсан анон түлхүүрээ тавиарай
 
         function resize() {
             if (canvas.parentElement) {
@@ -64,63 +69,39 @@
         window.addEventListener("resize", resize);
         setTimeout(resize, 100);
 
-        // 🚨 ХОРИГГҮЙ АМЬД УРСГАЛ (TradingView Холболт)
-        function startImmortalSocket() {
-            if (socket) { socket.close(); }
+        // 🔄 СУПАБЭЙСЭЭС ДАТА ТАТАХ (Блок хийгдэх ямар ч боломжгүй зам)
+        async function fetchFromSupabase() {
+            symbol = coinEl.value.toUpperCase().replace(/[^A-Z0-9]/g, '') || "BTCUSDT";
             
-            // ТрейдингВью-ийн хаалтгүй, галзуу хурдтай нийтийн урсгал
-            const wsUrl = "wss://data.tradingview.com/socket.io/websocket";
-            socket = new WebSocket(wsUrl);
+            // Чиний `market_data` эсвэл койн хадгалдаг таблицын нэрээр солино
+            const url = `${SUPABASE_URL}/rest/v1/market_data?symbol=eq.${symbol}&order=timestamp.desc&limit=200`;
 
-            socket.onopen = () => {
-                // ТрейдингВью-ийн протокол унших тушаалууд шидэх
-                socket.send('~m~4~m~{"purpose":"session","session_id":"qs_MGL"}');
-                socket.send('~m~50~m~{"purpose":"set_data_quality","data_quality":"realtime"}');
-                // Фьючерс зоосоо бүртгүүлэх
-                socket.send(`~m~60~m~{"purpose":"quote_add_symbols","symbols":["${symbol}"]}...`);
-                // Түүхэн лаануудыг дуурайлгаж үүсгэх (Mock data generator)
-                generateHistoricalBase();
-            };
-
-            socket.onmessage = e => {
-                // ТрейдингВью-ээс ирсэн секунд бүрийн цэвэр датаг задлах
-                if (e.data.includes('"lp"')) { 
-                    const match = e.data.match(/"lp":\s*([0-9.]+)/);
-                    if (match && match[1]) {
-                        const livePrice = Number(match[1]);
-                        updateLiveChart(livePrice);
+            try {
+                const res = await fetch(url, {
+                    headers: {
+                        "apikey": SUPABASE_KEY,
+                        "Authorization": `Bearer ${SUPABASE_KEY}`
                     }
+                });
+                const supabaseData = await res.json();
+                
+                if (supabaseData && supabaseData.length > 0) {
+                    // Супабэйсийн өгөгдлийг Canvas-ийн [Time, Open, High, Low, Close, Volume] формат руу гүйглэх
+                    // Жишээ нь супабэйсийн баганы нэр чинь өөр бол d.open, d.high гэж солиорой
+                    allData = supabaseData.map(d => [
+                        new Date(d.timestamp).getTime(), 
+                        Number(d.open), 
+                        Number(d.high), 
+                        Number(d.low), 
+                        Number(d.close), 
+                        Number(d.volume)
+                    ]).reverse(); // Хуучныг нь урд нь гаргахын тулд reverse хийнэ
+                    
+                    draw();
                 }
-            };
-        }
-
-        function generateHistoricalBase() {
-            // Анхны суурь 200 лааг автоматаар үүсгэх (Чулууг хайлуулах хэсэг)
-            let basePrice = 68500;
-            let now = Date.now();
-            allData = [];
-            for (let i = 200; i > 0; i--) {
-                const change = (Math.random() - 0.5) * 50;
-                const open = basePrice;
-                const close = basePrice + change;
-                const high = Math.max(open, close) + Math.random() * 20;
-                const low = Math.min(open, close) - Math.random() * 20;
-                allData.push([now - i * 60000, open, high, low, close, 100]);
-                basePrice = close;
+            } catch (e) {
+                console.error("Supabase Fetch Error:", e);
             }
-            draw();
-        }
-
-        function updateLiveChart(price) {
-            if (!allData || allData.length === 0) return;
-            let last = allData[allData.length - 1];
-            
-            // Секунд тутамд лааны Close, High, Low-ийг шууд бүжиглүүлнэ!
-            last[4] = price;
-            if (price > last[2]) last[2] = price;
-            if (price < last[3]) last[3] = price;
-            
-            draw();
         }
 
         function draw() {
@@ -146,7 +127,7 @@
             const priceToY = p => padding + (maxPrice - p) / (maxPrice - minPrice) * chartHeight;
             const candleWidth = chartWidth / data.length;
 
-            // Үнийн шугам зурах
+            // Үнийн торлог
             ctx.font = "12px monospace"; ctx.strokeStyle = "#1f242d"; ctx.fillStyle = "#666";
             for (let i = 0; i <= 5; i++) {
                 const price = minPrice + (i / 5) * (maxPrice - minPrice);
@@ -170,7 +151,7 @@
                 ctx.fillRect(x + candleWidth * 0.2, Math.min(yO, yC), candleWidth * 0.6, Math.max(1, Math.abs(yO - yC)));
             });
 
-            // Амьд үнийн шугам
+            // Амьд үнийн шар шугам
             const lastClose = allData[allData.length - 1][4];
             const yLast = priceToY(lastClose);
             ctx.setLineDash([4, 4]); ctx.strokeStyle = "#f0b90b";
@@ -179,25 +160,23 @@
             ctx.fillText(lastClose.toFixed(2), padding + chartWidth + 5, yLast - 4);
         }
 
-        coinEl.addEventListener("change", () => {
-            symbol = coinEl.value.toUpperCase();
-            startImmortalSocket();
-        });
-
+        coinEl.addEventListener("change", fetchFromSupabase);
+        canvas.addEventListener("mousedown", e => { dragging = true; lastX = e.clientX; });
+        canvas.addEventListener("mouseup", () => { dragging = false; });
         canvas.addEventListener("mousemove", e => {
             if (dragging) {
-                const rect = canvas.getBoundingClientRect();
                 const dx = e.clientX - lastX;
                 offset = Math.max(0, Math.min(allData.length - visibleCount, offset + Math.round(dx / 10)));
                 lastX = e.clientX;
                 draw();
             }
         });
-        canvas.addEventListener("mousedown", e => { dragging = true; lastX = e.clientX; });
-        canvas.addEventListener("mouseup", () => { dragging = false; });
 
-        // Шууд асаах
-        startImmortalSocket();
+        // Анхны дуудлага
+        fetchFromSupabase();
+        
+        // 🚨 5 СЕКУНД ТУТАМД СУПАБЭЙСЭЭС ШИНЭ ДАТА ШАЛГАЖ ЧАРТЫГ АМЬД БОЛГОНО
+        setInterval(fetchFromSupabase, 5000);
     });
     </script>
 </body>
