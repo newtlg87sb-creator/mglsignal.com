@@ -129,7 +129,7 @@ const headerHTML = `    <style>
                         </button>
                         <div class="hidden dropdown-menu absolute left-0 mt-0 pt-4 w-44 z-50">
                             <div class="bg-brand-dark-blue border border-brand-border shadow-2xl overflow-hidden">
-                                <a href="#" data-i18n="drop-major" class="block px-4 py-2.5 hover:bg-brand-gold hover:text-black transition">Major Pairs</a>
+                                <a href="/mainlive_gold.html" data-i18n="drop-major" class="block px-4 py-2.5 hover:bg-brand-gold hover:text-black transition">Major Pairs</a>
                             </div>
                         </div>
                     </div>
