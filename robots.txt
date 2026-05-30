@@ -11,7 +11,7 @@ Disallow: /admin_control.html
 Disallow: /main_login.html
 Disallow: /main_register.html
 Disallow: /main_forgot-password.html
-Disallow: /live_trade.html  # Хэрэв чи арилжааны түүхээ Google-д харуулмааргүй бол
+Disallow: /mainlive_kucointrade.html  # Хэрэв чи арилжааны түүхээ Google-д харуулмааргүй бол
 
 # 🤖 Хортой, хэрэгцээгүй спам роботуудыг бүрмөсөн хаах (Сайтын серверийг хамгаална)
 User-agent: AhrefsBot

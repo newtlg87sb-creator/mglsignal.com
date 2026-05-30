@@ -1,0 +1,109 @@
+<!DOCTYPE html>
+<html lang="mn">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Live Analytical Tools - MGL Signal</title>
+
+    <meta name="description" content="MGL Signal - Live Trading Charts and Real-time Analytics">
+    <meta name="robots" content="index, follow">
+    
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+
+    <link rel="icon" type="image/png" href="/static/new/images/logogo1.png">
+
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        brand: { 'dark': '#05070a', 'dark-blue': '#0f1217', 'gold': '#c5a059', 'border': '#1f242d' }
+                    },
+                    fontFamily: { 'inter': ['Inter', 'sans-serif'] }
+                }
+            }
+        }
+    </script>
+    <link rel="stylesheet" href="/static/main_style.css">
+
+    <meta http-equiv="Content-Security-Policy" content="default-src 'self'; img-src 'self' data: https:; script-src 'self' https://cdn.tailwindcss.com 'unsafe-inline' https://s3.tradingview.com https://cdn.jsdelivr.net; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com https://cdnjs.cloudflare.com; font-src 'self' https://fonts.gstatic.com https://cdnjs.cloudflare.com; connect-src 'self' https://api.binance.com https://fapi.binance.com wss://stream.binance.com wss://fstream.binance.com https://bsdkbxyjwjljximdxdst.supabase.co;">
+</head>
+<body class="bg-brand-dark text-white font-inter flex flex-col min-h-screen">
+
+    <script src="/static/js/main_translate.js"></script>
+    <script src="/static/js/header.js"></script>
+
+    <!-- Main Content -->
+    <main class="flex-grow pt-32 pb-12 px-6">
+        <div class="max-w-5xl mx-auto">
+            <!-- Header -->
+            <div class="text-center mb-16">
+                <h1 data-i18n="live-hub-title" class="text-3xl md:text-5xl font-black uppercase tracking-tight text-white mb-4">
+                    Live <span class="text-brand-gold italic">Tools</span>
+                </h1>
+                <p data-i18n="live-hub-desc" class="text-gray-400 max-w-2xl mx-auto">
+                    Зах зээлийн бодит цагийн өгөгдөл болон амьд графикууд.
+                </p>
+                <div class="w-20 h-1 bg-brand-gold mx-auto mt-6"></div>
+            </div>
+
+            <!-- Tools Grid -->
+            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+                
+                <!-- Card 1: Exchanges Data -->
+                <a href="/exchanges.html" class="bg-brand-dark-blue border border-brand-border rounded-2xl p-10 hover:border-brand-gold transition duration-300 group flex flex-col shadow-2xl relative overflow-hidden">
+                    <div class="absolute top-0 right-0 p-4 opacity-10 group-hover:opacity-20 transition">
+                        <i class="fas fa-server text-6xl"></i>
+                    </div>
+                    <div class="w-14 h-14 bg-brand-gold/10 rounded-xl flex items-center justify-center mb-8 group-hover:bg-brand-gold/20 transition">
+                        <i class="fas fa-bolt text-brand-gold text-2xl"></i>
+                    </div>
+                    <h3 data-i18n="tool-ex-title" class="text-white text-xl font-bold mb-4 uppercase tracking-wider group-hover:text-brand-gold transition">Exchanges Data</h3>
+                    <p class="text-gray-500 text-sm leading-relaxed mb-8 flex-grow">Биржүүдийн бодит цагийн үнэ, волюм болон сүлжээний мэдээллүүд.</p>
+                    <span class="text-brand-gold text-[10px] font-black uppercase tracking-[0.2em] flex items-center mt-auto">
+                        Open Terminal <i class="fas fa-arrow-right ml-2 group-hover:translate-x-2 transition"></i>
+                    </span>
+                </a>
+
+                <!-- Card 2: Live Trade Terminal -->
+                <a href="/mainlive_kucointrade.html" class="bg-brand-dark-blue border border-brand-border rounded-2xl p-10 hover:border-brand-gold transition duration-300 group flex flex-col shadow-2xl relative overflow-hidden">
+                    <div class="absolute top-0 right-0 p-4 opacity-10 group-hover:opacity-20 transition">
+                        <i class="fas fa-terminal text-6xl"></i>
+                    </div>
+                    <div class="w-14 h-14 bg-brand-gold/10 rounded-xl flex items-center justify-center mb-8 group-hover:bg-brand-gold/20 transition">
+                        <i class="fas fa-satellite-dish text-brand-gold text-2xl"></i>
+                    </div>
+                    <h3 data-i18n="tool-trade-title" class="text-white text-xl font-bold mb-4 uppercase tracking-wider group-hover:text-brand-gold transition">Live Trade Terminal</h3>
+                    <p class="text-gray-500 text-sm leading-relaxed mb-8 flex-grow">Автомат ботын идэвхтэй арилжаанууд, баланс болон системийн логуудыг шууд хянах.</p>
+                    <span class="text-brand-gold text-[10px] font-black uppercase tracking-[0.2em] flex items-center mt-auto">
+                        Open Terminal <i class="fas fa-arrow-right ml-2 group-hover:translate-x-2 transition"></i>
+                    </span>
+                </a>
+
+                <!-- Card 3: Live Charts -->
+                <a href="/mainlive_binchart.html" class="bg-brand-dark-blue border border-brand-border rounded-2xl p-10 hover:border-brand-gold transition duration-300 group flex flex-col shadow-2xl relative overflow-hidden">
+                    <div class="absolute top-0 right-0 p-4 opacity-10 group-hover:opacity-20 transition">
+                        <i class="fas fa-chart-line text-6xl"></i>
+                    </div>
+                    <div class="w-14 h-14 bg-brand-gold/10 rounded-xl flex items-center justify-center mb-8 group-hover:bg-brand-gold/20 transition">
+                        <i class="fas fa-wave-square text-brand-gold text-2xl"></i>
+                    </div>
+                    <h3 data-i18n="tool-chart-title" class="text-white text-xl font-bold mb-4 uppercase tracking-wider group-hover:text-brand-gold transition">Live Charts (Binance)</h3>
+                    <p class="text-gray-500 text-sm leading-relaxed mb-8 flex-grow">Бинанс биржийн бүх хослолуудын амьд график. Spot болон Futures өгөгдөл.</p>
+                    <span class="text-brand-gold text-[10px] font-black uppercase tracking-[0.2em] flex items-center mt-auto">
+                        Open Charts <i class="fas fa-arrow-right ml-2 group-hover:translate-x-2 transition"></i>
+                    </span>
+                </a>
+
+            </div>
+        </div>
+    </main>
+
+    <script src="/static/js/footer.js"></script>
+    <script src="/static/lock.js"></script>
+</body>
+</html>

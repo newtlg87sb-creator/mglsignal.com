@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Altcoin Tools - MGL Signal</title>
+    <title>Market Tools - MGL Signal</title>
 
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -36,16 +36,16 @@
             <!-- Header -->
             <div class="text-center mb-12">
                 <h1 class="text-3xl md:text-5xl font-black uppercase tracking-tight text-white mb-4">
-                    Altcoin <span class="text-brand-gold italic">Tools</span>
+                    Market <span class="text-brand-gold italic">Tools</span>
                 </h1>
                 <p id="tools-subtitle" class="text-gray-400 max-w-2xl mx-auto">
-                    Professional analytical tools and signals for Altcoin trading.
+                    Professional analytical tools and signals for Crypto trading.
                 </p>
                 <div class="w-20 h-1 bg-brand-gold mx-auto mt-6"></div>
             </div>
 
-            <!-- Tools List (Single Column) -->
-            <div id="tools-container" class="space-y-4">
+            <!-- Tools Grid -->
+            <div id="tools-container" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
                 <!-- Content injected by JS -->
             </div>
         </div>
@@ -65,8 +65,8 @@
 
                 // Update Subtitle
                 subtitle.textContent = lang === 'mn' 
-                    ? "Алткойн арилжаанд зориулсан мэргэжлийн шинжилгээний хэрэгсэл болон сигналууд."
-                    : "Professional analytical tools and signals for Altcoin trading.";
+                    ? "Крипто арилжаанд зориулсан мэргэжлийн шинжилгээний хэрэгсэл болон сигналууд."
+                    : "Professional analytical tools and signals for Crypto trading.";
 
                 // Render List
                 container.innerHTML = translations[lang]['signal-list']
@@ -74,27 +74,21 @@
                         item.link !== 'future.html' && 
                         item.link !== 'spot.html'
                     )
-                    .map(item => `
-                    <a href="${item.link}" class="group block bg-brand-dark-blue border border-brand-border rounded-xl p-5 hover:border-brand-gold/50 transition duration-300 shadow-lg">
-                        <div class="flex items-center justify-between">
-                            <div class="flex items-center space-x-4">
-                                <div class="w-10 h-10 rounded-lg bg-brand-gold/10 flex items-center justify-center border border-brand-gold/20 group-hover:bg-brand-gold/20 transition">
-                                    <i class="fas fa-tools text-brand-gold"></i>
-                                </div>
-                                <div>
-                                    <h3 class="text-white font-bold text-lg group-hover:text-brand-gold transition">${item.title}</h3>
-                                    <p class="text-gray-500 text-xs mt-1 leading-relaxed">${item.description}</p>
-                                </div>
-                            </div>
-                            <div class="flex items-center space-x-3">
-                                ${item.status === 'coming_soon' ? 
-                                    `<span class="text-[9px] bg-gray-800 text-gray-400 px-2 py-1 rounded uppercase font-black tracking-tighter">Coming Soon</span>` : 
-                                    `<i class="fas fa-chevron-right text-gray-600 group-hover:text-brand-gold transform group-hover:translate-x-1 transition"></i>`
-                                }
-                            </div>
+                    .map(item => {
+                        const isComingSoon = item.status === 'coming_soon';
+                        return `
+                    <a href="${isComingSoon ? '#' : item.link}" class="bg-brand-dark-blue border border-brand-border rounded-xl p-8 hover:border-brand-gold transition duration-300 group flex flex-col ${isComingSoon ? 'opacity-60 cursor-not-allowed grayscale' : ''}">
+                        <div class="w-12 h-12 bg-brand-gold/10 rounded-lg flex items-center justify-center mb-6 group-hover:bg-brand-gold/20 transition">
+                            <i class="fas fa-tools text-brand-gold text-2xl"></i>
                         </div>
+                        <h3 class="text-white text-lg font-bold mb-3 uppercase tracking-wider group-hover:text-brand-gold transition">${item.title}</h3>
+                        <p class="text-gray-500 text-sm leading-relaxed mb-6 flex-grow">${item.description}</p>
+                        ${isComingSoon ? 
+                            `<span class="text-[9px] bg-gray-800 text-gray-400 px-2 py-1 rounded uppercase font-black tracking-tighter w-fit">Coming Soon</span>` : 
+                            `<span class="text-brand-gold text-[10px] font-black uppercase tracking-widest flex items-center mt-auto">Нээх <i class="fas fa-arrow-right ml-2 group-hover:translate-x-1 transition"></i></span>`
+                        }
                     </a>
-                `).join('');
+                `}).join('');
             };
 
             renderTools();

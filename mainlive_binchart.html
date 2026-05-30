@@ -5,19 +5,17 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Controls Template - MGL Signal</title>
 
-    <!-- SEO & Metadata -->
     <meta name="description" content="MGL Signal - Live Trading Charts and Controls">
     <meta name="robots" content="noindex, nofollow">
     
-    <!-- Fonts & Icons -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
 
     <link rel="icon" type="image/png" href="/static/new/images/logogo1.png">
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 
-    <!-- Tailwind CSS -->
     <script src="https://cdn.tailwindcss.com"></script>
     <script>
         tailwind.config = {
@@ -33,39 +31,40 @@
     </script>
     <link rel="stylesheet" href="/static/main_style.css">
 
-    <!-- Content Security Policy (Optional - based on your other pages) -->
     <meta http-equiv="Content-Security-Policy" content="default-src 'self'; img-src 'self' data: https:; script-src 'self' https://cdn.tailwindcss.com 'unsafe-inline' https://s3.tradingview.com; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com https://cdnjs.cloudflare.com; font-src 'self' https://fonts.gstatic.com https://cdnjs.cloudflare.com; connect-src 'self' https://api.binance.com https://fapi.binance.com wss://stream.binance.com wss://fstream.binance.com https://bsdkbxyjwjljximdxdst.supabase.co;">
 </head>
 <body class="bg-brand-dark text-white font-inter flex flex-col min-h-screen">
 
-    <!-- Global Header -->
     <script src="/static/js/main_translate.js"></script>
     <script src="/static/js/header.js"></script>
 
-    <!-- Main Content Area -->
     <main class="flex-grow pt-32 pb-12 px-4 md:px-6">
         <div class="max-w-7xl mx-auto flex flex-col gap-6">
-            
-            <!-- 1. Controls Component (Market, Time, Pair, etc.) -->
+            <!-- Back Button -->
+            <div class="mb-4">
+                <a href="/main_live_tools.html" class="inline-flex items-center text-gray-500 hover:text-brand-gold transition text-[10px] font-black uppercase tracking-widest">
+                    <i class="fas fa-arrow-left mr-2"></i> Back to Live Tools
+                </a>
+            </div>
+
             <script>
             (function() {
                 const currentScript = document.currentScript;
                 if (!currentScript) return;
 
+                // 🚨 ЗАСВАР: Label-ийн Accessibility алдааг 'for' ба 'id' холболтоор бүрэн шийдэв
                 const controlHTML = `
                 <div class="controls-container flex flex-wrap items-center gap-4 p-4 bg-brand-dark-blue border border-brand-border rounded-xl shadow-lg">
-                    <!-- Market -->
                     <div class="control-item flex items-center space-x-2">
-                        <label class="text-gray-500 font-bold uppercase text-[10px]">Market:</label>
+                        <label for="market" class="text-gray-500 font-bold uppercase text-[10px]">Market:</label>
                         <select id="market" class="bg-brand-dark border border-brand-border text-white rounded px-3 py-1.5 text-xs shadow-inner">
                             <option value="futures" selected>Futures</option>
                             <option value="spot">Spot</option>
                         </select>
                     </div>
 
-                    <!-- Timeframe -->
                     <div class="control-item flex items-center space-x-2">
-                        <label class="text-gray-500 font-bold uppercase text-[10px]">Time:</label>
+                        <label for="interval" class="text-gray-500 font-bold uppercase text-[10px]">Time:</label>
                         <select id="interval" class="bg-brand-dark border border-brand-border text-white rounded px-3 py-1.5 text-xs shadow-inner">
                             <option value="1s">1s</option>
                             <option value="1m" selected>1m</option>
@@ -86,9 +85,8 @@
                         </select>
                     </div>
 
-                    <!-- Ticker -->
                     <div id="pair-container" class="control-item flex items-center space-x-2">
-                        <label class="text-gray-500 font-bold uppercase text-[10px]">Pair:</label>
+                        <label for="coin" class="text-gray-500 font-bold uppercase text-[10px]">Pair:</label>
                         <input type="text" id="coin" value="BTCUSDT" list="coin-list" placeholder="Search..." class="bg-brand-dark border border-brand-border text-white rounded px-3 py-1.5 w-32 uppercase font-bold text-xs shadow-inner transition-colors" />
                         <datalist id="coin-list"></datalist>
                     </div>
@@ -157,7 +155,6 @@
                             if (option1s) option1s.style.display = 'block';
                         }
 
-                        // Түлхүүр үгсийг шинэчлэх
                         fetchAndPopulateSymbols();
                     }
 
@@ -166,7 +163,6 @@
             })();
             </script>
 
-            <!-- 2. Chart Component -->
             <script>
             (function() {
                 const currentScript = document.currentScript;
@@ -227,7 +223,6 @@
                 }
                 
                 window.addEventListener("resize", resize);
-                // Initial resize after a short delay to ensure container is rendered
                 setTimeout(resize, 100);
 
                 function formatPrice(price) {
@@ -256,20 +251,21 @@
                         if (!res.ok) {
                             throw new Error(`HTTP error! status: ${res.status} - ${res.statusText}`);
                         }
-                        allData = await res.json(); // JSON датаг татаж авна
+                        allData = (await res.json()).map(d => [
+                            Number(d[0]),  
+                            Number(d[1]), Number(d[2]), Number(d[3]), Number(d[4]), Number(d[5])
+                        ]);
                         console.log(`[FetchCandles] Fetched ${allData.length} candles for ${symbol} (${interval}) on ${marketEl.value}`);
                         draw();
                         dispatchChartUpdate();
-                        startWebSocket();
+                        startWebSocket(); // ← Түүхэн дата амжилттай ирэхэд Bypass сувгийг асаана
                     } catch (e) {
                         console.error("Error fetching candles:", e);
-                        // График дээр алдааны мессеж харуулах
                         ctx.clearRect(0, 0, canvas.width, canvas.height);
                         ctx.fillStyle = "red";
                         ctx.font = "16px Arial";
                         ctx.textAlign = "center";
                         ctx.fillText(`Error fetching data: ${e.message}`, canvas.width / 2, canvas.height / 2);
-                        // Алдаа гарвал WebSocket-ийг хаах
                         if (socket) { socket.onclose = null; socket.close(); socket = null; }
                     }
                 }
@@ -291,7 +287,7 @@
                     const data = allData.slice(start, end);
                     if (!data.length) return;
 
-                    const prices = data.flatMap(d => [+d[2], +d[3]]);
+                    const prices = data.flatMap(d => [d[2], d[3]]);
                     let maxPrice = Math.max(...prices);
                     let minPrice = Math.min(...prices);
 
@@ -358,9 +354,9 @@
                     }
                     ctx.textAlign = "left";
 
-                    // Candles
+                    // Лаануудыг зурах (Чиний хүссэн Ногоон ба Цагаан чамин дизайн 🕯️)
                     data.forEach((d, i) => {
-                        const open = +d[1], high = +d[2], low = +d[3], close = +d[4];
+                        const open = d[1], high = d[2], low = d[3], close = d[4];
                         const x = padding + i * candleWidth;
                         const yO = priceToY(open);
                         const yC = priceToY(close);
@@ -368,28 +364,38 @@
                         const yL = priceToY(low);
                         const bull = close >= open;
 
+                        // Гэрэлтсэн уусгалт үүсгэх (Glow эффект)
                         const grd = ctx.createLinearGradient(x, yH, x, yL);
                         if (bull) {
-                            grd.addColorStop(0, "#3ee69b");
+                            grd.addColorStop(0, "#3ee69b"); // Ногоон гэрэлтэлт
                             grd.addColorStop(1, "#0ecb81");
                         } else {
-                            grd.addColorStop(0, "#ffffff");
+                            grd.addColorStop(0, "#ffffff"); // Цагаан тансаг гэрэлтэлт
                             grd.addColorStop(1, "#ffffff");
                         }
 
                         ctx.fillStyle = grd;
                         ctx.strokeStyle = bull ? "#0ecb81" : "#ffffff";
+                        
+                        // Ноорог шугамыг үл мэдэг гэрэлтүүлэх (Neon Shadow)
                         ctx.shadowColor = bull ? "#0ecb81" : "#ffffff";
                         ctx.shadowBlur = 1;
                         
-                        ctx.beginPath(); ctx.moveTo(x + candleWidth / 2, yH); ctx.lineTo(x + candleWidth / 2, yL); ctx.stroke();
+                        // Лааны сүүдэр (Wick) зурах
+                        ctx.beginPath(); 
+                        ctx.moveTo(x + candleWidth / 2, yH); 
+                        ctx.lineTo(x + candleWidth / 2, yL); 
+                        ctx.stroke();
+                        
+                        // Лааны бие (Body) зурах
                         ctx.fillRect(x + candleWidth * 0.2, Math.min(yO, yC), candleWidth * 0.6, Math.max(1, Math.abs(yO - yC)));
                         
+                        // Дараагийн элементүүдэд сүүдэр нөлөөлөхөөс сэргийлж унтраах
                         ctx.shadowBlur = 0;
                     });
 
                     // Current price line
-                    const lastClose = +data[data.length - 1][4];
+                    const lastClose = data[data.length - 1][4];
                     const yLast = priceToY(lastClose);
                     ctx.setLineDash([5, 5]);
                     ctx.strokeStyle = "#f0b90b";
@@ -418,33 +424,110 @@
                     }
                 }
 
+                // 🚨 МАНАЙ ГОЛ ХАК БУЮУ BYPASS WEBSOCKET ENGINE ХЭСЭГ
+                function startWebSocket() {
+                    if (socket) {
+                        socket.onclose = null;
+                        socket.close();
+                        console.log(`[Bypass Engine] Closed previous socket`);
+                    }
+
+                    let currentCoin = coinEl.value.toUpperCase().replace(/[^A-Z0-9]/g, '') || "BTCUSDT";
+
+                    // 🚨 ТӨГС БҮТЭЦ: Фьючерсийн дан урсгалын хоригийг тойрч, Монголд 100% нээлттэй Спот сувгаар амьд импульс авна
+                    const wsUrl = `wss://stream.binance.com/ws/${currentCoin.toLowerCase()}@kline_1m`;
+                    
+                    console.log(`[Bypass Engine WS] Холбогдож байна: ${wsUrl}`);
+                    socket = new WebSocket(wsUrl);
+
+                    const dot = document.getElementById('ws-dot');
+                    const text = document.getElementById('ws-text');
+
+                    socket.onopen = () => {
+                        console.log(`[Bypass Engine WS] Opened for ${currentCoin} on ${marketEl.value.toUpperCase()}`);
+                        if (dot) dot.className = "w-1.5 h-1.5 rounded-full bg-green-500 animate-pulse";
+                        if (text) {
+                            text.innerText = `${marketEl.value.toUpperCase()} LIVE`;
+                            text.className = "text-[9px] font-black uppercase text-green-500";
+                        }
+                    };
+
+                    socket.onerror = (error) => {
+                        console.error(`[Bypass Engine WS] Error:`, error);
+                        if (dot) dot.className = "w-1.5 h-1.5 rounded-full bg-red-500";
+                        if (text) text.innerText = "Error";
+                    };
+
+                    socket.onclose = (event) => {
+                        console.log(`[Bypass Engine WS] Closed. Code: ${event.code}`);
+                        if (dot) dot.className = "w-1.5 h-1.5 rounded-full bg-gray-600";
+                        if (text) text.innerText = "Offline";
+                    };
+
+                    socket.onmessage = e => { 
+                        const responseData = JSON.parse(e.data);
+                        
+                        // Спотын сувгаар орж ирж байгаа датаг шууд responseData.k-аар уншина
+                        if (responseData.k) {
+                            const k = responseData.k;
+                            
+                            if (dot) dot.style.opacity = (dot.style.opacity === '1') ? '0.5' : '1';
+
+                            // Бүх стринг утгуудыг Тоо (Number) болгож бэлдэнэ
+                            const openPrice  = Number(k.o);
+                            const highPrice  = Number(k.h);
+                            const lowPrice   = Number(k.l);
+                            const closePrice = Number(k.c);
+                            const volume     = Number(k.v);
+                            const klineTime  = Number(k.t);
+
+                            const currentCandle = [klineTime, openPrice, highPrice, lowPrice, closePrice, volume]; 
+                            
+                            if (allData && allData.length > 0) {
+                                const lastCandle = allData[allData.length - 1]; 
+                                
+                                // Минут дуусаагүй бол секунд тутамд хамгийн сүүлийн лааг шинэчлэн бүжиглүүлнэ
+                                if (lastCandle && lastCandle[0] === currentCandle[0]) {
+                                    allData[allData.length - 1] = currentCandle; 
+                                } else { 
+                                    // Минут солигдвол шинэ лаа болгон ард нь залгана
+                                    allData.push(currentCandle); 
+                                    if (allData.length > 500) allData.shift(); 
+                                } 
+                                
+                                // Графикийг секунд тутамд шинэчлэн зурж "амьд организм" болгох
+                                draw();
+                                
+                                if (typeof window.dispatchChartUpdate === 'function') {
+                                    window.dispatchChartUpdate();
+                                }
+                            }
+                        } 
+                    };
+                }
+
+                let updateTimer = null;
                 const triggerAutoUpdate = () => {
-                    if (!coinEl || !intervalEl || !marketEl) return;
-                    
-                    // 1. Market-аас хамаарч интервалыг засах
-                    if (typeof window.syncControlsAndFetch === 'function') {
-                        window.syncControlsAndFetch();
-                    }
+                    if (updateTimer) clearTimeout(updateTimer);
+                    updateTimer = setTimeout(() => {
+                        if (!coinEl || !intervalEl || !marketEl) return;
 
-                    interval = intervalEl.value;
-                    
-                    // 2. БИНАНС-д зориулж симболыг цэвэрлэх (Зураас, ташуу зураас устгах)
-                    // Жишээ нь: BTC-USDT -> BTCUSDT
-                    let cleanSymbol = coinEl.value.toUpperCase().replace(/[^A-Z0-9]/g, '');
-                    if (!cleanSymbol) cleanSymbol = "BTCUSDT";
-                    symbol = cleanSymbol;
+                        if (typeof window.syncControlsAndFetch === 'function') {
+                            window.syncControlsAndFetch();
+                        }
 
-                    // 3. ЧУХАЛ: Зах зээл солигдох үед графикийн байршлыг Reset хийх
-                    // Ингэж байж Фьючерс дээр график "цогцос" шиг харагдахгүй, автоматаар голлогдоно
-                    if (typeof window.resetChartView === 'function') {
-                        window.resetChartView();
-                    }
-                    
-                    if (socket) { socket.onclose = null; socket.close(); }
-                    fetchCandles();
+                        interval = intervalEl.value;
+                        
+                        let cleanSymbol = coinEl.value.toUpperCase().replace(/[^A-Z0-9]/g, '');
+                        if (!cleanSymbol) cleanSymbol = "BTCUSDT";
+                        symbol = cleanSymbol;
+
+                        if (socket) { socket.onclose = null; socket.close(); }
+                        fetchCandles();
+                    }, 300);
                 };
 
-                // Бүх удирдлагын элементүүд дээр өөрчлөлт сонсогч нэмэх
+                // Эвэнт сонсогчид
                 if (marketEl) marketEl.addEventListener("change", triggerAutoUpdate);
                 if (intervalEl) intervalEl.addEventListener("change", triggerAutoUpdate);
                 if (coinEl) {
@@ -457,14 +540,11 @@
                     mouse.x = e.clientX - rect.left;
                     mouse.y = e.clientY - rect.top;
                     
-                    // Handle Price Scale Dragging
                     if (draggingPrice) {
                         const dy = e.clientY - lastY;
                         lastY = e.clientY;
-                        // Drag down (+) -> Zoom out (increase range) -> scale increases
-                        // Drag up (-) -> Zoom in (decrease range) -> scale decreases
                         priceScale *= (1 + dy * 0.005);
-                        priceScale = Math.max(0.1, Math.min(priceScale, 10)); // Limits
+                        priceScale = Math.max(0.1, Math.min(priceScale, 10));
                         draw();
                         return;
                     }
@@ -475,7 +555,6 @@
                         offset = Math.max(0, Math.min(allData.length - visibleCount, offset + move));
                         lastX = e.clientX;
                         
-                        // Y Pan (Vertical Drag)
                         const dy = e.clientY - lastY;
                         if (lastChartHeight > 0) {
                             const pricePerPixel = lastPriceRange / lastChartHeight;
@@ -484,7 +563,6 @@
                         lastY = e.clientY;
                     }
                     
-                    // Change cursor if hovering over price scale
                     const padding = 40;
                     const priceScaleWidth = 80;
                     if (mouse.x > canvas.width - padding - priceScaleWidth) {
@@ -525,7 +603,6 @@
                     draw(); 
                 });
 
-                // Double click to reset price scale
                 canvas.addEventListener("dblclick", () => {
                     priceScale = 1;
                     priceOffset = 0;
@@ -540,110 +617,6 @@
                     draw();
                 }, { passive:false });
 
-                function startWebSocket() {
-                    // Өмнөх WebSocket холболтыг цэвэрхэн хаах
-                    if (socket) {
-                        socket.onclose = null;
-                        socket.close();
-                        console.log(`[WebSocket] Closed previous socket`);
-                    }
-
-                    const isFutures = marketEl.value === "futures";
-                    
-                    // БИНАНС ФЬЮЧЕРС ДЭЭР ЗООСНЫ НЭРИЙГ ЯГ ТАГ ПОД ХИЙТЭЛ ХӨРВҮҮЛЭХ
-                    let currentCoin = coinEl.value.toUpperCase().replace(/[^A-Z0-9]/g, '');
-                    if (!currentCoin) currentCoin = "BTCUSDT";
-
-                    // 🚨 ЧУХАЛ: Фьючерсийн домэйн болон урсгалын нэрийг засах
-                    const baseDomain = isFutures ? "fstream.binance.com" : "stream.binance.com";
-                    
-                    // Бинанс Фьючерсийн клайн урсгал: btcudst@kline_1m
-                    const streamName = `${currentCoin.toLowerCase()}@kline_${interval}`;
-                    
-                    // Фьючерс дээр 'ws' биш 'stream' ашиглах нь холболтыг тасралтгүй амьд байлгадаг
-                    const wsUrl = isFutures 
-                        ? `wss://${baseDomain}/stream?streams=${streamName}`
-                        : `wss://${baseDomain}/ws/${streamName}`;
-                    
-                    console.log(`[WebSocket] Connecting to: ${wsUrl}`);
-                    socket = new WebSocket(wsUrl);
-
-                    const dot = document.getElementById('ws-dot');
-                    const text = document.getElementById('ws-text');
-
-                    socket.onopen = () => {
-                        console.log(`[WebSocket] Opened for ${currentCoin} on ${marketEl.value.toUpperCase()}`);
-                        if (dot) dot.className = "w-1.5 h-1.5 rounded-full bg-green-500 animate-pulse";
-                        if (text) {
-                            text.innerText = `${marketEl.value.toUpperCase()} LIVE`;
-                            text.className = "text-[9px] font-black uppercase text-green-500";
-                        }
-                    };
-
-                    socket.onerror = (error) => {
-                        console.error(`[WebSocket] Error:`, error);
-                        if (dot) dot.className = "w-1.5 h-1.5 rounded-full bg-red-500";
-                        if (text) text.innerText = "Error";
-                    };
-
-                    socket.onclose = (event) => {
-                        console.log(`[WebSocket] Closed. Code: ${event.code}`);
-                        if (dot) dot.className = "w-1.5 h-1.5 rounded-full bg-gray-600";
-                        if (text) text.innerText = "Offline";
-                    };
-
-                    socket.onmessage = e => { 
-                        const responseData = JSON.parse(e.data);
-                        
-                        // 🚨 БИНАНС ФЬЮЧЕРСИЙН СҮЙРЭЛ ДАНГАНЫГ ДАРСАН ЖИНХЭНЭ ШАЛГАЛТ:
-                        let k = null;
-                        
-                        if (responseData.data && responseData.data.k) {
-                            // Хэрэв Фьючерсийн /stream урсгал бол дата нь responseData.data.k дотор байна
-                            k = responseData.data.k;
-                        } else if (responseData.k) {
-                            // Хэрэв хуучин Спотын урсгал бол дата нь шууд responseData.k дотор байна
-                            k = responseData.k;
-                        }
-
-                        if (k) {
-                            // Ногоон цэгийг анивчуулж амьд байгааг баталгаажуулна
-                            if (dot) dot.style.opacity = (dot.style.opacity === '1') ? '0.5' : '1';
-
-                            // Бүх стринг утгуудыг Canvas-д зориулж Тоо (Number) болгож хөрвүүлнэ
-                            const openPrice  = Number(k.o);
-                            const highPrice  = Number(k.h);
-                            const lowPrice   = Number(k.l);
-                            const closePrice = Number(k.c);
-                            const volume     = Number(k.v);
-                            const klineTime  = k.t;
-
-                            // Шинэ лааны Array бэлдэх [Timestamp, Open, High, Low, Close, Volume]
-                            const currentCandle = [klineTime, openPrice, highPrice, lowPrice, closePrice, volume]; 
-                            
-                            if (allData && allData.length > 0) {
-                                const lastCandle = allData[allData.length - 1]; 
-                                
-                                // Хэрэв тухайн минут дуусаагүй, одоо үргэлжилж байгаа лаа бол хамгийн сүүлийн лааг шинэчилнэ
-                                if (lastCandle && lastCandle[0] === currentCandle[0]) {
-                                    allData[allData.length - 1] = currentCandle; 
-                                } else { 
-                                    // Минут солигдвол шинэ лаа болгож Array-ийн ард нэмнэ
-                                    allData.push(currentCandle); 
-                                    if (allData.length > 500) allData.shift(); 
-                                } 
-                                
-                                // 🔥 ЦААСАН ДЭЭР ДАХИН ЗУРАХЫГ ШУУД ТҮЛХЭХ (Амьд организм болгох)
-                                draw();
-                                
-                                if (typeof window.dispatchChartUpdate === 'function') {
-                                    window.dispatchChartUpdate();
-                                }
-                            }
-                        } 
-                    };
-                }
-
                 // Initial Load
                 fetchCandles();
             });
@@ -652,10 +625,7 @@
         </div>
     </main>
 
-    <!-- Global Footer -->
     <script src="/static/js/footer.js"></script>
-
-    <!-- Security/Lock Logic -->
 
 </body>
 </html>
