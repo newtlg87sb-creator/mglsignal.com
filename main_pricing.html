@@ -121,7 +121,7 @@
                     
                     <div class="mb-6">
                         <h3 data-i18n="plan-alpha-name" class="text-xl font-bold text-brand-gold uppercase tracking-wider mb-2">Alpha Багц</h3>
-                        <div class="text-4xl font-black text-white mb-2">₮70,000<span data-i18n="price-per-month" class="text-sm font-normal text-gray-500 ml-1">/ сар</span></div>
+                        <div class="text-4xl font-black text-white mb-2">$20<span data-i18n="price-per-month" class="text-sm font-normal text-gray-500 ml-1">/ сар</span></div>
                         <p data-i18n="plan-alpha-desc" class="text-xs text-gray-400"></p>
                     </div>
 
@@ -222,7 +222,11 @@
                         const response = await fetch('/api/create-invoice', {
                             method: 'POST',
                             headers: { 'Content-Type': 'application/json' },
-                            body: JSON.stringify({ userId: user.id })
+                            body: JSON.stringify({ 
+                                userId: user.id,
+                                price_amount: 20, // Үнийг тодорхой болгож өгөв
+                                type: 'alpha'
+                            })
                         });
 
                         const data = await response.json();

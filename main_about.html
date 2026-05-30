@@ -209,13 +209,26 @@
                     <p data-i18n="donate-note" class="text-xs text-gray-500 text-center mb-6">Энэ хаяг нь Binance Smart Chain (BEP-20) сүлжээнийх. BNB, USDT, USDC болон бусад BEP-20 токен хүлээн авна.</p>
 
                     <h4 data-i18n="donate-amount-title" class="text-sm font-bold text-gray-300 mb-3 text-center">Санал болгох дүн ($USD)</h4>
-                    <div class="grid grid-cols-3 gap-2 text-center text-xs font-bold">
+                    <div id="donation-grid" class="grid grid-cols-3 gap-2 text-center text-xs font-bold">
                         <button class="donation-btn bg-brand-border/50 hover:bg-brand-border p-2 rounded-md transition" data-amount="5">$5</button>
                         <button class="donation-btn bg-brand-border/50 hover:bg-brand-border p-2 rounded-md transition" data-amount="10">$10</button>
                         <button class="donation-btn bg-brand-border/50 hover:bg-brand-border p-2 rounded-md transition" data-amount="30">$30</button>
                         <button class="donation-btn bg-brand-border/50 hover:bg-brand-border p-2 rounded-md transition" data-amount="50">$50</button>
                         <button class="donation-btn bg-brand-border/50 hover:bg-brand-border p-2 rounded-md transition" data-amount="100">$100</button>
                         <button data-i18n="btn-custom" class="donation-btn bg-brand-gold text-black hover:bg-white p-2 rounded-md transition" data-amount="custom">Custom</button>
+                    </div>
+
+                    <div id="custom-amount-container" class="hidden flex items-center gap-2">
+                        <div class="relative flex-grow">
+                            <span class="absolute left-3 top-1/2 -translate-y-1/2 text-gray-500 text-xs">$</span>
+                            <input type="number" id="custom-amount-input" placeholder="0.00" class="w-full bg-[#05070a] border border-brand-border rounded-lg py-2 pl-6 pr-3 text-sm text-white focus:border-brand-gold outline-none">
+                        </div>
+                        <button id="confirm-custom-amount" class="bg-brand-gold text-black h-9 w-10 rounded-lg hover:bg-white transition flex items-center justify-center">
+                            <i class="fas fa-check"></i>
+                        </button>
+                        <button id="cancel-custom-amount" class="bg-brand-border/50 text-gray-400 h-9 w-10 rounded-lg hover:bg-brand-border transition flex items-center justify-center">
+                            <i class="fas fa-times"></i>
+                        </button>
                     </div>
 
                     <div class="flex items-center my-6">
@@ -238,60 +251,89 @@
     <script>
         document.addEventListener('DOMContentLoaded', () => {
             const donationBtns = document.querySelectorAll('.donation-btn');
+            const donationGrid = document.getElementById('donation-grid');
+            const customAmountContainer = document.getElementById('custom-amount-container');
+            const customAmountInput = document.getElementById('custom-amount-input');
+            const confirmCustomBtn = document.getElementById('confirm-custom-amount');
+            const cancelCustomBtn = document.getElementById('cancel-custom-amount');
+
+            async function processPayment(amount, targetBtn) {
+                // 1. Нэвтэрсэн эсэхийг шалгах
+                const userStr = localStorage.getItem('user');
+                if (!userStr) {
+                    window.location.href = '/main_login.html';
+                    return;
+                }
+                const user = JSON.parse(userStr);
+
+                if (!amount || isNaN(amount) || amount <= 0) {
+                    alert('Зөв дүн оруулна уу.');
+                    return;
+                }
+
+                // 2. Loading төлөв
+                const originalContent = targetBtn.innerHTML;
+                targetBtn.innerHTML = '<i class="fas fa-circle-notch fa-spin"></i>';
+                targetBtn.style.pointerEvents = 'none';
+                targetBtn.style.opacity = '0.7';
+
+                try {
+                    // 3. Шинэ Donation API-г дуудах
+                    const response = await fetch('/api/donation-invoice', {
+                        method: 'POST',
+                        headers: { 'Content-Type': 'application/json' },
+                        body: JSON.stringify({ 
+                            userId: user.id,
+                            price_amount: amount
+                        })
+                    });
+
+                    const data = await response.json();
+                    if (data.invoiceUrl) {
+                        window.location.href = data.invoiceUrl;
+                    } else {
+                        alert('Алдаа гарлаа. Дахин оролдоно уу.');
+                        resetBtn();
+                    }
+                } catch (error) {
+                    console.error('Donation Error:', error);
+                    alert('Сүлжээний алдаа гарлаа.');
+                    resetBtn();
+                }
+
+                function resetBtn() {
+                    targetBtn.innerHTML = originalContent;
+                    targetBtn.style.pointerEvents = 'auto';
+                    targetBtn.style.opacity = '1';
+                }
+            }
 
             donationBtns.forEach(btn => {
-                btn.addEventListener('click', async (e) => {
+                btn.addEventListener('click', (e) => {
                     e.preventDefault();
-
-                    // 1. Нэвтэрсэн эсэхийг шалгах
-                    const userStr = localStorage.getItem('user');
-                    if (!userStr) {
-                        window.location.href = '/main_login.html';
-                        return;
-                    }
-                    const user = JSON.parse(userStr);
                     const amount = btn.getAttribute('data-amount');
 
                     if (amount === 'custom') {
-                        window.open('https://m.me/mglsignal', '_blank');
+                        donationGrid.classList.add('hidden');
+                        customAmountContainer.classList.remove('hidden');
+                        customAmountInput.focus();
                         return;
                     }
-
-                    // 2. Loading төлөв
-                    const originalText = btn.innerText;
-                    btn.innerText = "...";
-                    btn.style.pointerEvents = 'none';
-                    btn.style.opacity = '0.7';
-
-                    try {
-                        // 3. NOWPayments API дуудах (pricing.html дээрхтэй ижил)
-                        const response = await fetch('/api/create-invoice', {
-                            method: 'POST',
-                            headers: { 'Content-Type': 'application/json' },
-                            body: JSON.stringify({ 
-                                userId: user.id,
-                                amount: amount, // Дүнг дамжуулж байна
-                                type: 'donation'
-                            })
-                        });
-
-                        const data = await response.json();
-                        if (data.invoiceUrl) {
-                            window.location.href = data.invoiceUrl;
-                        } else {
-                            alert('Алдаа гарлаа. Дахин оролдоно уу.');
-                            btn.innerText = originalText;
-                            btn.style.pointerEvents = 'auto';
-                            btn.style.opacity = '1';
-                        }
-                    } catch (error) {
-                        console.error('Donation Error:', error);
-                        alert('Сүлжээний алдаа гарлаа.');
-                        btn.innerText = originalText;
-                        btn.style.pointerEvents = 'auto';
-                        btn.style.opacity = '1';
-                    }
+                    processPayment(amount, btn);
                 });
+            });
+
+            confirmCustomBtn.addEventListener('click', () => {
+                processPayment(customAmountInput.value, confirmCustomBtn);
+            });
+
+            cancelCustomBtn.addEventListener('click', () => {
+                customAmountContainer.classList.add('hidden');
+                donationGrid.classList.remove('hidden');
+            });
+
+            customAmountInput.addEventListener('keypress', (e) => {
+                if (e.key === 'Enter') confirmCustomBtn.click();
             });
         });
 
