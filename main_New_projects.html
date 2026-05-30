@@ -87,7 +87,72 @@
 </head>
 <body class="bg-brand-dark text-white font-inter flex flex-col min-h-screen">
 
-    <script src="/static/js/main_translate.js"></script>
+    <script>
+        const pageTranslations = {
+            mn: {
+                "projects-page-title": 'Шинэ <span class="text-brand-gold italic">Төслүүд</span>',
+                "projects-page-desc": "MGL Signal-ийн хамгийн сүүлийн үеийн хэрэгсэл, боломжуудтай танилцаарай.",
+                "proj-21b-title": "21 Billion BEP",
+                "proj-21b-concept": "Шинэ Концепт",
+                "proj-21b-active": "5$ Идэвхжүүлэлт ✅",
+                "proj-21b-earning": "5 Жилийн Орлогын Боломж ✅",
+                "proj-21b-turn": "💰 5 USDT-г BEP20 Сүлжээнд Эргэлдүүл",
+                "proj-21b-gas": "(Шимтгэл 0.10$ BNB Хэрэгтэй)",
+                "proj-21b-feat1": "100% Шууд урилгын бонус",
+                "proj-21b-feat2": "40% Урилгын зэрэглэл ахих орлого",
+                "proj-21b-feat3": "40% Түвшний орлого",
+                "proj-21b-feat4": "100% Төвлөрсөн бус",
+                "proj-21b-feat5": "Автомат татан авалт",
+                "proj-21b-feat6": "100% Блокчэйнээр баталгаажсан",
+                "proj-21b-feat7": "100% Ил тод",
+                "proj-21b-royalty-title": "Рояалти орлого: Өдөр бүр 20%",
+                "proj-21b-royalty-desc": "Багц 8-14: 1% | Багц 15-16: 1.5% | Багц 17-21: 2%",
+                "proj-21b-leadership": "Лидершип орлого Долоо хоног бүр ✅",
+                "btn-join-project": "Төсөл үзэх",
+                "btn-register-link": "Бүртгүүлэх",
+                "aff-title": "Урилгын & Affiliate Холбоосууд",
+                "aff-desc": "Эдгээр шилдэг үйлчилгээнүүдэд бүртгүүлэхийн тулд манай урилгын холбоосыг ашиглан MGL Signal-г дэмжээрэй. Та шилдэг платформуудад нэвтрэх боломжтой болох бөгөөд бид сайтыг ажиллуулахад туслах бага хэмжээний комисс авах болно.",
+                "binance-name": "Binance Бирж",
+                "binance-desc": "Дэлхийн хамгийн том крипто бирж. Бүртгүүлээд арилжааны шимтгэлийн хөнгөлөлт эдлээрэй.",
+                "bybit-name": "Bybit Бирж",
+                "bybit-desc": "Дериватив болон спот арилжааны тэргүүлэгч бирж. Одоо нэгдэж угтан авах урамшуулал аваарай.",
+                "btn-join": "Бүртгүүлэх"
+            },
+            en: {
+                "projects-page-title": 'New <span class="text-brand-gold italic">Projects</span>',
+                "projects-page-desc": "Discover MGL Signal's latest tools and opportunities.",
+                "proj-21b-title": "21 Billion BEP",
+                "proj-21b-concept": "Brand New Concept",
+                "proj-21b-active": "5$ Active ✅",
+                "proj-21b-earning": "5 Years Earning ✅",
+                "proj-21b-turn": "💰 Turn Your 5 USDT BEP20 Network",
+                "proj-21b-gas": "(Gas fees 0.10$ BNB Need)",
+                "proj-21b-feat1": "100% Direct referrals bonus",
+                "proj-21b-feat2": "40% Referral upgrade income",
+                "proj-21b-feat3": "40% Level Income",
+                "proj-21b-feat4": "100% Decentralized",
+                "proj-21b-feat5": "Automatic Withdrawal",
+                "proj-21b-feat6": "100% Blockchain Verified",
+                "proj-21b-feat7": "100% Transparent",
+                "proj-21b-royalty-title": "Royalty Income: 20% Daily",
+                "proj-21b-royalty-desc": "Package 8-14: 1% | Package 15-16: 1.5% | Package 17-21: 2%",
+                "proj-21b-leadership": "Leadership Income Weekly ✅",
+                "btn-join-project": "Join Project Now",
+                "btn-register-link": "Register Now",
+                "aff-title": "Invitation & Affiliate Links",
+                "aff-desc": "Support MGL Signal by using our invitation links to sign up for these top services. You will get access to top platforms and we will receive a small commission to help run the site.",
+                "binance-name": "Binance Exchange",
+                "binance-desc": "World's largest crypto exchange. Sign up and enjoy trading fee discounts.",
+                "bybit-name": "Bybit Exchange",
+                "bybit-desc": "Leading exchange for derivatives and spot trading. Join now and get welcome bonuses.",
+                "btn-join": "Join Now"
+            }
+        };
+        Object.keys(pageTranslations).forEach(lang => {
+            if (!window.translations) window.translations = { mn: {}, en: {} };
+            Object.assign(window.translations[lang], pageTranslations[lang]);
+        });
+    </script>
 
     <script src="/static/js/header.js"></script>
 

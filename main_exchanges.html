@@ -23,7 +23,43 @@
 </head>
 <body class="bg-brand-dark text-white font-inter flex flex-col min-h-screen">
 
-    <script src="/static/js/main_translate.js"></script>
+    <script>
+        // Local translations for this page
+        const pageTranslations = {
+            mn: {
+                "guide-title": '<i class="fas fa-book-open text-brand-gold mr-3"></i> Биржүүдийн Терминал ашиглах заавар',
+                "guide-intro": "Энэхүү биржүүдийн дата нь маш онцгой зүйлсийг агуулдаг бөгөөд үүнийг ойлгож мэдсэнээр аль ч бирж дээр арилжаа хийж байсан авах ёсгүй койнуудыг авахгүй байх чадвартай болох юм...",
+                "exchanges-page-title": 'Биржүүдийн <span class="text-brand-gold italic">Терминал</span>',
+                "exchanges-page-desc": "Дэлхийн шилдэг биржүүдийн бодит цагийн дата болон арилжааны хэрэгслүүд.",
+                "back-to-home": '<svg class="w-4 h-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 19l-7-7m0 0l7-7m-7 7h18"></path></svg>Нүүр хуудас руу буцах',
+                "guide-item-1-title": "1. BLACKLISTED / ST RISK (SHOW BL)",
+                "guide-item-1-desc": "ST (Special Treatment) буюу биржийн гэрээний зөрчилтэй, арилжаанаас хасагдах өндөр эрсдэлтэй койнууд. Систем эдгээрийг автоматаар улаанаар тэмдэглэж анхааруулна.",
+                "guide-item-2-title": "2. SPREAD MONITOR (HIDE HS)",
+                "guide-item-2-desc": "Худалдах, худалдан авах үнийн зөрүү ихтэй койнууд. Халимнуудын өгөөш болох магадлал өндөр, занга ихтэй байдаг тул арилжаанд орох нь эрсдэлтэй.",
+                "guide-item-3-title": "3. LOW VOL COINS (HIDE LV)",
+                "guide-item-3-desc": "Сүүлийн нэг өдрийн зах зээлийн эргэлт багатай койнууд. Хөрвөх чадвар муу тул арилжааны явцад үнийн гэнэтийн савлагаа үүсэх аюултай.",
+                "guide-item-4-title": "4. HIDE MIN (SHOW MH)",
+                "guide-item-4-desc": "Өндөр өртөгөөр арилжаа хийгддэг койнуудыг нууж, хамгийн бага дүнгээр (жишээ нь 0.1$) арилжаанд орох боломжийг харуулах болно.",
+                "guide-item-5-title": "5. LIMIT (SHOW LH)",
+                "guide-item-5-desc": "Лимит нь тийм ч чухал холбогдолгүй ч та хамгийн бага USDT-ээр оролцох боломжтой койнуудыг харж болно.",
+                "guide-item-6-title": "6. RESET REAL% (RESET REAL%)",
+                "guide-item-6-desc": "Бүх цаг үеийн арилжааны хамгийн чухал хэрэгсэл. Үүнийг дарснаар үнийг одоо цагаас хойш reset хийж, хэрхэн өсөж унаж байгааг бодитоор харна.",
+                "status-dev": "Хөгжүүлэлт хийгдэж байна",
+                "status-live": "Шууд"
+            },
+            en: {
+                "guide-title": '<i class="fas fa-book-open text-brand-gold mr-3"></i> Exchange Terminal Usage Guide',
+                "guide-intro": "This exchange data contains very unique insights. By understanding this, you will be able to avoid purchasing high-risk coins on any exchange you trade on...",
+                "exchanges-page-title": 'Exchange <span class="text-brand-gold italic">Terminals</span>',
+                "exchanges-page-desc": "Real-time market data and professional terminals from world top exchanges.",
+                "back-to-home": '<svg class="w-4 h-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 19l-7-7m0 0l7-7m-7 7h18"></path></svg>Back to Home',
+                "status-dev": "Under Development",
+                "status-live": "Live Now"
+            }
+        };
+        if (!window.translations) window.translations = { mn: {}, en: {} };
+        Object.keys(pageTranslations).forEach(l => Object.assign(window.translations[l], pageTranslations[l]));
+    </script>
     <script src="/static/js/header.js"></script>
 
     <main class="flex-grow pt-24 pb-12 px-6">
@@ -60,7 +96,7 @@
                             </div>
                             <div>
                                 <h3 class="text-white font-bold text-lg group-hover:text-[#F3BA2F] transition uppercase tracking-wider">Binance Terminal</h3>
-                                <p class="text-green-500 text-[10px] mt-1 uppercase tracking-widest font-black animate-pulse">Live Now</p>
+                                <p data-i18n="status-live" class="text-green-500 text-[10px] mt-1 uppercase tracking-widest font-black animate-pulse">Live Now</p>
                             </div>
                         </div>
                         <i class="fas fa-chevron-right text-gray-600 group-hover:text-[#F3BA2F] transform group-hover:translate-x-1 transition"></i>
@@ -76,7 +112,7 @@
                             </div>
                             <div>
                                 <h3 class="text-white font-bold text-lg group-hover:text-[#24ae8f] transition uppercase tracking-wider">KuCoin Terminal</h3>
-                                <p class="text-green-500 text-[10px] mt-1 uppercase tracking-widest font-black animate-pulse">Live Now</p>
+                                <p data-i18n="status-live" class="text-green-500 text-[10px] mt-1 uppercase tracking-widest font-black animate-pulse">Live Now</p>
                             </div>
                         </div>
                         <i class="fas fa-chevron-right text-gray-600 group-hover:text-[#24ae8f] transform group-hover:translate-x-1 transition"></i>
@@ -95,6 +131,9 @@
                         { name: 'HTX Terminal', color: '#0052ff' },
                         { name: 'Phemex Terminal', color: '#ffffff' }
                     ];
+
+                    const currentLang = localStorage.getItem('lang') || 'mn';
+                    const devText = pageTranslations[currentLang]?.["status-dev"] || "Under Development";
                     
                     document.write(otherExchanges.map(exch => `
                         <div class="group bg-brand-dark-blue/40 border border-brand-border/50 rounded-xl p-5 opacity-60 grayscale cursor-not-allowed">
@@ -105,7 +144,7 @@
                                     </div>
                                     <div>
                                         <h3 class="text-gray-400 font-bold text-lg uppercase tracking-wider">${exch.name}</h3>
-                                        <p class="text-gray-600 text-[10px] mt-1 uppercase tracking-widest font-black">Under Development</p>
+                                        <p class="text-gray-600 text-[10px] mt-1 uppercase tracking-widest font-black">${devText}</p>
                                     </div>
                                 </div>
                                 <i class="fas fa-clock text-gray-800"></i>
@@ -182,57 +221,5 @@
 
     <script src="/static/js/footer.js"></script>
     <script src="/static/lock.js"></script>
-    <script>
-        // Local translations for this page
-        const pageTranslations = {
-            mn: {
-                "guide-title": '<i class="fas fa-book-open text-brand-gold mr-3"></i> Биржүүдийн Терминал ашиглах заавар',
-                "guide-intro": "Энэхүү биржүүдийн дата нь маш онцгой зүйлсийг агуулдаг бөгөөд үүнийг ойлгож мэдсэнээр аль ч бирж дээр арилжаа хийж байсан авах ёсгүй койнуудыг авахгүй байх чадвартай болох юм...",
-                "exchanges-page-title": 'Биржүүдийн <span class="text-brand-gold italic">Терминал</span>',
-                "exchanges-page-desc": "Дэлхийн шилдэг биржүүдийн бодит цагийн дата болон арилжааны хэрэгслүүд.",
-                "back-to-home": '<svg class="w-4 h-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 19l-7-7m0 0l7-7m-7 7h18"></path></svg>Нүүр хуудас руу буцах',
-                "guide-item-1-title": "1. BLACKLISTED / ST RISK (SHOW BL)",
-                "guide-item-1-desc": "ST (Special Treatment) буюу биржийн гэрээний зөрчилтэй, арилжаанаас хасагдах өндөр эрсдэлтэй койнууд. Систем эдгээрийг автоматаар улаанаар тэмдэглэж анхааруулна.",
-                "guide-item-2-title": "2. SPREAD MONITOR (HIDE HS)",
-                "guide-item-2-desc": "Худалдах, худалдан авах үнийн зөрүү ихтэй койнууд. Халимнуудын өгөөш болох магадлал өндөр, занга ихтэй байдаг тул арилжаанд орох нь эрсдэлтэй.",
-                "guide-item-3-title": "3. LOW VOL COINS (HIDE LV)",
-                "guide-item-3-desc": "Сүүлийн нэг өдрийн зах зээлийн эргэлт багатай койнууд. Хөрвөх чадвар муу тул арилжааны явцад үнийн гэнэтийн савлагаа үүсэх аюултай.",
-                "guide-item-4-title": "4. HIDE MIN (SHOW MH)",
-                "guide-item-4-desc": "Өндөр өртөгөөр арилжаа хийгддэг койнуудыг нууж, хамгийн бага дүнгээр (жишээ нь 0.1$) арилжаанд орох боломжийг харуулах болно.",
-                "guide-item-5-title": "5. LIMIT (SHOW LH)",
-                "guide-item-5-desc": "Лимит нь тийм ч чухал холбогдолгүй ч та хамгийн бага USDT-ээр оролцох боломжтой койнуудыг харж болно.",
-                "guide-item-6-title": "6. RESET REAL% (RESET REAL%)",
-                "guide-item-6-desc": "Бүх цаг үеийн арилжааны хамгийн чухал хэрэгсэл. Үүнийг дарснаар үнийг одоо цагаас хойш reset хийж, хэрхэн өсөж унаж байгааг бодитоор харна."
-            },
-            en: {
-                "guide-title": '<i class="fas fa-book-open text-brand-gold mr-3"></i> Exchange Terminal Usage Guide',
-                "guide-intro": "This exchange data contains very unique insights. By understanding this, you will be able to avoid purchasing high-risk coins on any exchange you trade on...",
-                "exchanges-page-title": 'Exchange <span class="text-brand-gold italic">Terminals</span>',
-                "exchanges-page-desc": "Real-time market data and professional terminals from world top exchanges.",
-                "back-to-home": '<svg class="w-4 h-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 19l-7-7m0 0l7-7m-7 7h18"></path></svg>Back to Home',
-                "guide-item-1-title": "1. BLACKLISTED / ST RISK (SHOW BL)",
-                "guide-item-1-desc": "Coins with ST (Special Treatment) status or contract violations. High risk of delisting; system highlights these in red.",
-                "guide-item-2-title": "2. SPREAD MONITOR (HIDE HS)",
-                "guide-item-2-desc": "Assets with wide bid-ask spreads. These are likely whale bait or manipulative traps; entry is highly risky.",
-                "guide-item-3-title": "3. LOW VOL COINS (HIDE LV)",
-                "guide-item-3-desc": "Coins with low market turnover in the last 24 hours. Poor liquidity often leads to extreme volatility.",
-                "guide-item-4-title": "4. HIDE MIN (SHOW MH)",
-                "guide-item-4-desc": "Hides coins with high entry requirements to highlight low-cost opportunities (e.g., $0.1 entry).",
-                "guide-item-5-title": "5. LIMIT (SHOW LH)",
-                "guide-item-5-desc": "Filters assets with high order cost limits. Allows you to see coins accessible with minimum USDT balance.",
-                "guide-item-6-title": "6. RESET REAL% (RESET REAL%)",
-                "guide-item-6-desc": "A vital tool for all trading. Resets price tracking to the current moment to monitor live gains or losses from this point forward."
-            }
-        };
-
-        document.addEventListener('DOMContentLoaded', () => {
-            const lang = localStorage.getItem('lang') || 'mn';
-            // Apply local translations to global translations object if it exists
-            if (typeof translations !== 'undefined') {
-                Object.keys(pageTranslations).forEach(l => Object.assign(translations[l], pageTranslations[l]));
-            }
-            if (typeof changeLang === 'function') changeLang(lang);
-        });
-    </script>
 </body>
 </html>

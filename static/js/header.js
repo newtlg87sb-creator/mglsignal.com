@@ -1,3 +1,46 @@
+// Shared translations for Header, Footer and Navigation
+const sharedTranslations = {
+    mn: {
+        "nav-home": "Нүүр", "nav-forex": "Форекс", "nav-crypto": "Крипто", "nav-news": "Мэдээ", "nav-more": "ЦЭС",
+        "nav-alpha": "Alpha Сигналууд", "nav-projects": "Шинэ төслүүд", "nav-knowledge": "Мэдлэг",
+        "drop-alt": "Зах зээлийн хэрэгслүүд", "drop-live": "Live Tools (Амьд график)", "sig-title": "Сигналууд",
+        "drop-major": "Гол хослолууд", "drop-minor": "Туслах хослолууд", 
+        "donate-bar-text": "Нийгэмлэгээ дэмжих: <span class=\"hidden sm:inline\">Хөгжүүлэлтийг дэмжих</span>", 
+        "donate-bar-btn": "Хандив өгөх", "update-info-btn": "Шинэчлэлтийн тухай", "btn-refresh": "Одоо шинэчлэх", 
+        "update-modal-title": "Сайтын Шинэчлэлт", 
+        "update-modal-desc": "Бид сайтыг өдөр бүр шинэчилж байна. Хэрэв та шинэ өөрчлөлтүүдийг харахгүй байгаа бол хуучин хувилбар хадгалагдсан (Cache) байж болзошгүй тул Refresh хийнэ үү.",
+        "last-update-prefix": "Сүүлийн шинэчлэлт:", "btn-login": "Нэвтрэх", "btn-reg": "Бүртгүүлэх",
+        "btn-logout": "Гарах",
+        "recommended-clear-cache": "Зөвлөмж: Кэшийг цэвэрлэх",
+        "ctrl-f5": "CTRL + F5"
+    },
+    en: {
+        "nav-home": "Home", "nav-forex": "Forex", "nav-crypto": "Crypto", "nav-news": "News", "nav-more": "MENU",
+        "nav-alpha": "Alpha Signals", "nav-projects": "Projects", "nav-knowledge": "Knowledge",
+        "drop-alt": "Market Tools", "drop-live": "Live Tools", "sig-title": "Signals",
+        "drop-major": "Major Pairs", "drop-minor": "Minor Pairs",
+        "donate-bar-text": "Support the Community", "donate-bar-btn": "Donate Now",
+        "update-info-btn": "About Update", "btn-refresh": "REFRESH NOW", "update-modal-title": "Daily Updates",
+        "update-modal-desc": "We update the site daily. If you see old data, please clear your cache.",
+        "last-update-prefix": "Last Update:", "btn-login": "Login", "btn-reg": "Register",
+        "btn-logout": "Logout"
+    }
+};
+
+// Initialize window.translations if it doesn't exist yet
+if (typeof window.translations === 'undefined') {
+    window.translations = { mn: {}, en: {} };
+}
+
+// Merge shared translations into the global translations object
+// We use spread to keep page-specific translations if they were defined before header.js
+Object.keys(sharedTranslations).forEach(lang => {
+    window.translations[lang] = { 
+        ...sharedTranslations[lang], 
+        ...window.translations[lang] 
+    };
+});
+
 const headerHTML = `    <style>
         nav {
             top: 28px !important; /* Donate bar-ийн өндөртэй тааруулж доошлуулна */
@@ -59,8 +102,8 @@ const headerHTML = `    <style>
             </div>
 
             <div class="bg-black/40 p-4 rounded-xl border border-brand-border mb-6 text-center">
-                <p class="text-[10px] text-gray-500 font-bold uppercase mb-2">Recommended: Clear Cache</p>
-                <code class="text-brand-gold text-xs font-mono font-bold bg-brand-gold/10 px-2 py-1 rounded">CTRL + F5</code>
+                <p data-i18n="recommended-clear-cache" class="text-[10px] text-gray-500 font-bold uppercase mb-2">Recommended: Clear Cache</p>
+                <code data-i18n="ctrl-f5" class="text-brand-gold text-xs font-mono font-bold bg-brand-gold/10 px-2 py-1 rounded">CTRL + F5</code>
             </div>
 
             <button onclick="window.location.reload(true)" class="w-full bg-brand-gold text-black font-bold py-3 rounded-lg hover:bg-white transition uppercase text-xs tracking-widest shadow-lg shadow-brand-gold/20 flex items-center justify-center">
@@ -86,7 +129,7 @@ const headerHTML = `    <style>
                         </button>
                         <div class="hidden dropdown-menu absolute left-0 mt-0 pt-4 w-44 z-50">
                             <div class="bg-brand-dark-blue border border-brand-border shadow-2xl overflow-hidden">
-                                <a href="/main_altcoin_tools.html" data-i18n="drop-alt" class="block px-4 py-2.5 hover:bg-brand-gold hover:text-black transition">Market Tools</a>
+                                <a href="#" data-i18n="drop-major" class="block px-4 py-2.5 hover:bg-brand-gold hover:text-black transition">Major Pairs</a>
                             </div>
                         </div>
                     </div>
@@ -134,7 +177,7 @@ const headerHTML = `    <style>
                         <!-- User View (Desktop) -->
                         <div id="desktop-user" class="hidden flex items-center space-x-3">
                             <span id="user-display-name" class="text-[10px] font-bold text-brand-gold uppercase tracking-wider">User</span>
-                            <button onclick="handleLogout()" class="text-[10px] font-bold text-gray-500 hover:text-white transition uppercase ml-2">Logout</button>
+                            <button onclick="handleLogout()" data-i18n="btn-logout" class="text-[10px] font-bold text-gray-500 hover:text-white transition uppercase ml-2">Logout</button>
                         </div>
                     </div>
 
@@ -160,8 +203,8 @@ const headerHTML = `    <style>
             <div class="space-y-2">
                 <p data-i18n="nav-forex" class="text-[10px] text-gray-500 font-black uppercase tracking-widest">Forex</p>
                 <div class="pl-4 space-y-2 border-l border-brand-border">
-                    <a href="#" data-i18n="drop-major" class="block text-white text-xs font-bold uppercase">Major Pairs</a>
-                    <a href="#" data-i18n="drop-minor" class="block text-white text-xs font-bold uppercase">Minor Pairs</a>
+                    <a href="#" data-i18n="drop-major" class="block text-white text-xs font-bold uppercase">Гол хослолууд</a>
+                    <a href="#" data-i18n="drop-minor" class="block text-white text-xs font-bold uppercase">Туслах хослолууд</a>
                 </div>
             </div>
 
@@ -170,7 +213,7 @@ const headerHTML = `    <style>
                 <p data-i18n="nav-crypto" class="text-[10px] text-gray-500 font-black uppercase tracking-widest">Crypto</p>
                 <div class="pl-4 space-y-2 border-l border-brand-border">
                     <a href="/main_altcoin_tools.html" data-i18n="drop-alt" class="block text-brand-gold text-xs font-bold uppercase">Market Tools</a>
-                    <a href="/main_live_tools.html" data-i18n="drop-live" class="block text-brand-gold text-xs font-bold uppercase">Live Tools</a>
+                    <a href="/main_live_tools.html" data-i18n="drop-live" class="block text-brand-gold text-xs font-bold uppercase">Live Tools</a> 
                 </div>
             </div>
 
@@ -188,7 +231,7 @@ const headerHTML = `    <style>
                 <!-- Guest View (Mobile) -->
                 <div id="mobile-guest" class="grid grid-cols-2 gap-4">
                     <a href="main_login.html" data-i18n="btn-login" class="text-center py-2 border border-brand-border rounded text-white text-xs font-bold uppercase hover:border-brand-gold transition">Нэвтрэх</a>
-                    <a href="main_register.html" data-i18n="btn-reg" class="text-center py-2 bg-brand-gold rounded text-black text-xs font-bold uppercase hover:bg-white transition">Бүртгүүлэх</a>
+                    <a href="main_register.html" data-i18n="btn-reg" class="text-center py-2 bg-brand-gold rounded text-black text-xs font-bold uppercase hover:bg-white transition">Register</a>
                 </div>
                 <!-- User View (Mobile) -->
                 <div id="mobile-user" class="hidden flex flex-col space-y-3">
@@ -196,7 +239,7 @@ const headerHTML = `    <style>
                         <i class="fas fa-user text-brand-gold"></i>
                         <span id="mobile-user-name" class="text-white text-sm font-bold uppercase">User</span>
                     </div>
-                    <button onclick="handleLogout()" class="text-center py-2 border border-brand-border rounded text-red-500 text-xs font-bold uppercase hover:bg-red-500/10 transition">Гарах</button>
+                    <button onclick="handleLogout()" data-i18n="btn-logout" class="text-center py-2 border border-brand-border rounded text-red-500 text-xs font-bold uppercase hover:bg-red-500/10 transition">Logout</button>
                 </div>
                 <a href="/main_contact.html" data-i18n="foot-contact" class="text-center text-gray-500 text-[10px] font-bold uppercase pt-2">Холбоо барих</a>
             </div>
@@ -239,21 +282,21 @@ window.handleLogout = async function() {
     }
 };
 
-function changeLang(lang) {
+window.changeLang = function(lang) {
     localStorage.setItem('lang', lang);
     
-    if (typeof translations !== 'undefined') {
+    if (typeof window.translations !== 'undefined') {
         document.querySelectorAll('[data-i18n]').forEach(el => {
             const key = el.getAttribute('data-i18n');
-            if (translations[lang] && translations[lang][key]) {
-                el.innerHTML = translations[lang][key];
+            if (window.translations[lang] && window.translations[lang][key]) {
+                el.innerHTML = window.translations[lang][key];
             }
         });
         // Handle placeholders
         document.querySelectorAll('[data-i18n-placeholder]').forEach(el => {
             const key = el.getAttribute('data-i18n-placeholder');
-            if (translations[lang] && translations[lang][key]) {
-                el.placeholder = translations[lang][key];
+            if (window.translations[lang] && window.translations[lang][key]) {
+                el.placeholder = window.translations[lang][key];
             }
         });
     }

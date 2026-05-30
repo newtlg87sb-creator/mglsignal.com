@@ -128,7 +128,10 @@
                 "back-to-home": '<svg class="w-4 h-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 19l-7-7m0 0l7-7m-7 7h18"></path></svg>Back to Home'
             }
         };
-        Object.keys(pageTranslations).forEach(lang => Object.assign(translations[lang], pageTranslations[lang]));
+        Object.keys(pageTranslations).forEach(lang => {
+            if (!window.translations) window.translations = { mn: {}, en: {} };
+            Object.assign(window.translations[lang], pageTranslations[lang]);
+        });
     </script>
 
     <script src="/static/js/header.js"></script>

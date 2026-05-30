@@ -42,7 +42,42 @@
         }
     </script>
 
-    <script src="/static/js/main_translate.js"></script>
+    <script>
+        const pageTranslations = {
+            mn: {
+                "login-title": "Нэвтрэх",
+                "login-subtitle": "Арилжааны ертөнцөд тавтай морил",
+                "lbl-email": "Имэйл хаяг",
+                "ph-email": "name@example.com",
+                "lbl-password": "Нууц үг",
+                "ph-password": "••••••••",
+                "link-forgot": "Нууц үг мартсан?",
+                "btn-login-submit": "Нэвтрэх",
+                "text-no-account": "Бүртгэлгүй юу?",
+                "link-register-now": "Шинээр бүртгүүлэх",
+                "msg-login-success": "Амжилттай нэвтэрлээ. Түр хүлээнэ үү...",
+                "btn-loading": "Уншиж байна..."
+            },
+            en: {
+                "login-title": "Login",
+                "login-subtitle": "Welcome to the trading world",
+                "lbl-email": "Email Address",
+                "ph-email": "name@example.com",
+                "lbl-password": "Password",
+                "ph-password": "••••••••",
+                "link-forgot": "Forgot Password?",
+                "btn-login-submit": "Login",
+                "text-no-account": "No account?",
+                "link-register-now": "Register New Account",
+                "msg-login-success": "Login successful. Please wait...",
+                "btn-loading": "Loading..."
+            }
+        };
+        Object.keys(pageTranslations).forEach(lang => {
+            if (!window.translations) window.translations = { mn: {}, en: {} };
+            Object.assign(window.translations[lang], pageTranslations[lang]);
+        });
+    </script>
     <script src="/static/js/header.js"></script>
 
     <main class="flex-grow flex items-center justify-center pt-32 pb-20 px-4">

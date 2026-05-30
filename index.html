@@ -87,13 +87,166 @@
 </head>
 <body class="bg-brand-dark text-white font-inter">
 
-    <script src="/static/js/main_translate.js"></script>
+    <script>
+        window.translations = {
+            mn: {
+                "exchanges-data-msg": "Биржүүдийн дата:",
+                "exchanges-data-live": "ШУУД",
+                "trade-status-msg": "Нээлттэй арилжаа явагдаж байна:",
+                "trade-status-opened": "НЭЭЛТТЭЙ",
+                "admin-notif-title": "Админы мэдэгдэл",
+                "admin-notif-msg": "MGL Signal-н хөгжүүлэлт 80%-тай үргэлжилж байна. Шинэ хэрэгслүүд удахгүй нэмэгдэнэ! 🚀",
+                "hero-title1": "ИТГЭЛТЭЙГЭЭР",
+                "hero-title2": "АРИЛЖ",
+                "hero-desc": "Мэргэжлийн түвшний дата шинжилгээнд суурилсан Forex болон Crypto сигналууд.",
+                "hero-btn1": "ЭХЛЭХ",
+                "hero-btn2": "ҮНИЙН САНАЛ",
+                "projects-title": "Санал болгох Төслүүд",
+                "proj-21b-title": "21 Billion BEP",
+                "proj-21b-concept": "Шинэ Концепт",
+                "proj-21b-active": "5$ Идэвхжүүлэлт ✅",
+                "proj-21b-earning": "5 Жилийн Орлогын Боломж ✅",
+                "proj-21b-turn": "💰 5 USDT-г BEP20 Сүлжээнд Эргэлдүүл",
+                "proj-21b-gas": "(Шимтгэл 0.10$ BNB Хэрэгтэй)",
+                "proj-21b-feat1": "100% Шууд урилгын бонус",
+                "proj-21b-feat2": "40% Урилгын зэрэглэл ахих орлого",
+                "proj-21b-feat3": "40% Түвшний орлого",
+                "proj-21b-feat4": "100% Төвлөрсөн бус",
+                "proj-21b-feat5": "Автомат татан авалт",
+                "proj-21b-feat6": "100% Блокчэйнээр баталгаажсан",
+                "proj-21b-feat7": "100% Ил тод",
+                "proj-21b-royalty-title": "Рояалти орлого: Өдөр бүр 20%",
+                "proj-21b-royalty-desc": "Багц 8-14: 1% | Багц 15-16: 1.5% | Package 17-21: 2%",
+                "proj-21b-leadership": "Лидершип орлого Долоо хоног бүр ✅",
+                "btn-join-project": "Төсөл үзэх",
+                "btn-register-link": "Бүртгүүлэх",
+                "binance-title": "Дэлхийн #1 Крипто бирж",
+                "binance-desc": "Binance-ээр криптог хялбар, аюулгүй, найдвартай арилжаалаарай. Дэлхий даяар сая сая хүн итгэдэг.",
+                "feat-high-sec": "Өндөр Аюулгүй Байдал",
+                "feat-low-fee": "Хамгийн бага шимтгэл",
+                "feat-fast-trade": "Шуурхай арилжаа",
+                "feat-p2p": "P2P Дэмжлэг",
+                "binance-btn": "Арилжааг эхлүүлэх",
+                "binance-badge": "Дэлхийд #1",
+                "kucoin-title": "KuCoin - Эхлэгчдэд хамгийн ээлтэй",
+                "kucoin-desc": "Хамгийн бага дүнгээр ($1) арилжаа хийх боломж болон шинэ койнуудыг түрүүлж авах хамгийн том боломж.",
+                "feat-min-entry": "Бага дүнгээр эхлэх",
+                "feat-new-gems": "Шинэ 'Gem' койнууд",
+                "feat-trading-bot": "Арилжааны Ботууд",
+                "feat-easy-ui": "Хялбар Интерфэйс",
+                "kucoin-btn": "KuCoin-д нэгдэх",
+                "kucoin-badge": "Ард түмний бирж",
+                "human-tag": "Хүний Оюун Ухаан + AI Хурд",
+                "human-title": "Манай сигналууд яагаад AI-д бүрэн даатгадаггүй вэ?",
+                "human-desc-1": "AI бол зөвхөн өгөгдөл боловсруулах хэрэгсэл. Харин манай сигналын гол цөм нь <b>7 жилийн туршлагатай</b> мэргэжлийн арилжаачны 'амьд' мэдрэмж, стратеги дээр суурилдаг.",
+                "human-analysis": "Хүний шинжилгээ",
+                "human-accuracy": "95% Нарийвчлал",
+                "ai-speed": "AI Өгөгдлийн хурд",
+                "ai-realtime": "Бодит хугацаанд",
+                "human-quote": "\"Бид AI-г өгөгдөл шүүхэд ашигладаг, харин эцсийн шийдвэрийг 7 жилийн туршлагатай арилжаач гаргадаг.\"",
+                "stat-world-first-tag": "Дэлхийн анхны концепт",
+                "stat-spot": "Спот зах зээл дэх койн",
+                "stat-future": "Фьючерс зах зээл дэх койн",
+                "stat-daily": "Өдөрт өгөх сигналууд",
+                "stat-main-desc": "95%-ийн амжилттай, хязгааргүй үнэгүй сигнал санал болгодог <br class=\"hidden md:block\"> <span class=\"text-brand-gold italic\">дэлхийн анхны вэбсайт.</span>",
+                "why-main-title": "Яагаад MGL SIGNAL-г ашиглах вэ?",
+                "feat-1-t": "Олон зах зээлийн сигналууд",
+                "feat-1-d": "Форекс, Крипто, Алтны бодит цагийн сигналуудыг нэг дороос аваарай.",
+                "feat-2-t": "Өндөр нарийвчлал",
+                "feat-2-d": "Манай сигналууд нь мэргэжлийн шинжилгээнд тулгуурласан бөгөөд өндөр амжилтанд хүрдэг.",
+                "feat-3-t": "Мэргэжлийн шинжилгээ",
+                "feat-3-d": "Сигналууд туршлагатай зах зээлийн шинжээчдийн ойлголтоор боловсруулагдан гардаг.",
+                "feat-4-t": "Үнэгүй ба Дээд зэрэглэлийн",
+                "feat-4-d": "Манай үнэгүй сигналуудаар эхлээрэй, өндөр боломжит арилжаануудыг цаг минут тутам.",
+                "feat-5-t": "Анхан шатны хэрэглэгчдэд ээлтэй",
+                "feat-5-d": "Арилжааг хүн бүрт хүртээмжтэй болгодог энгийн, ойлгомжтой интерфейс.",
+                "feat-cta-t": "Арилжааны аялалаа эхлүүлэхэд бэлэн үү?",
+                "feat-cta-btn": "СИГНАЛРУУ ОРОХ",
+                "react-text": "Сэтгэгдэл"
+            },
+            en: {
+                "exchanges-data-msg": "Exchanges Data:",
+                "exchanges-data-live": "LIVE",
+                "trade-status-msg": "Live Trade:",
+                "trade-status-opened": "OPENED",
+                "admin-notif-title": "Admin Message",
+                "admin-notif-msg": "MGL Signal development is 80% complete. New tools coming soon! 🚀",
+                "hero-title1": "TRADE WITH",
+                "hero-title2": "CONFIDENCE",
+                "hero-desc": "Professional data-driven Forex and Crypto signals.",
+                "hero-btn1": "START",
+                "hero-btn2": "PRICING",
+                "projects-title": "Recommended Projects",
+                "proj-21b-title": "21 Billion BEP",
+                "proj-21b-concept": "Brand New Concept",
+                "proj-21b-active": "5$ Active ✅",
+                "proj-21b-earning": "5 Years Earning ✅",
+                "proj-21b-turn": "💰 Turn Your 5 USDT BEP20 Network",
+                "proj-21b-gas": "(Gas fees 0.10$ BNB Need)",
+                "proj-21b-feat1": "100% Direct referrals bonus",
+                "proj-21b-feat2": "40% Referral upgrade income",
+                "proj-21b-feat3": "40% Level Income",
+                "proj-21b-feat4": "100% Decentralized",
+                "proj-21b-feat5": "Automatic Withdrawal",
+                "proj-21b-feat6": "100% Blockchain Verified",
+                "proj-21b-feat7": "100% Transparent",
+                "proj-21b-royalty-title": "Royalty Income: 20% Daily",
+                "proj-21b-royalty-desc": "Package 8-14: 1% | Package 15-16: 1.5% | Package 17-21: 2%",
+                "proj-21b-leadership": "Leadership Income Weekly ✅",
+                "btn-join-project": "Join Project Now",
+                "btn-register-link": "Register Now",
+                "binance-title": "World's #1 Crypto Exchange",
+                "binance-desc": "Trade crypto easily, safely, and reliably with Binance. Trusted by millions worldwide.",
+                "feat-high-sec": "High Security",
+                "feat-low-fee": "Lowest Fees",
+                "feat-fast-trade": "Fast Trading",
+                "feat-p2p": "P2P Support",
+                "binance-btn": "Start Trading",
+                "binance-badge": "World No. 1",
+                "kucoin-title": "KuCoin - Beginner Friendly",
+                "kucoin-desc": "Start trading with as little as $1 and discover gems before they go mainstream.",
+                "feat-min-entry": "Low Entry",
+                "feat-new-gems": "New 'Gems'",
+                "feat-trading-bot": "Trading Bots",
+                "feat-easy-ui": "Simple UI",
+                "kucoin-btn": "Join KuCoin",
+                "kucoin-badge": "People's Exchange",
+                "human-tag": "Human Intelligence + AI Speed",
+                "human-title": "Why our signals aren't fully AI-driven?",
+                "human-desc-1": "AI is just a data processing tool. The core of our signals lies in the 'live' intuition of a professional trader with <b>7 years of experience</b>.",
+                "human-analysis": "Human Analysis",
+                "human-accuracy": "95% Accuracy",
+                "ai-speed": "AI Data Speed",
+                "ai-realtime": "Real-time",
+                "human-quote": "\"We use AI for data filtering, but the final decision is made by a trader with 7 years of experience.\"",
+                "stat-world-first-tag": "World First Concept",
+                "stat-spot": "Coins in Spot Market",
+                "stat-future": "Coins in Futures Market",
+                "stat-daily": "Daily Signals",
+                "stat-main-desc": "95% success rate, offering unlimited free signals <br class=\"hidden md:block\"> <span class=\"text-brand-gold italic\">world's first website.</span>",
+                "why-main-title": "Why Choose MGL SIGNAL?",
+                "feat-1-t": "Multi-Market Signals", "feat-1-d": "Get real-time signals for Forex, Crypto, and Gold.",
+                "feat-2-t": "High Accuracy", "feat-2-d": "Based on professional analysis with high success rates.",
+                "feat-3-t": "Professional Analysis", "feat-3-d": "Developed with insights from experienced analysts.",
+                "feat-4-t": "Free & Premium", "feat-4-d": "Start free or upgrade for high-potential trades.",
+                "feat-5-t": "User Friendly", "feat-5-d": "Intuitive interface making trading accessible.",
+                "feat-cta-t": "Ready to start your trading journey?", "feat-cta-btn": "GO TO SIGNALS",
+                "react-text": "Reactions",
+                "nav-home": "Home", "nav-forex": "Forex", "nav-crypto": "Crypto", "nav-news": "News", "nav-more": "MENU",
+                "drop-alt": "Market Tools", "drop-live": "Live Tools", "sig-title": "Signals", "nav-alpha": "Alpha Signals",
+                "foot-about": "About", "foot-contact": "Contact", "nav-projects": "Projects", "nav-knowledge": "Knowledge",
+                "donate-bar-text": "Support the Community", "donate-bar-btn": "Donate Now",
+                "update-info-btn": "About Update", "btn-refresh": "REFRESH NOW", "foot-links-title": "Fast Links",
+                "foot-about-title": "About Us", "foot-social-title": "Social Links", "foot-tagline": "Experience global market movements with data intelligence."
+            }
+        };
+    </script>
 
     <script src="/static/js/header.js"></script>
 
     <!-- Exchanges Live Data Indicator -->
     <div class="fixed top-[88px] left-4 sm:left-6 sm:top-[92px] z-40">
-        <a href="exchanges.html" class="flex items-center space-x-2 sm:space-x-3 bg-brand-dark-blue/80 backdrop-blur-md border border-brand-border hover:border-brand-gold transition-all px-3 py-1.5 sm:px-4 sm:py-2.5 rounded-lg sm:rounded-xl group shadow-2xl">
+        <a href="main_exchanges.html" class="flex items-center space-x-2 sm:space-x-3 bg-brand-dark-blue/80 backdrop-blur-md border border-brand-border hover:border-brand-gold transition-all px-3 py-1.5 sm:px-4 sm:py-2.5 rounded-lg sm:rounded-xl group shadow-2xl">
             <span class="flex h-1.5 w-1.5 sm:h-2 sm:w-2 relative">
                 <span class="animate-ping absolute inline-flex h-full w-full rounded-full bg-green-400 opacity-75"></span>
                 <span class="relative inline-flex rounded-full h-1.5 w-1.5 sm:h-2 sm:w-2 bg-green-500"></span>
@@ -147,7 +300,7 @@
                         <button onclick="handleReaction(this)" class="hover:scale-125 transition text-lg grayscale hover:grayscale-0" title="Smile">😊</button>
                     </div>
                     <div class="text-[9px] font-black text-gray-500 uppercase tracking-tighter">
-                        <span id="react-val">24</span> Reactions
+                        <span id="react-val">24</span> <span data-i18n="react-text">Reactions</span>
                     </div>
                 </div>
             </div>
@@ -271,7 +424,7 @@
                 <div class="relative z-10">
                     <div class="flex items-center justify-between mb-8">
                         <img src="https://upload.wikimedia.org/wikipedia/commons/e/e8/Binance_Logo.svg" alt="Binance" class="h-7 opacity-90 group-hover:opacity-100 transition-opacity">
-                        <span class="text-[9px] font-black bg-[#f3ba2f]/10 text-[#f3ba2f] px-3 py-1 rounded-full uppercase tracking-widest border border-[#f3ba2f]/20">World No. 1</span>
+                        <span data-i18n="binance-badge" class="text-[9px] font-black bg-[#f3ba2f]/10 text-[#f3ba2f] px-3 py-1 rounded-full uppercase tracking-widest border border-[#f3ba2f]/20">World No. 1</span>
                     </div>
                     
                     <h2 class="text-2xl md:text-3xl font-black text-white mb-4 leading-tight">
@@ -307,7 +460,7 @@
                             </div>
                             <span class="text-xl font-black text-white tracking-tighter uppercase">KuCoin</span>
                         </div>
-                        <span class="text-[9px] font-black bg-[#24ae8f]/10 text-[#24ae8f] px-3 py-1 rounded-full uppercase tracking-widest border border-[#24ae8f]/20">People's Exchange</span>
+                        <span data-i18n="kucoin-badge" class="text-[9px] font-black bg-[#24ae8f]/10 text-[#24ae8f] px-3 py-1 rounded-full uppercase tracking-widest border border-[#24ae8f]/20">People's Exchange</span>
                     </div>
                     
                     <h2 class="text-2xl md:text-3xl font-black text-white mb-4 leading-tight">
@@ -337,7 +490,7 @@
         <div class="max-w-7xl mx-auto px-6">
             <div class="flex flex-col lg:flex-row items-center gap-16">
                 <div class="flex-1 space-y-8">
-                    <div class="inline-block bg-brand-gold/10 text-brand-gold border border-brand-gold/20 px-4 py-1 rounded-full text-[10px] font-bold uppercase tracking-[0.2em]">
+                    <div data-i18n="human-tag" class="inline-block bg-brand-gold/10 text-brand-gold border border-brand-gold/20 px-4 py-1 rounded-full text-[10px] font-bold uppercase tracking-[0.2em]">
                         Human Intelligence + AI Speed
                     </div>
                     <h2 data-i18n="human-title" class="text-3xl md:text-5xl font-black leading-tight uppercase">
@@ -382,20 +535,20 @@
                     <div class="relative border border-brand-border bg-brand-dark-blue/50 p-8 rounded-2xl backdrop-blur-sm">
                         <div class="space-y-6">
                             <div class="flex justify-between items-center text-[10px] font-bold text-gray-500 uppercase tracking-widest">
-                                <span>Human Analysis</span>
-                                <span class="text-brand-gold">95% Accuracy</span>
+                                <span data-i18n="human-analysis">Human Analysis</span>
+                                <span data-i18n="human-accuracy" class="text-brand-gold">95% Accuracy</span>
                             </div>
                             <div class="w-full bg-brand-border h-1.5 rounded-full overflow-hidden">
                                 <div class="bg-brand-gold h-full w-[95%]"></div>
                             </div>
                             <div class="flex justify-between items-center text-[10px] font-bold text-gray-500 uppercase tracking-widest pt-4">
-                                <span>AI Data Speed</span>
-                                <span class="text-blue-400">Real-time</span>
+                                <span data-i18n="ai-speed">AI Data Speed</span>
+                                <span data-i18n="ai-realtime" class="text-blue-400">Real-time</span>
                             </div>
                             <div class="w-full bg-brand-border h-1.5 rounded-full overflow-hidden">
                                 <div class="bg-blue-400 h-full w-[100%]"></div>
                             </div>
-                            <p class="text-[11px] text-gray-400 italic text-center pt-6">
+                            <p data-i18n="human-quote" class="text-[11px] text-gray-400 italic text-center pt-6">
                                 "Бид AI-г өгөгдөл шүүхэд ашигладаг, харин эцсийн шийдвэрийг 7 жилийн туршлагатай арилжаач гаргадаг."
                             </p>
                         </div>
@@ -423,7 +576,7 @@
             </div>
 
             <div class="max-w-4xl mx-auto text-center border-t border-brand-border/30 pt-16">
-                <div class="inline-block bg-green-500/10 text-green-500 border border-green-500/20 px-4 py-1 rounded-full text-[10px] font-bold uppercase mb-6 tracking-widest">
+                <div data-i18n="stat-world-first-tag" class="inline-block bg-green-500/10 text-green-500 border border-green-500/20 px-4 py-1 rounded-full text-[10px] font-bold uppercase mb-6 tracking-widest">
                     World First Concept
                 </div>
                 <h2 data-i18n="stat-main-desc" class="text-2xl md:text-4xl font-extrabold text-white leading-tight">
@@ -483,6 +636,11 @@
     </section>
 
     <script>
+
+        // checkLiveTradeStatus функц байхгүй үед алдаа заахаас сэргийлж хоосон функц үүсгэв
+        if (typeof checkLiveTradeStatus === 'undefined') {
+            window.checkLiveTradeStatus = function() { console.log("Live Trade monitor active."); };
+        }
 
         async function fetchMarketData() {
             try {

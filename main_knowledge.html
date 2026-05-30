@@ -87,7 +87,60 @@
 </head>
 <body class="bg-brand-dark text-white font-inter flex flex-col min-h-screen">
 
-    <script src="/static/js/main_translate.js"></script>
+    <script>
+    const pageTranslations = {
+        mn: {
+            "knowledge-page-title": 'Мэдлэгийн <span class="text-brand-gold italic">Сан</span>',
+            "knowledge-page-desc": "Крипто арилжаа болон хэтэвч тохируулах зааварчилгаанууд.",
+            "art1-title": "Нууц үгийн аюулгүй байдал",
+            "art1-desc": "Компьютер өөр өөр төрлийн нууц үгийг тайлахад хэр хугацаа зарцуулдгийг мэдэж, интерактив жишээг үзээрэй.",
+            "art2-title": "Форекс-н үндэс: Лот ба Пип",
+            "art2-desc": "Форекс арилжааны үндсэн ойлголт болох арилжааны хэмжээ (Лот) болон үнийн хөдөлгөөн (Пип)-ийг ойлгоорой.",
+            "art3-title": "MetaMask хэрхэн суулгах вэ",
+            "art3-desc": "MetaMask ашиглан өөрийн Ethereum хэтэвчийг хэрхэн үүсгэж, хамгаалах тухай алхам алхмаар заавар.",
+            "art4-title": "Binance-д хэрхэн бүртгүүлэх вэ",
+            "art4-desc": "Дэлхийн хамгийн том крипто бирж дээр дансаа бүртгүүлж, баталгаажуулах иж бүрэн заавар.",
+            "art5-title": "Маржин Шахах Арилжаа",
+            "art5-desc": "Бага баланстай үед ихэвчлэн хэрэглэгддэг 'маржин шахах' буюу 'бүтэн маржин' арилжааны өндөр эрсдэлтэй стратегийн талаар мэдэж аваарай.",
+            "art6-title": "Хэрэгцээт Крипто Холбоосууд",
+            "art6-desc": "Крипто арилжаачдад зориулсан шилдэг хэрэгсэл, нөөцийн эмхэтгэсэн лавлах, бирж, график, мэдээ зэргийг багтаасан.",
+            "art7-title": "Дельта гэж юу вэ?",
+            "art7-desc": "Захиалгын урсгал дахь Дельта гэж юу болох, энэ нь худалдан авах ба худалдах даралтыг хэрхэн харуулдгийг ойлгоорой.",
+            "art8-title": "TokenPocket суулгах заавар",
+            "art8-desc": "TokenPocket хэтэвчийг хэрхэн суулгаж, Binance Smart Chain сүлжээг тохируулах тухай заавар.",
+            "art9-title": "5 USDT (BEP20) цэнэглэх заавар",
+            "art9-desc": "BEP20 сүлжээ ашиглан 5 USDT-ээр хэрхэн дансаа цэнэглэж, идэвхжүүлэх тухай заавар.",
+            "btn-readmore-article": "Дэлгэрэнгүй"
+        },
+        en: {
+            "knowledge-page-title": 'Knowledge <span class="text-brand-gold italic">Base</span>',
+            "knowledge-page-desc": "Guides and tutorials for crypto trading and wallet setup.",
+            "art1-title": "Password Security",
+            "art1-desc": "Learn how long it takes a computer to crack different types of passwords and see interactive examples.",
+            "art2-title": "Forex Basics: Lot & Pip",
+            "art2-desc": "Understand the fundamental concepts of Forex trading: Lot size and Pip value movement.",
+            "art3-title": "How to Install MetaMask",
+            "art3-desc": "A step-by-step guide on how to create and secure your own Ethereum wallet using MetaMask.",
+            "art4-title": "How to Register on Binance",
+            "art4-desc": "Complete guide to registering and verifying your account on the world's largest crypto exchange.",
+            "art5-title": "Margin Push Trading",
+            "art5-desc": "Learn about high-risk 'Margin Push' or 'Full Margin' trading strategies often used with small balances.",
+            "art6-title": "Useful Crypto Links",
+            "art6-desc": "A curated directory of the best tools, resources, exchanges, charts, and news for crypto traders.",
+            "art7-title": "What is Delta?",
+            "art7-desc": "Understand what Delta means in order flow trading and how it shows buying vs. selling pressure.",
+            "art8-title": "TokenPocket Setup Guide",
+            "art8-desc": "Instructions on how to install TokenPocket wallet and configure the Binance Smart Chain network.",
+            "art9-title": "5 USDT (BEP20) Deposit Guide",
+            "art9-desc": "Learn how to top up your account with 5 USDT using the BEP20 network to activate your project.",
+            "btn-readmore-article": "Read More"
+        }
+    };
+    Object.keys(pageTranslations).forEach(lang => {
+        if (!window.translations) window.translations = { mn: {}, en: {} };
+        Object.assign(window.translations[lang], pageTranslations[lang]);
+    });
+    </script>
 
     <script src="/static/js/header.js"></script>
 

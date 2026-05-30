@@ -34,7 +34,6 @@
 </head>
 <body class="bg-brand-dark text-white font-inter flex flex-col min-h-screen">
 
-    <script src="/static/js/main_translate.js"></script>
     <script src="/static/js/header.js"></script>
 
     <!-- Main Content -->
@@ -46,7 +45,7 @@
                     Live <span class="text-brand-gold italic">Tools</span>
                 </h1>
                 <p data-i18n="live-hub-desc" class="text-gray-400 max-w-2xl mx-auto">
-                    Зах зээлийн бодит цагийн өгөгдөл болон амьд графикууд.
+                    
                 </p>
                 <div class="w-20 h-1 bg-brand-gold mx-auto mt-6"></div>
             </div>
@@ -55,7 +54,7 @@
             <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
                 
                 <!-- Card 1: Exchanges Data -->
-                <a href="/exchanges.html" class="bg-brand-dark-blue border border-brand-border rounded-2xl p-10 hover:border-brand-gold transition duration-300 group flex flex-col shadow-2xl relative overflow-hidden">
+                <a href="/main_exchanges.html" class="bg-brand-dark-blue border border-brand-border rounded-2xl p-10 hover:border-brand-gold transition duration-300 group flex flex-col shadow-2xl relative overflow-hidden">
                     <div class="absolute top-0 right-0 p-4 opacity-10 group-hover:opacity-20 transition">
                         <i class="fas fa-server text-6xl"></i>
                     </div>
@@ -64,8 +63,8 @@
                     </div>
                     <h3 data-i18n="tool-ex-title" class="text-white text-xl font-bold mb-4 uppercase tracking-wider group-hover:text-brand-gold transition">Exchanges Data</h3>
                     <p class="text-gray-500 text-sm leading-relaxed mb-8 flex-grow">Биржүүдийн бодит цагийн үнэ, волюм болон сүлжээний мэдээллүүд.</p>
-                    <span class="text-brand-gold text-[10px] font-black uppercase tracking-[0.2em] flex items-center mt-auto">
-                        Open Terminal <i class="fas fa-arrow-right ml-2 group-hover:translate-x-2 transition"></i>
+                    <span data-i18n="open-terminal" class="text-brand-gold text-[10px] font-black uppercase tracking-[0.2em] flex items-center mt-auto">
+                        
                     </span>
                 </a>
 
@@ -79,8 +78,8 @@
                     </div>
                     <h3 data-i18n="tool-trade-title" class="text-white text-xl font-bold mb-4 uppercase tracking-wider group-hover:text-brand-gold transition">Live Trade Terminal</h3>
                     <p class="text-gray-500 text-sm leading-relaxed mb-8 flex-grow">Автомат ботын идэвхтэй арилжаанууд, баланс болон системийн логуудыг шууд хянах.</p>
-                    <span class="text-brand-gold text-[10px] font-black uppercase tracking-[0.2em] flex items-center mt-auto">
-                        Open Terminal <i class="fas fa-arrow-right ml-2 group-hover:translate-x-2 transition"></i>
+                    <span data-i18n="open-terminal" class="text-brand-gold text-[10px] font-black uppercase tracking-[0.2em] flex items-center mt-auto">
+                        
                     </span>
                 </a>
 
@@ -94,14 +93,47 @@
                     </div>
                     <h3 data-i18n="tool-chart-title" class="text-white text-xl font-bold mb-4 uppercase tracking-wider group-hover:text-brand-gold transition">Live Charts (Binance)</h3>
                     <p class="text-gray-500 text-sm leading-relaxed mb-8 flex-grow">Бинанс биржийн бүх хослолуудын амьд график. Spot болон Futures өгөгдөл.</p>
-                    <span class="text-brand-gold text-[10px] font-black uppercase tracking-[0.2em] flex items-center mt-auto">
-                        Open Charts <i class="fas fa-arrow-right ml-2 group-hover:translate-x-2 transition"></i>
+                    <span data-i18n="open-charts" class="text-brand-gold text-[10px] font-black uppercase tracking-[0.2em] flex items-center mt-auto">
+                        
                     </span>
                 </a>
 
             </div>
         </div>
     </main>
+    <script>
+        const pageTranslations = {
+            mn: {
+                "live-hub-title": 'Амьд <span class="text-brand-gold italic">Хэрэгслүүд</span>',
+                "live-hub-desc": "Зах зээлийн бодит цагийн өгөгдөл болон амьд графикууд.",
+                "tool-ex-title": "Биржүүдийн дата (Live)",
+                "tool-trade-title": "Live Арилжааны Терминал",
+                "tool-chart-title": "Амьд график (Binance)",
+                "open-terminal": "Терминал нээх <i class=\"fas fa-arrow-right ml-2 group-hover:translate-x-2 transition\"></i>",
+                "open-charts": "График нээх <i class=\"fas fa-arrow-right ml-2 group-hover:translate-x-2 transition\"></i>"
+            },
+            en: {
+                "live-hub-title": 'Live <span class="text-brand-gold italic">Tools</span>',
+                "live-hub-desc": "Real-time market data and live interactive charts.",
+                "tool-ex-title": "Exchanges Live Data",
+                "tool-trade-title": "Live Trading Terminal",
+                "tool-chart-title": "Live Charts (Binance)",
+                "open-terminal": "Open Terminal <i class=\"fas fa-arrow-right ml-2 group-hover:translate-x-2 transition\"></i>",
+                "open-charts": "Open Charts <i class=\"fas fa-arrow-right ml-2 group-hover:translate-x-2 transition\"></i>"
+            }
+        };
+
+        // Initialize window.translations if it doesn't exist yet
+        if (typeof window.translations === 'undefined') window.translations = { mn: {}, en: {} };
+        
+        // Merge page translations into the global translations object
+        Object.keys(pageTranslations).forEach(lang => {
+            window.translations[lang] = { 
+                ...window.translations[lang], 
+                ...pageTranslations[lang] 
+            };
+        });
+    </script>
 
     <script src="/static/js/footer.js"></script>
     <script src="/static/lock.js"></script>

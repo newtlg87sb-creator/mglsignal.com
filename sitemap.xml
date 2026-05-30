@@ -19,7 +19,7 @@
   </url>
 
   <url>
-    <loc>https://mglsignal.com/exchanges.html</loc>
+    <loc>https://mglsignal.com/main_exchanges.html</loc>
     <lastmod>2026-05-29T12:00:00+00:00</lastmod>
     <priority>0.9</priority>
   </url>
@@ -50,7 +50,7 @@
   </url>
 
   <url>
-    <loc>https://mglsignal.com/main_bitcoin_tools.html</loc>
+    <loc>https://mglsignal.com/main_altcoin_tools.html</loc>
     <lastmod>2026-05-29T12:00:00+00:00</lastmod>
     <priority>0.7</priority>
   </url>

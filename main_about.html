@@ -88,7 +88,6 @@
 <body class="bg-brand-dark text-white font-inter flex flex-col min-h-screen">
 
     <!-- Navigation -->
-    <script src="/static/js/main_translate.js"></script>
     <script>
         const pageTranslations = {
             mn: {
@@ -107,7 +106,12 @@
                 "support-li3": '<i class="fas fa-check-circle text-brand-gold mt-1 mr-3"></i><span>Вэбсайт болон хостингийн зардал</span>',
                 "support-li4": '<i class="fas fa-check-circle text-brand-gold mt-1 mr-3"></i><span>Сигналууд өндөр нарийвчлалтай гарахад хурдан боловсруулагдах нөхцөл бүрдүүлэх</span>',
                 "support-li5": '<i class="fas fa-check-circle text-brand-gold mt-1 mr-3"></i><span>Шинэ онцлог, багаж хэрэгслүүдийг хөгжүүлэх</span>',
-                "support-thanks": "Таны дэмжлэгт баярлалаа!"
+                "support-thanks": "Таны дэмжлэгт баярлалаа!",
+                "donate-title": "BEP-20 Шууд Хандив",
+                "donate-amount-title": "Санал болгох дүн ($USD)",
+                "btn-custom": "Өөр дүн",
+                "or": "ЭСВЭЛ",
+                "donate-btn-messenger": "Хандивын талаар лавлах"
             },
             en: {
                 "about-page-title": 'About <span class="text-brand-gold italic">Us</span>',
@@ -125,10 +129,20 @@
                 "support-li3": '<i class="fas fa-check-circle text-brand-gold mt-1 mr-3"></i><span>Website and hosting costs</span>',
                 "support-li4": '<i class="fas fa-check-circle text-brand-gold mt-1 mr-3"></i><span>Creating conditions for faster processing to produce high-accuracy signals</span>',
                 "support-li5": '<i class="fas fa-check-circle text-brand-gold mt-1 mr-3"></i><span>Development of new features and tools</span>',
-                "support-thanks": "Thank you for your support!"
+                "support-thanks": "Thank you for your support!",
+                "donate-title": "Direct BEP-20 Donation",
+                "donate-amount-title": "Suggested Amount ($USD)",
+                "btn-custom": "Custom",
+                "or": "OR",
+                "donate-btn-messenger": "Inquire About Donations"
             }
         };
-        Object.keys(pageTranslations).forEach(lang => Object.assign(translations[lang], pageTranslations[lang]));
+
+        // Initialize translations if needed (since we removed main_translate.js dependency)
+        if (typeof window.translations === 'undefined') window.translations = { mn: {}, en: {} };
+        
+        // Merge page translations
+        Object.keys(pageTranslations).forEach(lang => Object.assign(window.translations[lang], pageTranslations[lang]));
     </script>
 
     <script src="/static/js/header.js"></script>
@@ -201,7 +215,7 @@
                         <button class="bg-brand-border/50 hover:bg-brand-border p-2 rounded-md transition">$30</button>
                         <button class="bg-brand-border/50 hover:bg-brand-border p-2 rounded-md transition">$50</button>
                         <button class="bg-brand-border/50 hover:bg-brand-border p-2 rounded-md transition">$100</button>
-                        <button class="bg-brand-gold text-black hover:bg-white p-2 rounded-md transition">Custom</button>
+                        <button data-i18n="btn-custom" class="bg-brand-gold text-black hover:bg-white p-2 rounded-md transition">Custom</button>
                     </div>
 
                     <div class="flex items-center my-6">

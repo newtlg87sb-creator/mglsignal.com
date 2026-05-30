@@ -182,10 +182,10 @@
                 data.Data.slice(0, 6).forEach(news => {
                     const date = new Date(news.published_on * 1000).toLocaleDateString();
                     const html = `
-                        <a href="${news.url}" target="_blank" class="bg-brand-dark-blue border border-brand-border rounded-xl overflow-hidden hover:border-brand-gold/50 transition duration-300 group flex flex-col h-full">
+                        <a href="${news.url}" target="_blank" class="bg-brand-dark-blue border border-brand-border rounded-xl overflow-hidden hover:border-brand-gold/50 transition duration-300 group flex flex-col h-full relative">
                             <div class="aspect-video w-full overflow-hidden relative bg-gray-800">
                                 <img src="${news.imageurl}" alt="News Image" class="w-full h-full object-cover group-hover:scale-105 transition duration-500 opacity-80 group-hover:opacity-100" onerror="this.src='https://via.placeholder.com/300x170?text=No+Image'">
-                                <div class="absolute top-2 right-2 bg-black/80 text-white text-[10px] font-bold px-2 py-1 rounded uppercase">${news.source_info.name}</div>
+                                <!-- <div class="absolute top-2 right-2 bg-black/80 text-white text-[10px] font-bold px-2 py-1 rounded uppercase">${news.source_info.name}</div> -->
                             </div>
                             <div class="p-5 flex-grow flex flex-col">
                                 <div class="flex items-center space-x-2 mb-3">

@@ -10,3 +10,7 @@ node_modules/
 
 # Vercel
 .vercel
+
+# IDE and OS files
+.vscode/
+Thumbs.db

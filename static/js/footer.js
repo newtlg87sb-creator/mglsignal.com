@@ -1,3 +1,42 @@
+// Footer specific translations
+const footerTranslations = {
+    mn: {
+        "foot-links-title": "Хурдан холбоос",
+        "foot-about-title": "Бидний тухай",
+        "foot-social-title": "Сошиал сувгууд",
+        "foot-about": "Танилцуулга",
+        "foot-contact": "Холбоо барих",
+        "foot-tagline": "Дэлхийн зах зээлийн хөдөлгөөнийг <br> дата шинжилгээгээр түрүүлж мэдэр.",
+        "privacy-page-title": "Нууцлалын бодлого",
+        "terms-page-title": "Үйлчилгээний нөхцөл",
+        "risk-page-title": "Эрсдэлийн анхааруулга",
+        "nav-home": "Нүүр", "nav-forex": "Форекс", "nav-crypto": "Крипто", "nav-news": "Мэдээ" // Added for quick links
+    },
+    en: {
+        "foot-links-title": "Fast Links",
+        "foot-about-title": "About Us",
+        "foot-social-title": "Social Links",
+        "foot-about": "About",
+        "foot-contact": "Contact",
+        "foot-tagline": "Experience global market movements <br> with data intelligence.",
+        "privacy-page-title": "Privacy Policy",
+        "terms-page-title": "Terms of Service",
+        "risk-page-title": "Risk Warning",
+        "nav-home": "Home", "nav-forex": "Forex", "nav-crypto": "Crypto", "nav-news": "News" // Added for quick links
+    }
+};
+
+// Initialize window.translations if it doesn't exist yet
+if (typeof window.translations === 'undefined') window.translations = { mn: {}, en: {} };
+
+// Merge footer translations into the global object
+Object.keys(footerTranslations).forEach(lang => {
+    window.translations[lang] = { 
+        ...footerTranslations[lang], 
+        ...window.translations[lang] 
+    };
+});
+
 const footerHTML = `
 <footer class="bg-brand-dark-blue border-t border-brand-border pt-8 pb-1">
     <div class="max-w-7xl mx-auto px-6">

@@ -38,7 +38,50 @@
 </head>
 <body class="bg-brand-dark text-white font-inter flex flex-col min-h-screen">
 
-    <script src="/static/js/main_translate.js"></script>
+    <script>
+        const pageTranslations = {
+            mn: {
+                "reg-title": "Бүртгүүлэх",
+                "reg-subtitle": "MGL Signal-д нэгдэж амжилтаа эхлүүл",
+                "lbl-username": "Хэрэглэгчийн нэр",
+                "ph-username": "User123",
+                "lbl-email": "Имэйл хаяг",
+                "ph-email": "name@example.com",
+                "lbl-password": "Нууц үг",
+                "ph-password": "••••••••",
+                "lbl-confirm-password": "Нууц үг давтах",
+                "terms-link": "Үйлчилгээний нөхцөл",
+                "terms-agree": "-ийг зөвшөөрч байна.",
+                "btn-reg-submit": "Бүртгүүлэх",
+                "text-has-account": "Бүртгэлтэй хэрэглэгч үү?",
+                "link-login-now": "Нэвтрэх",
+                "btn-loading": "Уншиж байна...",
+                "msg-reg-success": "Амжилттай бүртгэгдлээ! {seconds} секундын дараа нэвтрэх хуудас руу шилжинэ."
+            },
+            en: {
+                "reg-title": "Register",
+                "reg-subtitle": "Join MGL Signal and start your success",
+                "lbl-username": "Username",
+                "ph-username": "User123",
+                "lbl-email": "Email Address",
+                "ph-email": "name@example.com",
+                "lbl-password": "Password",
+                "ph-password": "••••••••",
+                "lbl-confirm-password": "Confirm Password",
+                "terms-link": "Terms of Service",
+                "terms-agree": "I agree to the",
+                "btn-reg-submit": "Register",
+                "text-has-account": "Already have an account?",
+                "link-login-now": "Login",
+                "btn-loading": "Loading...",
+                "msg-reg-success": "Registration successful! Redirecting to login in {seconds} seconds."
+            }
+        };
+        Object.keys(pageTranslations).forEach(lang => {
+            if (!window.translations) window.translations = { mn: {}, en: {} };
+            Object.assign(window.translations[lang], pageTranslations[lang]);
+        });
+    </script>
     <script src="/static/js/header.js"></script>
 
     <!-- Main Content -->

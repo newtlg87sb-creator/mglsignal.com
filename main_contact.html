@@ -102,7 +102,10 @@
                 "ph-email": "И-мэйл хаягаа оруулна уу",
                 "ph-message": "Та юуны талаар лавлахыг хүсэж байна вэ?",
                 "btn-send": "Зурвас илгээх",
-                "contact-btn-messenger": "Facebook Messenger-ээр илгээх"
+                "contact-btn-messenger": "Facebook Messenger-ээр илгээх",
+                "social-fb-sub": "MGL Signal - Албан ёсны хуудас",
+                "social-tg-sub": "Мэдээ мэдээллийн суваг",
+                "social-yt-sub": "Арилжааны хичээлүүд"
             },
             en: {
                 "contact-page-title": 'Contact <span class="text-brand-gold italic">Us</span>',
@@ -116,7 +119,10 @@
                 "ph-email": "Enter your email",
                 "ph-message": "How can we help you?",
                 "btn-send": "Send Message",
-                "contact-btn-messenger": "Send via Facebook Messenger"
+                "contact-btn-messenger": "Send via Facebook Messenger",
+                "social-fb-sub": "Official Facebook Page",
+                "social-tg-sub": "Official Telegram Channel",
+                "social-yt-sub": "Trading Tutorials & Reviews"
             }
         };
         Object.keys(pageTranslations).forEach(lang => Object.assign(translations[lang], pageTranslations[lang]));
@@ -148,7 +154,7 @@
                             </span>
                             <div>
                                 <span class="block font-bold text-lg text-white">Facebook</span>
-                                <span class="text-xs text-gray-500 uppercase tracking-wider font-bold">MGL Signal</span>
+                                <span data-i18n="social-fb-sub" class="text-xs text-gray-500 uppercase tracking-wider font-bold">MGL Signal</span>
                             </div>
                         </a>
                         
@@ -158,7 +164,7 @@
                             </span>
                             <div>
                                 <span class="block font-bold text-lg text-white">Telegram</span>
-                                <span class="text-xs text-gray-500 uppercase tracking-wider font-bold">Official Channel</span>
+                                <span data-i18n="social-tg-sub" class="text-xs text-gray-500 uppercase tracking-wider font-bold">Official Channel</span>
                             </div>
                         </a>
                         
@@ -168,7 +174,7 @@
                             </span>
                             <div>
                                 <span class="block font-bold text-lg text-white">Youtube</span>
-                                <span class="text-xs text-gray-500 uppercase tracking-wider font-bold">Trading Tutorials</span>
+                                <span data-i18n="social-yt-sub" class="text-xs text-gray-500 uppercase tracking-wider font-bold">Trading Tutorials</span>
                             </div>
                         </a>
                     </div>

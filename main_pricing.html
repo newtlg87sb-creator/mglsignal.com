@@ -24,7 +24,60 @@
 </head>
 <body class="bg-brand-dark text-white font-inter flex flex-col min-h-screen">
 
-    <script src="/static/js/main_translate.js"></script>
+    <script>
+        const pageTranslations = {
+            mn: {
+                "pricing-title": "Үнийн Санал",
+                "pricing-subtitle": "Өөрт тохирох төлөвлөгөөг сонгож, арилжаагаа дараагийн түвшинд гарга.",
+                "plan-free-name": "Энгийн Багц",
+                "plan-free-desc": "Арилжааны ертөнцөд хөл тавихад тохиромжтой.",
+                "price-per-month": "/ сар",
+                "feat-basic-sig": "Үндсэн сигналууд",
+                "feat-news": "Зах зээлийн мэдээ",
+                "feat-projects": "Шинэ төслүүдийн мэдээлэл",
+                "feat-knowledge": "Мэдлэгийн сан",
+                "feat-alpha-lock": "Alpha сигналууд (Түгжигдсэн)",
+                "btn-free-start": "Үнэгүй эхлэх",
+                "plan-alpha-name": "Alpha Багц",
+                "plan-alpha-desc": "Мэргэжлийн түвшинд арилжаа хийхэд.",
+                "feat-all-sig": "<b>Бүх</b> үндсэн сигналууд",
+                "feat-news-proj": "Зах зээлийн мэдээ & Төслүүд",
+                "feat-alpha-unlock": "Alpha сигналууд",
+                "feat-exclusive": "Онцгой эрх & Давуу талууд",
+                "btn-select-plan": "Сонгох",
+                "modal-alpha-title": "Alpha Эрх Идэвхжүүлэх",
+                "badge-popular": "Хамгийн эрэлттэй",
+                "btn-messenger": "Админтой холбогдох"
+            },
+            en: {
+                "pricing-title": "Pricing Plans",
+                "pricing-subtitle": "Choose the right plan to take your trading to the next level.",
+                "plan-free-name": "Free Plan",
+                "plan-free-desc": "Perfect for getting started in the trading world.",
+                "price-per-month": "/ month",
+                "feat-basic-sig": "Basic Signals",
+                "feat-news": "Market News",
+                "feat-projects": "New Projects Info",
+                "feat-knowledge": "Knowledge Base",
+                "feat-alpha-lock": "Alpha Signals (Locked)",
+                "btn-free-start": "Start for Free",
+                "plan-alpha-name": "Alpha Plan",
+                "plan-alpha-desc": "For professional-level trading.",
+                "feat-all-sig": "<b>All</b> basic signals",
+                "feat-news-proj": "Market News & Projects",
+                "feat-alpha-unlock": "Alpha Signals",
+                "feat-exclusive": "Exclusive Rights & Benefits",
+                "btn-select-plan": "Select Plan",
+                "modal-alpha-title": "Activate Alpha Access",
+                "badge-popular": "Most Popular",
+                "btn-messenger": "Contact via Messenger"
+            }
+        };
+        Object.keys(pageTranslations).forEach(lang => {
+            if (!window.translations) window.translations = { mn: {}, en: {} };
+            Object.assign(window.translations[lang], pageTranslations[lang]);
+        });
+    </script>
     <script src="/static/js/header.js"></script>
 
     <main class="flex-grow pt-24 pb-12 px-6">
@@ -63,7 +116,7 @@
                 <div class="bg-brand-dark-blue border border-brand-gold rounded-2xl p-8 h-full flex flex-col relative overflow-hidden shadow-2xl shadow-brand-gold/10 transform md:-translate-y-4">
                     <div class="absolute top-0 left-0 w-full h-1 bg-brand-gold"></div>
                     <div class="absolute top-4 right-4">
-                        <span class="bg-brand-gold text-black text-[10px] font-black uppercase px-2 py-1 rounded">Most Popular</span>
+                        <span data-i18n="badge-popular" class="bg-brand-gold text-black text-[10px] font-black uppercase px-2 py-1 rounded">Most Popular</span>
                     </div>
                     
                     <div class="mb-6">
