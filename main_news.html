@@ -213,23 +213,7 @@
         // Run fetch on load
         fetchCryptoNews();
 
-        function changeLang(lang) {
-            localStorage.setItem('lang', lang);
-            document.querySelectorAll('[data-i18n]').forEach(el => {
-                const key = el.getAttribute('data-i18n');
-                if (translations[lang] && translations[lang][key]) el.innerHTML = translations[lang][key];
-            });
-            const btnMn = document.getElementById('btn-mn');
-            const btnEn = document.getElementById('btn-en');
-            if (lang === 'mn') {
-                btnMn.className = "px-2.5 py-1 rounded-full bg-brand-gold text-black transition";
-                btnEn.className = "px-2.5 py-1 rounded-full text-gray-500 hover:text-white transition";
-            } else {
-                btnEn.className = "px-2.5 py-1 rounded-full bg-brand-gold text-black transition";
-                btnMn.className = "px-2.5 py-1 rounded-full text-gray-500 hover:text-white transition";
-            }
-        }
-        changeLang(localStorage.getItem('lang') || 'mn');
+        // 🚨 ЗАСВАР: Давхардсан changeLang функцийг устгаж, global функцийг ашигладаг болов
 
         const mobileMenuButton = document.querySelector('.mobile-menu-button');
         const mobileMenu = document.querySelector('.mobile-menu');

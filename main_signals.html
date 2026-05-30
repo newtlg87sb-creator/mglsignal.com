@@ -135,8 +135,7 @@
                 if (typeof translations === 'undefined' || !translations[lang]) return;
                 
                 const t = translations[lang];
-                const cards = (t['signal-list'] || [])
-                    .filter(card => card.link === 'future.html' || card.link === 'spot.html' || card.link === 'alphasignal/main_arbitrage.html');
+                const cards = (t['signal-list'] || []); // Шүүлтүүрийг авч бүх сигналыг харуулдаг болгов
                 const comingSoonText = t['sig-coming-soon'] || 'Coming Soon';
                 const readMoreText = t['sig-read-more'] || 'Read More...';
 
