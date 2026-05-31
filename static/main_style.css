@@ -42,4 +42,156 @@ body { font-family: 'Inter', sans-serif; background-color: #05070a; color: #ffff
 html { scroll-behavior: smooth; scroll-padding-top: 70px; }
 .sticky-nav { position: sticky; top: 0; z-index: 40; }
 
+/* ═══════════════════════════════════════════════
+   MGL SIGNAL — MOTION LAYER (ЧИНИЙ CSS ФАЙЛД)
+   ═══════════════════════════════════════════════ */
 
+/* 2. FLOATING GOLD PARTICLES CANVAS */
+#mgl-particles {
+  position: fixed; inset: 0;
+  pointer-events: none; z-index: 0;
+  opacity: 0.55;
+}
+
+/* 3. SCROLL REVEAL — elements fade+slide up */
+.mgl-reveal {
+  opacity: 0;
+  transform: translateY(32px);
+  transition: opacity 0.7s ease, transform 0.7s ease;
+}
+.mgl-reveal.visible {
+  opacity: 1;
+  transform: translateY(0);
+}
+
+/* 4. HERO TEXT SHIMMER on gold spans */
+.text-brand-gold, [class*="text-brand-gold"] {
+  background: linear-gradient(90deg, #c5a059 0%, #f5d680 40%, #c5a059 60%, #a07832 100%);
+  background-size: 200% auto;
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+  animation: goldShimmer 9s linear infinite;
+
+  /* ── БУХ ЮМЫГ ГАНЦХАН СЕКУНДЭД ЗАСАХ МӨРҮҮД ── */
+  display: inline-block; 
+  padding-right: 0.15em; /* Италик налуу үсгийг баруун тийш таслахаас сэргийлнэ */
+  padding-bottom: 0.05em; /* Доошоо унжсан үсгийг бүтэн харуулна */
+}
+@keyframes goldShimmer {
+  0% { background-position: 200% center; }
+  100% { background-position: -200% center; }
+}
+
+/* 5. LIVE PING DOTS — pulse glow */
+.animate-ping {
+  animation: mglPing 1.4s cubic-bezier(0,0,0.2,1) infinite !important;
+}
+@keyframes mglPing {
+  0% { transform: scale(1); opacity: 0.8; }
+  70% { transform: scale(2.2); opacity: 0; }
+  100% { transform: scale(2.2); opacity: 0; }
+}
+
+/* 6. CARD HOVER LIFT */
+[class*="rounded-xl"], [class*="rounded-2xl"], [class*="rounded-3xl"] {
+  transition: transform 0.3s ease, box-shadow 0.3s ease, border-color 0.3s ease !important;
+  will-change: transform;
+}
+[class*="rounded-xl"]:hover,
+[class*="rounded-2xl"]:hover,
+[class*="rounded-3xl"]:hover {
+  transform: translateY(-4px);
+  box-shadow: 0 20px 60px rgba(197,160,89,0.08);
+}
+
+/* 7. BUTTON RIPPLE */
+.btn-ripple { position: relative; overflow: hidden; }
+.btn-ripple::after {
+  content: '';
+  position: absolute; border-radius: 50%;
+  background: rgba(255,255,255,0.25);
+  width: 0; height: 0;
+  top: 50%; left: 50%;
+  transform: translate(-50%, -50%);
+  transition: width 0.5s ease, height 0.5s ease, opacity 0.5s ease;
+  opacity: 0;
+}
+.btn-ripple:active::after {
+  width: 250px; height: 250px; opacity: 1;
+  transition: none;
+}
+
+/* 8. NAV LINK UNDERLINE SLIDE */
+nav a {
+  position: relative;
+}
+nav a::after {
+  content: '';
+  position: absolute; bottom: -2px; left: 0;
+  width: 0; height: 1px;
+  background: #c5a059;
+  transition: width 0.3s ease;
+}
+nav a:hover::after { width: 100%; }
+
+/* 9. TICKER FADE EDGES */
+.bg-black.border-y::before,
+.bg-black.border-y::after {
+  content: '';
+  position: absolute; top: 0; bottom: 0; width: 80px;
+  z-index: 2; pointer-events: none;
+}
+.bg-black.border-y { position: relative; }
+.bg-black.border-y::before {
+  left: 0;
+  background: linear-gradient(90deg, #000, transparent);
+}
+.bg-black.border-y::after {
+  right: 0;
+  background: linear-gradient(-90deg, #000, transparent);
+}
+
+/* 10. SECTION BORDER GLOW on scroll enter */
+section.in-view {
+  border-color: rgba(197,160,89,0.15) !important;
+  transition: border-color 1s ease;
+}
+
+/* 11. HERO BACKGROUND AURORA */
+.hero-bg {
+  position: relative;
+  overflow: hidden;
+}
+.hero-bg::before {
+  content: '';
+  position: absolute; inset: 0;
+  background:
+    radial-gradient(ellipse 70% 50% at 50% 80%, rgba(197,160,89,0.07) 0%, transparent 65%),
+    radial-gradient(ellipse 40% 30% at 20% 60%, rgba(197,160,89,0.04) 0%, transparent 60%),
+    radial-gradient(ellipse 40% 30% at 80% 40%, rgba(197,160,89,0.04) 0%, transparent 60%);
+  animation: auroraShift 8s ease-in-out infinite alternate;
+  pointer-events: none;
+}
+@keyframes auroraShift {
+  0%   { transform: scale(1) translateY(0px); opacity: 0.8; }
+  50%  { transform: scale(1.05) translateY(-10px); opacity: 1; }
+  100% { transform: scale(1) translateY(0px); opacity: 0.8; }
+}
+
+/* 12. GOLD BORDER PULSE on hero buttons */
+.hero-bg a[href] {
+  animation: borderPulse 3s ease-in-out infinite;
+}
+@keyframes borderPulse {
+  0%, 100% { box-shadow: 0 0 0 0 rgba(197,160,89,0); }
+  50%       { box-shadow: 0 0 0 4px rgba(197,160,89,0.15); }
+}
+
+/* 13. STAT NUMBERS COUNT-UP */
+.stat-num { transition: color 0.3s; }
+
+/* 14. IMAGE PARALLAX */
+.group img {
+  transition: transform 0.6s cubic-bezier(0.25, 0.46, 0.45, 0.94) !important;
+}

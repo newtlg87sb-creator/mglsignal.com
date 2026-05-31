@@ -168,8 +168,48 @@
                 "guide-item-5-desc": "Лимит нь тийм ч чухал холбогдолгүй ч та хамгийн бага USDT-ээр оролцох боломжийг харуулах болно.",
                 "guide-item-6-title": "6. RESET REAL% (RESET REAL%)",
                 "guide-item-6-desc": "Бүх цаг үеийн арилжааны хамгийн чухал хэрэгсэл. Үүнийг дарснаар үнийг одоо цагаас хойш reset хийж, хэрхэн өсөж унаж байгааг бодитоор харна."
+            },
+            en: {
+                "back-to-home": '<svg class="w-4 h-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 19l-7-7m0 0l7-7m-7 7h18"></path></svg>Back to Terminals',
+                "guide-title": '<i class="fas fa-book-open text-brand-gold mr-3"></i> Exchange Terminal Usage Guide',
+                "guide-intro": "This exchange data contains very unique insights. By understanding this, you will be able to avoid high-risk assets on any exchange...",
+                "guide-item-1-title": "1. BLACKLISTED / ST RISK (SHOW BL)",
+                "guide-item-1-desc": "ST (Special Treatment) coins with high risk of delisting. The system automatically highlights these in red.",
+                "guide-item-2-title": "2. SPREAD MONITOR (HIDE HS)",
+                "guide-item-2-desc": "Assets with wide bid-ask spreads. Highly risky as they are often whale traps.",
+                "guide-item-3-title": "3. LOW VOL COINS (HIDE LV)",
+                "guide-item-3-desc": "Coins with low market turnover in the last 24 hours. Poor liquidity often leads to extreme volatility.",
+                "guide-item-4-title": "4. HIDE MIN (SHOW MH)",
+                "guide-item-4-desc": "Hides coins with high entry requirements to highlight low-cost opportunities (e.g., $0.1 entry).",
+                "guide-item-5-title": "5. LIMIT (SHOW LH)",
+                "guide-item-5-desc": "Shows coins where you can participate with the minimum USDT limit.",
+                "guide-item-6-title": "6. RESET REAL% (RESET REAL%)",
+                "guide-item-6-desc": "Resets price tracking to current moment to monitor live gains or losses from this point forward."
             }
         };
+        function changeLang(lang) {
+            localStorage.setItem('lang', lang);
+            if (!window.translations || !window.translations[lang]) return;
+            const t = window.translations[lang];
+            document.querySelectorAll('[data-i18n]').forEach(el => {
+                const key = el.getAttribute('data-i18n');
+                if (t[key]) el.innerHTML = t[key];
+            });
+            document.querySelectorAll('[data-i18n-placeholder]').forEach(el => {
+                const key = el.getAttribute('data-i18n-placeholder');
+                if (t[key]) el.placeholder = t[key];
+            });
+
+            const btnMn = document.getElementById('btn-mn');
+            const btnEn = document.getElementById('btn-en');
+            if (btnMn && btnEn) {
+                const activeClass = "px-2.5 py-1 rounded-full bg-brand-gold text-black transition";
+                const inactiveClass = "px-2.5 py-1 rounded-full text-gray-500 hover:text-white transition";
+                btnMn.className = lang === 'mn' ? activeClass : inactiveClass;
+                btnEn.className = lang === 'en' ? activeClass : inactiveClass;
+            }
+        }
+        window.changeLang = changeLang;
 
         let allDataMap = new Map(); 
         let allData = [];
@@ -490,10 +530,10 @@
 
         document.addEventListener('DOMContentLoaded', () => {
             const lang = localStorage.getItem('lang') || 'mn';
-            if (typeof translations !== 'undefined') {
-                Object.keys(pageTranslations).forEach(l => Object.assign(translations[l], pageTranslations[l]));
-            }
-            if (typeof changeLang === 'function') changeLang(lang);
+            if (typeof window.translations === 'undefined') window.translations = { mn: {}, en: {} };
+            Object.keys(pageTranslations).forEach(l => Object.assign(window.translations[l], pageTranslations[l]));
+            
+            changeLang(lang);
 
             Object.keys(hideSettings).forEach(type => {
                 const id = `btn-${type}`;
