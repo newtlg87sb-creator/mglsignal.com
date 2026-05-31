@@ -33,7 +33,6 @@ if (typeof window.translations === 'undefined') {
 }
 
 // Merge shared translations into the global translations object
-// We use spread to keep page-specific translations if they were defined before header.js
 Object.keys(sharedTranslations).forEach(lang => {
     window.translations[lang] = { 
         ...sharedTranslations[lang], 
@@ -63,7 +62,7 @@ const headerHTML = `    <style>
             </div>
 
             <!-- CENTER: UPDATE ALERT -->
-            <div class="absolute left-1/2 transform -translate-x-1/2 cursor-pointer group" onclick="document.getElementById('update-modal').classList.remove('hidden')">
+            <div class="fixed left-1/2 transform -translate-x-1/2 cursor-pointer group" onclick="document.getElementById('update-modal').classList.remove('hidden')">
                 <div class="flex items-center space-x-1.5 bg-black/5 px-3 py-0.5 rounded-full hover:bg-black/10 transition border border-black/5">
                     <i class="fas fa-info-circle text-[9px] text-black"></i>
                     <span data-i18n="update-info-btn" class="text-[9px] font-black text-black uppercase tracking-tight">About Update</span>
@@ -119,13 +118,15 @@ const headerHTML = `    <style>
                     <span class="text-xl md:text-2xl font-black tracking-tighter text-white">MGL<span class="text-brand-gold">Signal</span></span>
                 </a>
 
-                <div class="hidden md:flex items-center space-x-6 text-[11px] font-bold uppercase tracking-[0.15em] text-gray-400">
-                    <a href="/index.html" data-i18n="nav-home" class="py-1 hover:text-white transition">Нүүр</a>
+                <!-- DESKTOP MENU: ДАВХАРДАЛГҮЙ ТӨГС ГЭРЭЛТЭХ ХЭСЭГ -->
+                <div class="hidden md:flex items-center space-x-6 text-[11px] font-bold uppercase tracking-[0.15em]">
+                    <a href="/index.html" class="py-1 hover:text-white transition"><span data-i18n="nav-home" class="mgl-spotlight-text text-gray-400">Нүүр</span></a>
                     
                     <div class="relative dropdown group">
-                        <button class="flex items-center hover:text-white transition py-1">
-                            <span data-i18n="nav-forex">Forex</span>
-                            <svg class="w-3 h-3 ml-1" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path d="M19 9l-7 7-7-7" stroke-width="3"></path></svg>
+                        <button class="flex items-center hover:text-white transition py-1 text-gray-400">
+                            <!-- Эффектийг зөвхөн үгэн дээр нь оноож, сумыг гадна нь үлдээв -->
+                            <span data-i18n="nav-forex" class="mgl-spotlight-text">Forex</span>
+                            <svg class="w-3 h-3 ml-1 text-gray-500 group-hover:text-white transition" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path d="M19 9l-7 7-7-7" stroke-width="3"></path></svg>
                         </button>
                         <div class="hidden dropdown-menu absolute left-0 mt-0 pt-4 w-44 z-50">
                             <div class="bg-brand-dark-blue border border-brand-border shadow-2xl overflow-hidden">
@@ -135,9 +136,10 @@ const headerHTML = `    <style>
                     </div>
 
                     <div class="relative dropdown group">
-                        <button class="flex items-center hover:text-white transition py-1">
-                            <span data-i18n="nav-crypto">Crypto</span>
-                            <svg class="w-3 h-3 ml-1" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path d="M19 9l-7 7-7-7" stroke-width="3"></path></svg>
+                        <button class="flex items-center hover:text-white transition py-1 text-gray-400">
+                            <!-- Эффектийг зөвхөн үгэн дээр нь оноож, сумыг гадна нь үлдээв -->
+                            <span data-i18n="nav-crypto" class="mgl-spotlight-text">Crypto</span>
+                            <svg class="w-3 h-3 ml-1 text-gray-500 group-hover:text-white transition" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path d="M19 9l-7 7-7-7" stroke-width="3"></path></svg>
                         </button>
                         <div class="hidden dropdown-menu absolute left-0 mt-0 pt-4 w-44 z-50">
                             <div class="bg-brand-dark-blue border border-brand-border shadow-2xl overflow-hidden">
@@ -147,7 +149,7 @@ const headerHTML = `    <style>
                         </div>
                     </div>
 
-                    <a href="/main_news.html" data-i18n="nav-news" class="py-1 hover:text-white transition">Мэдээ</a>
+                    <a href="/main_news.html" class="py-1 hover:text-white transition"><span data-i18n="nav-news" class="mgl-spotlight-text text-gray-400">Мэдээ</span></a>
 
                     <div class="relative dropdown group">
                         <button class="flex items-center hover:text-white transition py-1 text-brand-gold font-black">
@@ -171,7 +173,7 @@ const headerHTML = `    <style>
                     <div class="hidden md:flex items-center space-x-3 border-r border-brand-border pr-4 mr-1">
                         <!-- Guest View (Desktop) -->
                         <div id="desktop-guest" class="flex items-center space-x-3">
-                            <a href="main_login.html" data-i18n="btn-login" class="text-[10px] font-bold text-gray-400 hover:text-white transition uppercase">Login</a>
+                            <a href="main_login.html" class="text-[10px] font-bold hover:text-white transition uppercase"><span data-i18n="btn-login" class="mgl-spotlight-text text-gray-400">Login</span></a>
                             <a href="main_register.html" data-i18n="btn-reg" class="bg-brand-gold text-black px-3 py-1.5 rounded-sm text-[10px] font-black uppercase hover:bg-white transition">Register</a>
                         </div>
                         <!-- User View (Desktop) -->
@@ -197,14 +199,14 @@ const headerHTML = `    <style>
 
         <!-- Mobile Menu -->
         <div class="mobile-menu hidden md:hidden bg-brand-dark-blue border-b border-brand-border px-6 py-6 space-y-4">
-            <a href="/index.html" data-i18n="nav-home" class="block text-white font-bold uppercase text-xs">Нүүр</a>
+            <a href="/index.html" class="block font-bold uppercase text-xs"><span data-i18n="nav-home" class="mgl-spotlight-text text-gray-400">Нүүр</span></a>
             
             <!-- Forex Section -->
             <div class="space-y-2">
                 <p data-i18n="nav-forex" class="text-[10px] text-gray-500 font-black uppercase tracking-widest">Forex</p>
                 <div class="pl-4 space-y-2 border-l border-brand-border">
-                    <a href="#" data-i18n="drop-major" class="block text-white text-xs font-bold uppercase">Гол хослолууд</a>
-                    <a href="#" data-i18n="drop-minor" class="block text-white text-xs font-bold uppercase">Туслах хослолууд</a>
+                    <a href="#" class="block text-xs font-bold uppercase"><span data-i18n="drop-major" class="mgl-spotlight-text text-gray-400">Гол хослолууд</span></a>
+                    <a href="#" class="block text-xs font-bold uppercase"><span data-i18n="drop-minor" class="mgl-spotlight-text text-gray-400">Туслах хослолууд</span></a>
                 </div>
             </div>
 
@@ -212,25 +214,25 @@ const headerHTML = `    <style>
             <div class="space-y-2">
                 <p data-i18n="nav-crypto" class="text-[10px] text-gray-500 font-black uppercase tracking-widest">Crypto</p>
                 <div class="pl-4 space-y-2 border-l border-brand-border">
-                    <a href="/main_altcoin_tools.html" data-i18n="drop-alt" class="block text-brand-gold text-xs font-bold uppercase">Market Tools</a>
-                    <a href="/main_live_tools.html" data-i18n="drop-live" class="block text-brand-gold text-xs font-bold uppercase">Live Tools</a> 
+                    <a href="/main_altcoin_tools.html" class="block text-xs font-bold uppercase"><span data-i18n="drop-alt" class="mgl-spotlight-text text-brand-gold">Market Tools</span></a>
+                    <a href="/main_live_tools.html" class="block text-xs font-bold uppercase"><span data-i18n="drop-live" class="mgl-spotlight-text text-brand-gold">Live Tools</span></a> 
                 </div>
             </div>
 
-            <a href="/main_news.html" data-i18n="nav-news" class="block text-white font-bold uppercase text-xs">Мэдээ</a>
-            <a href="/main_signals.html" data-i18n="sig-title" class="block text-gray-400 font-bold uppercase text-xs">Сигналууд</a>
+            <a href="/main_news.html" class="block font-bold uppercase text-xs"><span data-i18n="nav-news" class="mgl-spotlight-text text-gray-400">Мэдээ</span></a>
+            <a href="/main_signals.html" class="block font-bold uppercase text-xs"><span data-i18n="sig-title" class="mgl-spotlight-text text-gray-400">Сигналууд</span></a>
             <a href="/main_alpha_signals.html" data-i18n="nav-alpha" class="block text-brand-gold font-bold uppercase text-xs italic">Alpha Signals</a>
-            <a href="/main_New_projects.html" data-i18n="nav-projects" class="block text-gray-400 font-bold uppercase text-xs">Шинэ төслүүд</a>
+            <a href="/main_New_projects.html" class="block font-bold uppercase text-xs"><span data-i18n="nav-projects" class="mgl-spotlight-text text-gray-400">Шинэ төслүүд</span></a>
             
             <div class="grid grid-cols-2 gap-4">
-                <a href="/main_knowledge.html" data-i18n="nav-knowledge" class="text-gray-400 font-bold uppercase text-[10px]">Мэдлэг</a>
-                <a href="/main_about.html" data-i18n="foot-about" class="text-gray-400 font-bold uppercase text-[10px]">Бидний тухай</a>
+                <a href="/main_knowledge.html" class="font-bold uppercase text-[10px]"><span data-i18n="nav-knowledge" class="mgl-spotlight-text text-gray-400">Мэдлэг</span></a>
+                <a href="/main_about.html" class="font-bold uppercase text-[10px]"><span data-i18n="foot-about" class="mgl-spotlight-text text-gray-400">Бидний тухай</span></a>
             </div>
 
             <div class="pt-4 border-t border-brand-border flex flex-col space-y-4">
                 <!-- Guest View (Mobile) -->
                 <div id="mobile-guest" class="grid grid-cols-2 gap-4">
-                    <a href="main_login.html" data-i18n="btn-login" class="text-center py-2 border border-brand-border rounded text-white text-xs font-bold uppercase hover:border-brand-gold transition">Нэвтрэх</a>
+                    <a href="main_login.html" class="text-center py-2 border border-brand-border rounded text-xs font-bold uppercase hover:border-brand-gold transition"><span data-i18n="btn-login" class="mgl-spotlight-text text-gray-400">Нэвтрэх</span></a>
                     <a href="main_register.html" data-i18n="btn-reg" class="text-center py-2 bg-brand-gold rounded text-black text-xs font-bold uppercase hover:bg-white transition">Register</a>
                 </div>
                 <!-- User View (Mobile) -->
@@ -241,26 +243,20 @@ const headerHTML = `    <style>
                     </div>
                     <button onclick="handleLogout()" data-i18n="btn-logout" class="text-center py-2 border border-brand-border rounded text-red-500 text-xs font-bold uppercase hover:bg-red-500/10 transition">Logout</button>
                 </div>
-                <a href="/main_contact.html" data-i18n="foot-contact" class="text-center text-gray-500 text-[10px] font-bold uppercase pt-2">Холбоо барих</a>
+                <a href="/main_contact.html" class="text-center text-[10px] font-bold uppercase pt-2"><span data-i18n="foot-contact" class="mgl-spotlight-text text-gray-500">Холбоо барих</span></a>
             </div>
         </div>
     </nav>
 `;
 
-// Supabase client-ийг тохируулах
-// Public болгох гэж байгаа тул утгуудыг шууд бичихгүй байхыг зөвлөж байна.
-// Гэвч static JS дээр Environment Variable шууд уншиж болдоггүй тул Anon Key-г энд үлдээж болно.
 const SB_URL = "https://bsdkbxyjwjljximdxdst.supabase.co"; 
 const SB_KEY = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImJzZGtieHlqd2psanhpbWR4ZHN0Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzUzODg1MTQsImV4cCI6MjA5MDk2NDUxNH0.Qwfpd0cEaAKwlv5B-Uh0MlTLR-WH8qt19HHlTxUnUYs";
 const sb = (typeof supabase !== 'undefined') ? supabase.createClient(SB_URL, SB_KEY) : null;
 
-// This will insert the HTML right before the <script> tag for header.js
-// It's a safe and modern replacement for document.write()
 if (document.currentScript) {
     document.currentScript.insertAdjacentHTML('beforebegin', headerHTML);
 }
 
-// Global function for Logout
 window.handleLogout = async function() {
     try {
         if (sb) {
@@ -269,15 +265,12 @@ window.handleLogout = async function() {
     } catch (err) {
         console.warn("Logout request failed, clearing local data anyway", err);
     } finally {
-        // Түрэмгий цэвэрлэгээ: Бүх зүйлийг устгах
         const keysToRemove = [];
         for (let i = 0; i < localStorage.length; i++) {
             const key = localStorage.key(i);
             if (key.includes('supabase.auth.token') || key === 'user') keysToRemove.push(key);
         }
         keysToRemove.forEach(k => localStorage.removeItem(k));
-
-        // Хэрэв админ хуудас эсвэл хамгаалалттай хуудас бол reload хийхэд access_control түгжинэ
         window.location.reload();
     }
 };
@@ -292,7 +285,6 @@ window.changeLang = function(lang) {
                 el.innerHTML = window.translations[lang][key];
             }
         });
-        // Handle placeholders
         document.querySelectorAll('[data-i18n-placeholder]').forEach(el => {
             const key = el.getAttribute('data-i18n-placeholder');
             if (window.translations[lang] && window.translations[lang][key]) {
@@ -313,26 +305,23 @@ window.changeLang = function(lang) {
             btnMn.className = "px-2.5 py-1 rounded-full text-gray-500 hover:text-white transition";
         }
     }
+
+    // Хэл солигдоход толгой хэсгийн spotlight маскийг давхар шинэчлэх
+    if (typeof syncHeaderSpotlightText === 'function') syncHeaderSpotlightText();
 }
 
-
-// Function to check login status and update UI
 async function checkUserLogin() {
     let userStr = localStorage.getItem('user');
-    
-    // 1. Try to sync with Supabase for real-time status update
     if (sb) {
         try {
             const { data: { session } } = await sb.auth.getSession();
             if (session && session.user) {
                 const user = session.user;
-                
-                // Профайл хүснэгтээс мэдээлэл татах
                 const { data: profile, error: profileError } = await sb
                     .from('User control')
                     .select('username, membership_type, membership_expires_at')
                     .eq('id', user.id)
-                    .maybeSingle(); // .single() ашиглавал өгөгдөл байхгүй үед алдаа заадаг
+                    .maybeSingle();
 
                 if (profileError) console.error("Supabase Sync Error:", profileError);
                 
@@ -347,14 +336,12 @@ async function checkUserLogin() {
                 localStorage.setItem('user', JSON.stringify(userData));
                 userStr = JSON.stringify(userData);
 
-                // 2. Бот нэвтэрсэн байхад нэвтрэх/бүртгүүлэх хуудсанд байвал шууд Нүүр рүү
                 const path = window.location.pathname;
                 if (path.includes('main_login.html') || path.includes('main_register.html')) {
                     window.location.href = 'index.html';
                     return;
                 }
 
-                // 3. Хэрэв access_control-оос болж дэлгэц түгжигдсэн байвал суллах (Mismatch-ийг засах)
                 const lockOverlay = document.getElementById('lock-overlay');
                 if (lockOverlay) {
                     lockOverlay.remove();
@@ -363,13 +350,11 @@ async function checkUserLogin() {
 
             } else { throw new Error("No session"); }
         } catch (err) {
-            // Сесс байхгүй эсвэл алдаа гарвал заавал цэвэрлэнэ
             localStorage.removeItem('user');
             userStr = null;
         }
     }
 
-    // UI-г тодорхойлох элементүүд
     const dGuest = document.getElementById('desktop-guest');
     const dUser = document.getElementById('desktop-user');
     const dName = document.getElementById('user-display-name');
@@ -380,10 +365,8 @@ async function checkUserLogin() {
     if (userStr && userStr !== "undefined") {
         try {
             const user = JSON.parse(userStr);
-
-            // Helper to generate the display HTML based on membership
             const getStatusHTML = (username, type, expiresAt) => {
-                const mType = (type || '').toLowerCase().trim(); // Том жижиг үсгийг үл харгалзан шалгана
+                const mType = (type || '').toLowerCase().trim();
                 if (mType === 'alpha' && expiresAt) {
                     const now = new Date();
                     const expires = new Date(expiresAt);
@@ -401,7 +384,6 @@ async function checkUserLogin() {
                 dUser.classList.remove('hidden');
                 dName.innerHTML = getStatusHTML(user.username, user.membership_type, user.membership_expires_at);
             }
-
             if(mGuest && mUser && mName) {
                 mGuest.classList.add('hidden');
                 mGuest.classList.remove('grid');
@@ -410,14 +392,14 @@ async function checkUserLogin() {
             }
         } catch (e) {
             console.error("Error parsing user data", e);
-            localStorage.removeItem('user'); // Алдаатай өгөгдөл байвал устгана
-            userStr = null; // Дараагийн шат руу шилжүүлж Guest UI-г харуулна
+            localStorage.removeItem('user');
+            userStr = null;
         }
     } 
     
-    // Хэрэв хэрэглэгч нэвтрээгүй бол (userStr байхгүй) UI-г Guest төлөв рүү буцаана
     if (!userStr || userStr === "undefined") {
         if(dGuest && dUser) {
+            dGuest.removex ? dGuest.classList.remove('hidden') : dGuest.classList.add('flex');
             dGuest.classList.remove('hidden');
             dGuest.classList.add('flex');
             dUser.classList.add('hidden');
@@ -428,7 +410,21 @@ async function checkUserLogin() {
             mUser.classList.add('hidden');
         }
     }
+    // Профайл солигдсоны дараа маскийг синхрончлох
+    if (typeof syncHeaderSpotlightText === 'function') syncHeaderSpotlightText();
 }
+
+// ── БРО-ГИЙН ХЭЛНИЙ АВТОМАТ МАСК СИНХРОНЧЛОЛ (HEADER VERSION) ──
+window.syncHeaderSpotlightText = function() {
+    setTimeout(() => {
+        document.querySelectorAll('nav .mgl-spotlight-text').forEach(el => {
+            const visibleText = el.textContent.trim();
+            if (visibleText) {
+                el.setAttribute('data-text', visibleText);
+            }
+        });
+    }, 60);
+};
 
 document.addEventListener('DOMContentLoaded', () => {
     const mobileMenuButton = document.querySelector('.mobile-menu-button');
@@ -442,16 +438,12 @@ document.addEventListener('DOMContentLoaded', () => {
     const savedLang = localStorage.getItem('lang') || 'mn';
     changeLang(savedLang);
     
-    // --- AUTOMATIC UPDATE DETECTION ---
     async function autoDetectUpdateTime() {
         const updateTimeSpan = document.getElementById('header-last-update-time');
         if (!updateTimeSpan) return;
-
         try {
-            // Үндсэн index.html файлын серверийн мэдээллийг шалгах
             const response = await fetch(window.location.origin + '/index.html', { method: 'HEAD' });
             const lastModified = response.headers.get('Last-Modified');
-            
             if (lastModified) {
                 const date = new Date(lastModified);
                 const HH = String(date.getHours()).padStart(2, '0');
@@ -459,7 +451,6 @@ document.addEventListener('DOMContentLoaded', () => {
                 const DD = String(date.getDate()).padStart(2, '0');
                 const MM = String(date.getMonth() + 1).padStart(2, '0');
                 const YY = String(date.getFullYear()).slice(-2);
-                
                 updateTimeSpan.textContent = `${HH}:${mm} ${DD}/${MM}/${YY}`;
             }
         } catch (e) {
@@ -467,12 +458,8 @@ document.addEventListener('DOMContentLoaded', () => {
         }
     }
     autoDetectUpdateTime();
-    // ----------------------------------
+    setTimeout(checkUserLogin, 100);
 
-    // Check login status on page load
-    setTimeout(checkUserLogin, 100); // Бага зэрэг хүлээлт хийж Supabase-д сессээ таних хугацаа олгоно
-
-    // Auth өөрчлөлтийг байнга сонсох (Өөр таб дээр гарахад эсвэл сесс дуусахад UI шинэчлэгдэнэ)
     if (sb) {
         sb.auth.onAuthStateChange((event, session) => {
             console.log("Auth Event:", event);
@@ -484,4 +471,7 @@ document.addEventListener('DOMContentLoaded', () => {
             }
         });
     }
+    
+    // Анх ачаалагдахад маскийг гүйлгэх
+    window.syncHeaderSpotlightText();
 });

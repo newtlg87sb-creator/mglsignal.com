@@ -211,3 +211,52 @@ section.in-view {
 .group img {
   transition: transform 0.6s cubic-bezier(0.25, 0.46, 0.45, 0.94) !important;
 }
+
+/* ═══════════════════════════════════════════════
+   15. GLOBAL TEXT SPOTLIGHT — ЦЭВЭР CSS ТҮРҮҮЛЭГ
+   ═══════════════════════════════════════════════ */
+
+.mgl-spotlight-text {
+  position: relative;
+  /* Анхны суурь өнгө: Ул ялиг бараан саарал */
+  color: #64748b !important; 
+  display: inline-block;
+}
+
+.mgl-spotlight-text::after {
+  content: attr(data-text); /* HTML-ээс үгийг хуулж авна */
+  position: absolute;
+  inset: 0;
+  left: 0;
+  top: 0;
+  
+  /* ЦАВ ЦАГААН ГАР ЧИЙДЭНГИЙН ТУСГАЛ */
+  /* Хатуу зураасгүй, дундаа цав цагаан очтой, хоёр зах руугаа ууссан зөөлөн дугуй гэрэл */
+  background: radial-gradient(circle, #ffffff 0%, rgba(255, 255, 255, 0.4) 30%, transparent 70%);
+  background-size: 150px 100%; /* Гар чийдэнгийн хэмжээ */
+  background-repeat: no-repeat;
+  
+  /* Текстийг маскдах нууц мөрүүд */
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+  
+  mix-blend-mode: lighten;
+  pointer-events: none;
+  
+  /* Дэлгэцээр тасралтгүй, гөлгөр тэнүүчлэх хөдөлгөөн */
+  animation: flashlightWander 8s cubic-bezier(0.4, 0, 0.2, 1) infinite alternate;
+}
+
+/* ── ГАР ЧИЙДЭНГИЙН БАЙРШЛЫГ ХӨДӨЛГӨХ (ЗУРААСГҮЙ) ── */
+@keyframes flashlightWander {
+  0% {
+    background-position: -50% center; /* Зүүн талд далд байна */
+  }
+  50% {
+    background-position: 50% center; /* Яг дунд нь ирж текстийг цав цагаан болгоно */
+  }
+  100% {
+    background-position: 150% center; /* Баруун тийшээ гараад алга болно */
+  }
+}
